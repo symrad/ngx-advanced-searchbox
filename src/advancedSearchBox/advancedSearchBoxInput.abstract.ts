@@ -41,4 +41,10 @@ export abstract class AdvancedSearchBoxInputAbstract implements OnInit, OnDestro
 
     }
 
+    removeEmpty() {
+        if (!this.viewModel.value) {
+            this.remove();
+        }
+    }
+
 }

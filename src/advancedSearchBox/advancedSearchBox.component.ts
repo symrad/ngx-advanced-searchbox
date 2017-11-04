@@ -226,7 +226,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
 
     nextFilterController(viewModel): FilterInterface | AdvancedSearchBoxComponent {
         const indexViewModel = this.viewModel.indexOf(viewModel);
-        if (indexViewModel >= 0) {
+        if (indexViewModel >= 0 && indexViewModel + 1 < this.viewModel.length) {
             const nextFilter: any = this.viewModel[indexViewModel + 1];
             return <FilterInterface>this.filtersControllers[nextFilter.uuid];
         }

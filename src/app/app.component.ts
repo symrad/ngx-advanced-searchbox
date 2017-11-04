@@ -27,7 +27,9 @@ export class AppComponent {
     'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
     'required' : false,
     'multiple' : false
-  }, {
+  },
+  /*
+  , {
     'model' : 'enabled',
     'type' : 'RANGE',
     'inputType' : 'TEXT',
@@ -42,7 +44,9 @@ export class AppComponent {
     } ],
     'required' : false,
     'multiple' : true
-  }, {
+  },
+  */
+  {
     'model' : 'username2',
     'type' : 'INPUT',
     'inputType' : 'TEXT',

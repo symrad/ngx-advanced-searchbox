@@ -26,23 +26,31 @@ export class AdvancedSearchBoxInputComponent extends AdvancedSearchBoxInputAbstr
         this.advancedSearchBox.editNext
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
         .subscribe((response) => {
-            this.onBlur();
             this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
+            this.onBlur();
         });
 
         this.advancedSearchBox.editPrev
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
         .subscribe((response) => {
-            this.onBlur();
             this.advancedSearchBox.prevFilterController(response.viewModel).onFocus('prev');
+            this.onBlur();
         });
     }
 
     viewToModel() {
-        this.advancedSearchBox.model[this.viewModel.model] = this.viewModel.value;
+        if (this.viewModel.value) {
+            this.advancedSearchBox.model[this.viewModel.model] = this.viewModel.value;
+        }
+    }
+
+    onBlur() {
+        super.onBlur();
+        this.removeEmpty();
     }
 
     private onChange() {
         this.viewToModel();
     }
+
 }

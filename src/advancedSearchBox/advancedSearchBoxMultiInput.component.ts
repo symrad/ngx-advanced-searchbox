@@ -34,8 +34,8 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
                 this.operators.close();
                 this.inputRef.nativeElement.focus();
             }else {
-                this.onBlur();
                 this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
+                this.onBlur();
             }
         });
 
@@ -47,18 +47,24 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
                 this.operators.close();
                 this.buttonToggle.nativeElement.blur();
             }else {
-                this.onBlur();
                 this.operators.open();
                 this.buttonToggle.nativeElement.focus();
+                this.onBlur();
             }
+        });
+
+        this.advancedSearchBox.searchboxInputClick$.subscribe((response) => {
+            this.operators.close();
         });
     }
 
     viewToModel() {
-        if (!this.advancedSearchBox.model[this.viewModel.model]) {
-            this.advancedSearchBox.model[this.viewModel.model] = [];
+        if (this.viewModel.value) {
+            if (!this.advancedSearchBox.model[this.viewModel.model]) {
+                this.advancedSearchBox.model[this.viewModel.model] = [];
+            }
+            this.advancedSearchBox.model[this.viewModel.model].push(this.viewModel.value);
         }
-        this.advancedSearchBox.model[this.viewModel.model].push(this.viewModel.value);
     }
 
     onInternalStep() {
@@ -68,6 +74,7 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
     onBlur() {
         super.onBlur();
         this.operators.close();
+        this.removeEmpty();
     }
 
     onFocus(prevNext) {
@@ -85,7 +92,9 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
 
     remove() {
         super.remove();
-        const indexToRemove = this.advancedSearchBox.model[this.viewModel.model].indexOf(this.viewModel.value);
-        this.advancedSearchBox.model[this.viewModel.model].splice(indexToRemove, 1);
+        if (this.viewModel.value) {
+            const indexToRemove = this.advancedSearchBox.model[this.viewModel.model].indexOf(this.viewModel.value);
+            this.advancedSearchBox.model[this.viewModel.model].splice(indexToRemove, 1);
+        }
     }
 }
