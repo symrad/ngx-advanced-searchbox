@@ -1,0 +1,9 @@
+<div>
+    <input type="text" 
+    [(ngModel)]="viewModel.value"
+    (keydown)="advancedSearchBox.keydown($event,viewModel)" 
+    (change)="onChange()"
+    (blur)="onBlur()"
+    #inputRef/>
+    <span (click)="remove()">rimuovi</span>
+</div>

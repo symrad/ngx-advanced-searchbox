@@ -1,0 +1,12 @@
+<ng-template #rt let-r="result" let-t="term">
+    {{ r.label}}
+  </ng-template>
+<input id="typeahead-basic" type="text" class="form-control" (selectItem)="addFilter($event)" (focus)="focusInput$.next()" 
+    [(ngModel)]="searchBox" (keydown)="keydown($event)" [ngbTypeahead]="searchBoxFunc" [resultTemplate]="rt" [inputFormatter]="formatter" #searchbox #searchboxModel="ngModel"/>
+<div *ngIf="true" ></div>
+<div *ngFor="let filter of viewModel; trackBy: trackByFn" >
+    <ng-container [ngSwitch]="filter.type" >
+        <app-as-input *ngSwitchCase="'INPUT'" [viewModel]="filter"></app-as-input>
+        <ng-container *ngTemplateOutlet="externalTemplate; context: {$implicit: filter}"></ng-container>
+    </ng-container>
+</div>

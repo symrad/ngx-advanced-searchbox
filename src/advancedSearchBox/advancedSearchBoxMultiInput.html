@@ -1,0 +1,13 @@
+<div>
+    <div ngbDropdown class="d-inline-block" appDropdownNavigation>
+        <button class="btn btn-outline-primary" ngbDropdownToggle #buttonToggle 
+        (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">Toggle dropdown</button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button class="dropdown-item">Action - 1</button>
+            <button class="dropdown-item">Another Action</button>
+            <button class="dropdown-item">Something else is here</button>
+        </div>
+    </div>
+    <input type="text" [(ngModel)]="viewModel.value" (keydown)="advancedSearchBox.keydown($event, viewModel)" (change)="onChange()" #inputRef/>
+    <span (click)="remove()">rimuovi</span>
+</div>
