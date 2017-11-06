@@ -46,11 +46,16 @@ export class AdvancedSearchBoxInputComponent extends AdvancedSearchBoxInputAbstr
 
     onBlur() {
         super.onBlur();
-        this.removeEmpty();
+        this.removeEmpty([this.viewModel.value]);
     }
 
     private onChange() {
         this.viewToModel();
+    }
+
+    remove() {
+        super.remove();
+        delete this.advancedSearchBox.model[this.viewModel.model];
     }
 
 }

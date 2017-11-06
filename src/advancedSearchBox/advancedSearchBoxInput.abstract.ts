@@ -3,13 +3,14 @@ import { FilterInterface } from './advancedSearchBoxFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { element } from 'protractor';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
-import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, HostListener } from '@angular/core';
 import 'rxjs/add/operator/filter';
 
 export abstract class AdvancedSearchBoxInputAbstract implements OnInit, OnDestroy, FilterInterface {
 
     @Input() viewModel: ViewModelInterface;
     @ViewChild('inputRef') inputRef: ElementRef;
+    private _isFirstDocClick = true;
 
     constructor(
         public advancedSearchBox: AdvancedSearchBoxComponent,
@@ -17,23 +18,23 @@ export abstract class AdvancedSearchBoxInputAbstract implements OnInit, OnDestro
         public _el: ElementRef
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.advancedSearchBox.addFilterController(this.viewModel.uuid, this);
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.advancedSearchBox.removeFilterController(this.viewModel.uuid);
     }
 
-    onFocus(prevNext) {
+    onFocus(prevNext): void {
         this.inputRef.nativeElement.focus();
     }
 
-    onBlur() {
+    onBlur(): void {
         this.inputRef.nativeElement.blur();
     }
 
-    remove() {
+    remove(): void {
         this.advancedSearchBox.removeViewModel(this.viewModel);
     }
 
@@ -41,10 +42,35 @@ export abstract class AdvancedSearchBoxInputAbstract implements OnInit, OnDestro
 
     }
 
-    removeEmpty() {
-        if (!this.viewModel.value) {
+    removeEmpty(models: Array<any>): void {
+        let isToRemove = true;
+        for (const model of models){
+            if (model) {
+                isToRemove = false;
+                break;
+            }
+        }
+        if (isToRemove) {
             this.remove();
         }
     }
 
+    getKeys(object): Array<any> {
+        return Object.keys(object);
+    }
+
+    abstract viewToModel();
+
+    @HostListener('document:click', ['$event'])
+    clickout(event) {
+        if (!this._isFirstDocClick) {
+            if (this._el.nativeElement.contains(event.target)) {
+
+            } else {
+                this.advancedSearchBox.getFilterController(this.viewModel).onBlur();
+                this.viewToModel();
+            }
+        }
+        this._isFirstDocClick = false;
+    }
 }

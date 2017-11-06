@@ -3,18 +3,33 @@ import { FilterInterface } from './advancedSearchBoxFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { element } from 'protractor';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
-import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import { AdvancedSearchBoxInputAbstract } from './advancedSearchBoxInput.abstract';
+import { Key as KeyBoard} from 'ts-keycode-enum/Key.enum';
+
+enum OperatorsEnum {
+    eq = '=',
+    lt = '<',
+    le = '\u2264',
+    ne = '\u2260',
+    gt = '>',
+    ge = '\u2265',
+    startsWith = '[...',
+    endsWith = '...]',
+    contains = '[...]'
+}
 
 @Component({
     selector: 'app-as-multi-input',
     templateUrl: './advancedSearchBoxMultiInput.html'
 })
-export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInputAbstract implements OnInit {
+export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInputAbstract implements OnInit, OnChanges {
 
-   @ViewChild(NgbDropdown) operators: NgbDropdown;
-   @ViewChild('buttonToggle') buttonToggle: ElementRef;
+   @ViewChild(NgbDropdown) operatorsDropDownDir: NgbDropdown;
+   @ViewChild('buttonToggle') buttonToggleEr: ElementRef;
+   public operatorsList = [];
+   public operatorsEnum = OperatorsEnum;
 
    constructor(
         public advancedSearchBox: AdvancedSearchBoxComponent,
@@ -22,16 +37,25 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
         public el: ElementRef
     ) {
         super(advancedSearchBox, renderer, el);
+
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.viewModel) {
+            this.operatorsList = changes.viewModel.currentValue.operators;
+        }
     }
 
     ngOnInit() {
         super.ngOnInit();
 
+        this.viewModel.value = {};
+
         this.advancedSearchBox.editNext
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
-                this.operators.close();
+                this.operatorsDropDownDir.close();
                 this.inputRef.nativeElement.focus();
             }else {
                 this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
@@ -44,22 +68,22 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
                 this.advancedSearchBox.prevFilterController(response.viewModel).onFocus('prev');
-                this.operators.close();
-                this.buttonToggle.nativeElement.blur();
-            }else {
-                this.operators.open();
-                this.buttonToggle.nativeElement.focus();
+                this.operatorsDropDownDir.close();
+                this.buttonToggleEr.nativeElement.blur();
                 this.onBlur();
+            }else {
+                this.operatorsDropDownDir.open();
+                this.buttonToggleEr.nativeElement.focus();
             }
         });
 
         this.advancedSearchBox.searchboxInputClick$.subscribe((response) => {
-            this.operators.close();
+            this.operatorsDropDownDir.close();
         });
     }
 
     viewToModel() {
-        if (this.viewModel.value) {
+        if (this.viewModel.value.value) {
             if (!this.advancedSearchBox.model[this.viewModel.model]) {
                 this.advancedSearchBox.model[this.viewModel.model] = [];
             }
@@ -73,16 +97,16 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
 
     onBlur() {
         super.onBlur();
-        this.operators.close();
-        this.removeEmpty();
+        this.operatorsDropDownDir.close();
+        this.removeEmpty([this.viewModel.value.value]);
     }
 
     onFocus(prevNext) {
         if (prevNext === 'prev') {
             this.inputRef.nativeElement.focus();
         }else {
-            this.operators.open();
-            this.buttonToggle.nativeElement.focus();
+            this.operatorsDropDownDir.open();
+            this.buttonToggleEr.nativeElement.focus();
         }
     }
 
@@ -90,11 +114,35 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
         this.viewToModel();
     }
 
+    onChangeOperators($event: MouseEvent | KeyboardEvent, operator: string) {
+        if ($event instanceof KeyboardEvent) {
+            switch ($event.which) {
+                case KeyBoard.Enter:
+                // case KeyBoard.Tab:
+                    $event.preventDefault();
+                    this.viewModel.value.op = operator;
+                    this.operatorsDropDownDir.close();
+                    this.inputRef.nativeElement.focus();
+                    this.viewToModel();
+
+            }
+        }
+        if ($event instanceof MouseEvent) {
+            this.viewModel.value.op = operator;
+            this.operatorsDropDownDir.close();
+            this.inputRef.nativeElement.focus();
+            this.viewToModel();
+        }
+    }
+
     remove() {
         super.remove();
-        if (this.viewModel.value) {
+        if (this.viewModel.value && this.advancedSearchBox.model[this.viewModel.model]) {
             const indexToRemove = this.advancedSearchBox.model[this.viewModel.model].indexOf(this.viewModel.value);
             this.advancedSearchBox.model[this.viewModel.model].splice(indexToRemove, 1);
+            if (this.advancedSearchBox.model[this.viewModel.model].length < 1) {
+                delete this.advancedSearchBox.model[this.viewModel.model];
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 import { DropdownNavigationModule } from './../dropdown-navigation/dropdownNavigation.module';
-import { DropdownNavigationDirective } from './../dropdown-navigation/dropdownNavigation.directive';
 import { AdvancedSearchBoxMultiInputComponent } from './advancedSearchBoxMultiInput.component';
 import { CommonModule } from '@angular/common';
 import { AdvancedSearchBoxTemplateDirective } from './advancedSearchBoxTemplate.directive';
@@ -9,6 +8,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AutosizeInputModule } from '../autosize-input/autosizeInput.module';
 
 
 @NgModule({
@@ -23,7 +23,8 @@ import { FormsModule } from '@angular/forms';
         NgbModule,
         CommonModule,
         FormsModule,
-        DropdownNavigationModule
+        DropdownNavigationModule,
+        AutosizeInputModule
     ],
     exports: [
         AdvancedSearchBoxComponent,

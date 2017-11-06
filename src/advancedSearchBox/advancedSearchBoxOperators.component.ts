@@ -24,4 +24,8 @@ export class AdvancedSearchBoxOperatorsComponent extends AdvancedSearchBoxInputA
 
     }
 
+    viewToModel() {
+
+    }
+
 }

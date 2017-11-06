@@ -4,7 +4,7 @@ export interface FilterInterface {
     onInternalStep(): void;
     add?(flag: any): void;
     remove?(): void;
-    removeEmpty?(): void;
+    removeEmpty?(model: Array<any>): void;
     modelToView?(): void;
     viewToModel?(): void;
 }
