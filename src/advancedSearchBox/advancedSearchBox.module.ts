@@ -8,7 +8,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AutosizeInputModule } from '../autosize-input/autosizeInput.module';
+import { AutosizeInputModule } from 'ngx-input-autosize';
 
 
 @NgModule({

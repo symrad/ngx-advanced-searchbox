@@ -1,40 +1,15 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-
-</div>
-<br/>
-<br/>
-<br/>
-<br/>
-<div class="row">
-  <div class="col">
-    <div ngbDropdown class="d-inline-block" appDropdownNavigation>
-      <button class="btn btn-outline-primary" id="" ngbDropdownToggle>Toggle dropdown</button>
-      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button class="dropdown-item">Action - 1</button>
-        <button class="dropdown-item">Another Action</button>
-        <button class="dropdown-item">Something else is here</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="col text-right">
-    <div ngbDropdown placement="top-right" class="d-inline-block" appDropdownNavigation>
-      <button class="btn btn-outline-primary" id="" ngbDropdownToggle>Toggle dropup</button>
-      <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
-        <button class="dropdown-item">Action - 1</button>
-        <button class="dropdown-item">Another Action</button>
-        <button class="dropdown-item">Something else is here</button>
-      </div>
-    </div>
-  </div>
-</div>
-<app-advanced-searchbox [template]="template" [model]="{}" (editNext)="onEditNext($event)">
-  <div ></div>
+<app-advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)">
+  <div></div>
   <ng-container *appAsTemplate="let filter">
     <ng-container [ngSwitch]="filter.type">
-      <app-as-operators *ngSwitchCase="'RANGE'" [viewModel]="filter"></app-as-operators>
-      <app-as-multi-input *ngSwitchCase="'MULTI'" [viewModel]="filter"></app-as-multi-input>
+      <app-as-operators *ngSwitchCase="'RANGE'" [viewModel]="filter" class="as-filter"></app-as-operators>
     </ng-container>
   </ng-container>
 </app-advanced-searchbox>
+<br/>
+<div>
+  <code>
+    {{model | json}}
+  </code>
+</div>

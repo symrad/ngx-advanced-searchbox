@@ -19,7 +19,7 @@ export class DropdownNavigationDirective {
     constructor(
         @Inject(forwardRef(() => NgbDropdown)) public dropdown
     ) {
-        console.log(dropdown);
+        // console.log(dropdown);
      }
 
     getTypeDrop(): TypeDrop {

@@ -1,9 +1,8 @@
-import { element } from 'protractor';
 import { FilterInterface } from './advancedSearchBoxFilter.interface';
 import { AdvancedSearchBoxTemplateDirective } from './advancedSearchBoxTemplate.directive';
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges,
     SimpleChanges, ContentChild, TemplateRef, ViewChild, ElementRef, Renderer2,
-    ViewChildren, QueryList, ContentChildren, AfterViewInit, AfterContentInit, forwardRef } from '@angular/core';
+    ViewChildren, QueryList, ContentChildren, AfterViewInit, AfterContentInit, forwardRef, HostListener } from '@angular/core';
 import { Key as KeyBoard} from 'ts-keycode-enum/Key.enum';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/do';
@@ -23,7 +22,8 @@ import { UUID } from 'angular2-uuid';
 @Component({
     selector: 'app-advanced-searchbox',
     templateUrl: './advancedSearchBox.html',
-    providers: [NgbTypeaheadConfig]
+    providers: [NgbTypeaheadConfig],
+    styleUrls: ['./advancedSearchBox.scss']
 })
 export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
 
@@ -35,7 +35,32 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     @ViewChild(NgbTypeahead) typeaheadController;
 
     @Input() template: Array<any>;
-    @Input() model: Object;
+    @Input()
+    set model(model: Object){
+        for (const key in model) {
+            if (model.hasOwnProperty(key)) {
+                const typeofValue: string = typeof model[key];
+                // tslint:disable-next-line:typeof-compare
+                if (typeofValue === 'array' || typeofValue === 'object') {
+                    for (const value of model[key]){
+                        this.createViewFilter(key, value);
+                    }
+                }else {
+                    this.createViewFilter(key, model[key]);
+                }
+            }
+        }
+        setTimeout(() => {
+            this.focusInput$.next();
+        });
+        this._model = model;
+    }
+
+    get model(): Object{
+        return this._model;
+    }
+
+    private _model: Object;
     public viewModel: Array<{type: string}> = [];
     public searchBox = '';
     public searchboxInputClick$: Observable<any>;
@@ -68,9 +93,11 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
             if (term instanceof MouseEvent || term === undefined) {
                 term = this.searchBox;
             }
-            return this.filterSearchBox()
+
+            const test = this.filterSearchBox()
                   .filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
                   .slice(0, 10);
+                  return test;
         })
 
     formatter = (x: {label: string}) => x.label;
@@ -80,15 +107,9 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     }
 
     constructor(
+        public element: ElementRef,
         public typeahead: NgbTypeaheadConfig,
         private _renderer: Renderer2) {
-        this.editNext.subscribe((response) => {
-            console.log('next: ' + response);
-        });
-        this.editPrev.subscribe((response) => {
-            console.log('prev: ' + response);
-        });
-
     }
 
     ngOnInit() {
@@ -101,11 +122,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
         });
 
         this.searchboxModel.valueChanges.subscribe(response => {
-            console.log(response);
-        });
-
-        this.focusInput$.map((response) => {
-
+            // console.log(response);
         });
 
         this.typeaheadController._userInput = '';
@@ -147,10 +164,6 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
             // selectionStart is not supported by HTML 5 input type, so jut ignore it
         }
         return 0;
-    };
-
-    isUnusedParameter = function() {
-        return true;
     };
 
     // tslint:disable-next-line:no-shadowed-variable
@@ -207,13 +220,26 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
 
     addFilter(typeaheadSelected: NgbTypeaheadSelectItemEvent): void {
         typeaheadSelected.preventDefault();
-        const uuid = UUID.UUID();
-        const template = Object.assign({uuid: uuid}, this.findTemplate('model', typeaheadSelected.item.model));
-        this.viewModel.push(template);
-        this.searchBox = '';
+        const viewModel = this.createViewFilter(typeaheadSelected.item.model);
         setTimeout(() => {
-            this.getFilterController(template).onFocus('next');
+            this.getFilterController(viewModel).onFocus('next');
         });
+    }
+
+    createViewFilter(singleFilterModel, value?) {
+        const uuid = UUID.UUID();
+        const multiViewModel = this.viewModel.filter((param) => {
+            return param['model'] === singleFilterModel;
+        });
+        const template = Object.assign({uuid: uuid}, this.findTemplate('model', singleFilterModel), {value: value});
+        if (multiViewModel.length > 0) {
+            const indexFirstMulti = this.viewModel.indexOf(multiViewModel[0]);
+            this.viewModel.splice(indexFirstMulti, 0, template);
+        }else {
+            this.viewModel.push(template);
+        }
+        this.searchBox = '';
+        return template;
     }
 
     addFilterController(uuid, controller): void {
@@ -255,6 +281,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
 
     removeAll(): void {
         this.viewModel = [];
+        this.model = {};
     }
 
     viewToModel(viewModel) {

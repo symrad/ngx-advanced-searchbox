@@ -5,10 +5,11 @@ import { Search, API } from 'angular2-searchbox';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   title = 'app';
+  model = {email2: 'ewrerw', username3: [{op: 'contains', value: 'fdsfdsfdsfdsfsd'}]};
   public template: Array<{}> = [{
     'model' : 'completeName2',
     'type' : 'INPUT',
@@ -70,6 +71,6 @@ export class AppComponent {
 
 
   onEditNext(data) {
-    console.log(data);
+    // console.log(data);
   }
 }

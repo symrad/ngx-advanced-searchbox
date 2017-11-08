@@ -49,7 +49,9 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
     ngOnInit() {
         super.ngOnInit();
 
-        this.viewModel.value = {};
+        if (!this.viewModel.value) {
+            this.viewModel.value = {};
+        }
 
         this.advancedSearchBox.editNext
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
@@ -87,7 +89,12 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
             if (!this.advancedSearchBox.model[this.viewModel.model]) {
                 this.advancedSearchBox.model[this.viewModel.model] = [];
             }
-            this.advancedSearchBox.model[this.viewModel.model].push(this.viewModel.value);
+            const indexVM = this.advancedSearchBox.model[this.viewModel.model].indexOf(this.viewModel.value);
+            if (indexVM > -1) {
+                this.advancedSearchBox.model[this.viewModel.model][indexVM] = this.viewModel.value;
+            }else {
+                this.advancedSearchBox.model[this.viewModel.model].push(this.viewModel.value);
+            }
         }
     }
 
@@ -105,8 +112,10 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
         if (prevNext === 'prev') {
             this.inputRef.nativeElement.focus();
         }else {
+            setTimeout(() => {
+                this.buttonToggleEr.nativeElement.focus();
+            });
             this.operatorsDropDownDir.open();
-            this.buttonToggleEr.nativeElement.focus();
         }
     }
 

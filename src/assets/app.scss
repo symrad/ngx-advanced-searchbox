@@ -1,2 +1,29 @@
 // Core variables and mixins
 @import "~bootstrap/scss/bootstrap";
+
+app-advanced-searchbox{
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 15px 15px 0 15px;
+    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    .as-filter{
+        display: inline-block;
+        margin-right: 15px;
+        margin-bottom: 15px;
+        input{
+            padding: 0 15px;
+        }
+    }
+    #search{
+        width: 50px;
+        flex-grow: 1;
+        margin-bottom: 15px;
+        padding: 0 15px;
+    }
+}
+
+
+

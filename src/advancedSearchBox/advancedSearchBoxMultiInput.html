@@ -1,8 +1,8 @@
-<div>
-    <div ngbDropdown class="d-inline-block" appDropdownNavigation>
-        <button class="btn btn-outline-primary" ngbDropdownToggle #buttonToggle 
+<div class="input-group">
+    <div ngbDropdown class="input-group-btn" appDropdownNavigation>
+        <button class="btn btn-outline-primary" type="button" ngbDropdownToggle #buttonToggle 
         (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">{{viewModel.value.op ? operatorsEnum[viewModel.value.op] : '..'}}</button>
-        <div ngbDropdownMenu>
+        <div class="dropdown-menu" ngbDropdownMenu>
             <a class="dropdown-item" (focus)="viewModel.value.op = operator" *ngFor="let operator of operatorsList" 
             (click)="onChangeOperators($event, operator)" (keydown)="onChangeOperators($event, operator)" href="javascript:void(0)">
                 {{operatorsEnum[operator]}}
@@ -14,5 +14,7 @@
     (change)="onChange()" 
     autosize
     #inputRef/>
-    <span (click)="remove()">rimuovi</span>
+    <span class="input-group-btn">
+        <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
+    </span>
 </div>
