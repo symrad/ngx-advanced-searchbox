@@ -1,12 +1,12 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<app-advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)">
+<advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)">
   <div></div>
-  <ng-container *appAsTemplate="let filter">
+  <ng-container *asTemplate="let filter">
     <ng-container [ngSwitch]="filter.type">
-      <app-as-operators *ngSwitchCase="'RANGE'" [viewModel]="filter" class="as-filter"></app-as-operators>
+      <!--<app-as-operators *ngSwitchCase="'RANGE'" [viewModel]="filter" class="as-filter"></app-as-operators>-->
     </ng-container>
   </ng-container>
-</app-advanced-searchbox>
+</advanced-searchbox>
 <br/>
 <div>
   <code>

@@ -1,8 +1,7 @@
 import { DropdownNavigationModule } from './../dropdown-navigation/dropdownNavigation.module';
-import { AdvancedSearchBoxMultiInputComponent } from './advancedSearchBoxMultiInput.component';
+import { AdvancedSearchBoxInputWithOperatorsComponent } from './advancedSearchBoxInputWithOperators.component';
 import { CommonModule } from '@angular/common';
 import { AdvancedSearchBoxTemplateDirective } from './advancedSearchBoxTemplate.directive';
-import { AdvancedSearchBoxOperatorsComponent } from './advancedSearchBoxOperators.component';
 import { AdvancedSearchBoxInputComponent } from './advancedSearchBoxInput.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
@@ -15,8 +14,7 @@ import { AutosizeInputModule } from 'ngx-input-autosize';
     declarations: [
         AdvancedSearchBoxComponent,
         AdvancedSearchBoxInputComponent,
-        AdvancedSearchBoxMultiInputComponent,
-        AdvancedSearchBoxOperatorsComponent,
+        AdvancedSearchBoxInputWithOperatorsComponent,
         AdvancedSearchBoxTemplateDirective
     ],
     imports: [
@@ -29,9 +27,8 @@ import { AutosizeInputModule } from 'ngx-input-autosize';
     exports: [
         AdvancedSearchBoxComponent,
         AdvancedSearchBoxInputComponent,
-        AdvancedSearchBoxOperatorsComponent,
         AdvancedSearchBoxTemplateDirective,
-        AdvancedSearchBoxMultiInputComponent
+        AdvancedSearchBoxInputWithOperatorsComponent
     ]
 })
 export class AdvancedSearchBoxModule {}

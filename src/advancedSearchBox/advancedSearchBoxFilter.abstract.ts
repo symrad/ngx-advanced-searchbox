@@ -5,8 +5,9 @@ import { element } from 'protractor';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, HostListener } from '@angular/core';
 import 'rxjs/add/operator/filter';
+import { FormControl } from '@angular/forms';
 
-export abstract class AdvancedSearchBoxInputAbstract implements OnInit, OnDestroy, FilterInterface {
+export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface {
 
     @Input() viewModel: ViewModelInterface;
     @ViewChild('inputRef') inputRef: ElementRef;
@@ -36,10 +37,7 @@ export abstract class AdvancedSearchBoxInputAbstract implements OnInit, OnDestro
 
     remove(): void {
         this.advancedSearchBox.removeViewModel(this.viewModel);
-    }
-
-    onInternalStep() {
-
+        this.viewToModel();
     }
 
     removeEmpty(models: Array<any>): void {
@@ -59,7 +57,40 @@ export abstract class AdvancedSearchBoxInputAbstract implements OnInit, OnDestro
         return Object.keys(object);
     }
 
-    abstract viewToModel();
+    getterSetterModelTree(parent, models, typeLastModel) {
+        if (models.length === 0) {
+            return parent;
+        }
+        const firstModel = models[0];
+        if (!parent[firstModel]) {
+            if (models.length === 1) {
+                parent[firstModel] = typeLastModel;
+                return parent[firstModel];
+            }
+            parent[firstModel] = {};
+        }
+        models.shift();
+        return this.getterSetterModelTree(parent[firstModel], models, typeLastModel);
+    }
+
+    viewToModel() {
+        if (this.viewModel.value) {
+            const newModel = {};
+            for (const singleViewModel of this.advancedSearchBox.viewModel){
+                if (singleViewModel.multiple) {
+                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), []).push(singleViewModel.value);
+                }else {
+                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), singleViewModel.value);
+                }
+            }
+            for (const key in this.advancedSearchBox.model) {
+                if (this.advancedSearchBox.model.hasOwnProperty(key)) {
+                    delete this.advancedSearchBox.model[key];
+                }
+            }
+            Object.assign(this.advancedSearchBox.model, newModel);
+        }
+    }
 
     @HostListener('document:click', ['$event'])
     clickout(event) {

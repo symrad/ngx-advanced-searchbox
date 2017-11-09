@@ -9,7 +9,7 @@ import { Search, API } from 'angular2-searchbox';
 })
 export class AppComponent {
   title = 'app';
-  model = {email2: 'ewrerw', username3: [{op: 'contains', value: 'fdsfdsfdsfdsfsd'}]};
+  model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
   public template: Array<{}> = [{
     'model' : 'completeName2',
     'type' : 'INPUT',
@@ -27,7 +27,7 @@ export class AppComponent {
     'label' : 'Email',
     'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
     'required' : false,
-    'multiple' : false
+    'multiple' : '*'
   },
   /*
   , {
@@ -48,18 +48,18 @@ export class AppComponent {
   },
   */
   {
-    'model' : 'username2',
+    'model' : 'username2.username.test.test',
     'type' : 'INPUT',
     'inputType' : 'TEXT',
     'position' : 2147483647,
     'label' : 'Username',
     'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
     'required' : false,
-    'multiple' : false
+    'multiple' : '*'
   },
   {
-    'model' : 'username3',
-    'type' : 'MULTI',
+    'model' : 'username2.username.test.username3',
+    'type' : 'OPERATORS',
     'inputType' : 'TEXT',
     'position' : 2147483647,
     'label' : 'Username 3',

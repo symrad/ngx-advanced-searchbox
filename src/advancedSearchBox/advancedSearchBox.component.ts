@@ -1,3 +1,4 @@
+import { ViewModelInterface } from './advancedSearchBoxViewModel.interface';
 import { FilterInterface } from './advancedSearchBoxFilter.interface';
 import { AdvancedSearchBoxTemplateDirective } from './advancedSearchBoxTemplate.directive';
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges,
@@ -20,7 +21,7 @@ import { NgModel } from '@angular/forms';
 import { UUID } from 'angular2-uuid';
 
 @Component({
-    selector: 'app-advanced-searchbox',
+    selector: 'advanced-searchbox',
     templateUrl: './advancedSearchBox.html',
     providers: [NgbTypeaheadConfig],
     styleUrls: ['./advancedSearchBox.scss']
@@ -34,22 +35,38 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     @ViewChild('searchboxModel') searchboxModel: NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
 
-    @Input() template: Array<any>;
+    private _template;
+    @Input()
+    set template(template){
+        // viene eseguito solo se si riassegna il template (es. template = [])
+        template.map((response) => {
+            const uuid = UUID.UUID();
+            return Object.assign({'_templateUuid': uuid}, response);
+        });
+        this._template = template;
+    }
+    get template(){
+        return this._template;
+    }
+
     @Input()
     set model(model: Object){
-        for (const key in model) {
-            if (model.hasOwnProperty(key)) {
-                const typeofValue: string = typeof model[key];
-                // tslint:disable-next-line:typeof-compare
-                if (typeofValue === 'array' || typeofValue === 'object') {
-                    for (const value of model[key]){
-                        this.createViewFilter(key, value);
+         // viene eseguito solo se si riassegna il model (es. model = [])
+        for (const singleTemplate of this.template){
+            const modelFinded = this.getterModelTree(model, singleTemplate.model.split('.'));
+            if (modelFinded) {
+                const typeOfModel: string = typeof modelFinded;
+                // se è un array
+                if (typeOfModel === 'array' || typeOfModel === 'object') {
+                    for (const singleModelValue of modelFinded) {
+                        this.createViewFilter(singleTemplate.model, singleModelValue);
                     }
                 }else {
-                    this.createViewFilter(key, model[key]);
+                    this.createViewFilter(singleTemplate.model, modelFinded);
                 }
             }
         }
+
         setTimeout(() => {
             this.focusInput$.next();
         });
@@ -61,7 +78,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     }
 
     private _model: Object;
-    public viewModel: Array<{type: string}> = [];
+    public viewModel: Array<ViewModelInterface> = [];
     public searchBox = '';
     public searchboxInputClick$: Observable<any>;
     public focusInput$: Subject<any> = new Subject();
@@ -129,12 +146,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.model) {
-            const currentValModel = changes.model.currentValue;
-        }
-        if (changes.model) {
-            const currentValModel = changes.model.currentValue;
-        }
+
     }
 
     findTemplate(key, value) {
@@ -165,6 +177,18 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
         }
         return 0;
     };
+
+    getterModelTree(parent, models) {
+        if (models.length === 0) {
+            return parent;
+        }
+        const firstModel = models[0];
+        if (!parent[firstModel]) {
+            return false;
+        }
+        models.shift();
+        return this.getterModelTree(parent[firstModel], models);
+    }
 
     // tslint:disable-next-line:no-shadowed-variable
     // tslint:disable-next-line:no-unnecessary-initializer
@@ -282,10 +306,6 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     removeAll(): void {
         this.viewModel = [];
         this.model = {};
-    }
-
-    viewToModel(viewModel) {
-        this.filtersControllers[viewModel.uuid].viewToModel();
     }
 
     onFocus(prevNext) {

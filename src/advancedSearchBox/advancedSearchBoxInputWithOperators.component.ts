@@ -5,7 +5,7 @@ import { element } from 'protractor';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import 'rxjs/add/operator/filter';
-import { AdvancedSearchBoxInputAbstract } from './advancedSearchBoxInput.abstract';
+import { AdvancedSearchBoxFilterAbstract } from './advancedSearchBoxFilter.abstract';
 import { Key as KeyBoard} from 'ts-keycode-enum/Key.enum';
 
 enum OperatorsEnum {
@@ -21,10 +21,10 @@ enum OperatorsEnum {
 }
 
 @Component({
-    selector: 'app-as-multi-input',
-    templateUrl: './advancedSearchBoxMultiInput.html'
+    selector: 'as-input-operators',
+    templateUrl: './advancedSearchBoxInputWithOperators.html'
 })
-export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInputAbstract implements OnInit, OnChanges {
+export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearchBoxFilterAbstract implements OnInit, OnChanges {
 
    @ViewChild(NgbDropdown) operatorsDropDownDir: NgbDropdown;
    @ViewChild('buttonToggle') buttonToggleEr: ElementRef;
@@ -84,24 +84,6 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
         });
     }
 
-    viewToModel() {
-        if (this.viewModel.value.value) {
-            if (!this.advancedSearchBox.model[this.viewModel.model]) {
-                this.advancedSearchBox.model[this.viewModel.model] = [];
-            }
-            const indexVM = this.advancedSearchBox.model[this.viewModel.model].indexOf(this.viewModel.value);
-            if (indexVM > -1) {
-                this.advancedSearchBox.model[this.viewModel.model][indexVM] = this.viewModel.value;
-            }else {
-                this.advancedSearchBox.model[this.viewModel.model].push(this.viewModel.value);
-            }
-        }
-    }
-
-    onInternalStep() {
-
-    }
-
     onBlur() {
         super.onBlur();
         this.operatorsDropDownDir.close();
@@ -132,7 +114,9 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
                     this.viewModel.value.op = operator;
                     this.operatorsDropDownDir.close();
                     this.inputRef.nativeElement.focus();
-                    this.viewToModel();
+                    if (this.viewModel.value.value) {
+                        this.viewToModel();
+                    }
 
             }
         }
@@ -140,18 +124,10 @@ export class AdvancedSearchBoxMultiInputComponent extends AdvancedSearchBoxInput
             this.viewModel.value.op = operator;
             this.operatorsDropDownDir.close();
             this.inputRef.nativeElement.focus();
-            this.viewToModel();
-        }
-    }
-
-    remove() {
-        super.remove();
-        if (this.viewModel.value && this.advancedSearchBox.model[this.viewModel.model]) {
-            const indexToRemove = this.advancedSearchBox.model[this.viewModel.model].indexOf(this.viewModel.value);
-            this.advancedSearchBox.model[this.viewModel.model].splice(indexToRemove, 1);
-            if (this.advancedSearchBox.model[this.viewModel.model].length < 1) {
-                delete this.advancedSearchBox.model[this.viewModel.model];
+            if (this.viewModel.value.value) {
+                this.viewToModel();
             }
         }
     }
+
 }

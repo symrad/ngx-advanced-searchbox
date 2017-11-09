@@ -4,13 +4,13 @@ import { element } from 'protractor';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
-import { AdvancedSearchBoxInputAbstract } from './advancedSearchBoxInput.abstract';
+import { AdvancedSearchBoxFilterAbstract } from './advancedSearchBoxFilter.abstract';
 
 @Component({
-    selector: 'app-as-input',
+    selector: 'as-input',
     templateUrl: './advancedSearchBoxInput.html'
 })
-export class AdvancedSearchBoxInputComponent extends AdvancedSearchBoxInputAbstract implements OnInit {
+export class AdvancedSearchBoxInputComponent extends AdvancedSearchBoxFilterAbstract implements OnInit {
 
    constructor(
         public advancedSearchBox: AdvancedSearchBoxComponent,
@@ -38,12 +38,6 @@ export class AdvancedSearchBoxInputComponent extends AdvancedSearchBoxInputAbstr
         });
     }
 
-    viewToModel() {
-        if (this.viewModel.value) {
-            this.advancedSearchBox.model[this.viewModel.model] = this.viewModel.value;
-        }
-    }
-
     onBlur() {
         super.onBlur();
         this.removeEmpty([this.viewModel.value]);
@@ -51,11 +45,6 @@ export class AdvancedSearchBoxInputComponent extends AdvancedSearchBoxInputAbstr
 
     private onChange() {
         this.viewToModel();
-    }
-
-    remove() {
-        super.remove();
-        delete this.advancedSearchBox.model[this.viewModel.model];
     }
 
 }
