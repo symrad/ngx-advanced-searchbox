@@ -1,5 +1,5 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)">
+<advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)" [openOnLoad]="true">
   <div></div>
   <ng-container *asTemplate="let filter">
     <ng-container [ngSwitch]="filter.type">

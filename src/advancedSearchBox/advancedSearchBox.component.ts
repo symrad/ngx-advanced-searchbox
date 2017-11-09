@@ -34,6 +34,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     @ViewChild('searchbox') searchboxInput: ElementRef;
     @ViewChild('searchboxModel') searchboxModel: NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
+    @Input('openOnLoad') openOnLoad: Boolean = true;
 
     private _template;
     @Input()
@@ -67,9 +68,12 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
             }
         }
 
-        setTimeout(() => {
-            this.focusInput$.next();
-        });
+        if (this.openOnLoad) {
+            setTimeout(() => {
+                this.focusInput$.next();
+            });
+        }
+
         this._model = model;
     }
 
