@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { FilterInterface } from './advancedSearchBoxFilter.interface';
 import { UUID } from 'angular2-uuid';
@@ -7,6 +8,8 @@ import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, 
 import 'rxjs/add/operator/filter';
 import { AdvancedSearchBoxFilterAbstract } from './advancedSearchBoxFilter.abstract';
 import { Key as KeyBoard} from 'ts-keycode-enum/Key.enum';
+import { Observable } from 'rxjs/Observable';
+import { AdvancedSearchBoxConfigService } from './advancedSearchBoxConfig.service';
 
 enum OperatorsEnum {
     eq = '=',
@@ -34,9 +37,11 @@ export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearch
    constructor(
         public advancedSearchBox: AdvancedSearchBoxComponent,
         public renderer: Renderer2,
-        public el: ElementRef
+        public el: ElementRef,
+        public _http: HttpClient,
+        public _config: AdvancedSearchBoxConfigService
     ) {
-        super(advancedSearchBox, renderer, el);
+        super(advancedSearchBox, renderer, el, _http, _config);
 
     }
 
@@ -83,7 +88,7 @@ export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearch
             this.operatorsDropDownDir.close();
         });
     }
-
+    
     onBlur() {
         super.onBlur();
         this.operatorsDropDownDir.close();

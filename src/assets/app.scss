@@ -16,6 +16,12 @@ advanced-searchbox{
         input{
             padding: 0 15px;
         }
+        .input-group-addon{
+            color: #007bff;
+            background-color: transparent;
+            background-image: none;
+            border-color: #007bff;
+        }
     }
     #search{
         width: 50px;

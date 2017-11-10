@@ -5,9 +5,11 @@ import { AdvancedSearchBoxTemplateDirective } from './advancedSearchBoxTemplate.
 import { AdvancedSearchBoxInputComponent } from './advancedSearchBoxInput.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AutosizeInputModule } from 'ngx-input-autosize';
+import { HttpClientModule } from '@angular/common/http';
+import { AdvancedSearchBoxConfigService } from './advancedSearchBoxConfig.service';
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { AutosizeInputModule } from 'ngx-input-autosize';
         CommonModule,
         FormsModule,
         DropdownNavigationModule,
-        AutosizeInputModule
+        AutosizeInputModule,
+        HttpClientModule
     ],
     exports: [
         AdvancedSearchBoxComponent,
@@ -31,4 +34,6 @@ import { AutosizeInputModule } from 'ngx-input-autosize';
         AdvancedSearchBoxInputWithOperatorsComponent
     ]
 })
-export class AdvancedSearchBoxModule {}
+export class AdvancedSearchBoxModule {
+    static forRoot(): ModuleWithProviders { return {ngModule: AdvancedSearchBoxModule, providers: [AdvancedSearchBoxConfigService]}; }
+}

@@ -16,7 +16,7 @@ import { DropdownNavigationDirective } from '../dropdown-navigation/dropdownNavi
     BrowserModule,
     CommonModule,
     NgbModule.forRoot(),
-    AdvancedSearchBoxModule,
+    AdvancedSearchBoxModule.forRoot(),
     DropdownNavigationModule
   ],
   providers: [

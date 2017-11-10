@@ -1,4 +1,5 @@
 <div class="input-group">
+    <span class="input-group-addon btn-outline-primary">{{viewModel.label}}</span>
     <div ngbDropdown class="input-group-btn" appDropdownNavigation>
         <button class="btn btn-outline-primary" type="button" ngbDropdownToggle #buttonToggle 
         (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">{{viewModel.value.op ? operatorsEnum[viewModel.value.op] : '..'}}</button>
@@ -13,6 +14,10 @@
     (keydown)="advancedSearchBox.keydown($event, viewModel)" 
     (change)="onChange()" 
     autosize
+    [ngbTypeahead]="searchBoxFunc"
+    [placeholder]="viewModel.label"
+    (focus)="focusInput$.next()"
+    [inputFormatter]="formatter"
     #inputRef/>
     <span class="input-group-btn">
         <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>

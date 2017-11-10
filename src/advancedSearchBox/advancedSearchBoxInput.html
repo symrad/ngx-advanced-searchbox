@@ -1,11 +1,17 @@
 <div class="input-group">
+    <span class="input-group-addon btn-outline-primary">{{viewModel.label}}</span>
     <input type="text"
     [(ngModel)]="viewModel.value"
     (keydown)="advancedSearchBox.keydown($event,viewModel)" 
     (change)="onChange()"
     (blur)="onBlur()"
     autosize
-    #inputRef placeholder="Input"/>
+    #inputRef 
+    [placeholder]="viewModel.label"
+    [ngbTypeahead]="searchBoxFunc"
+    (focus)="focusInput$.next()"
+    [inputFormatter]="formatter"
+    />
     <span class="input-group-btn">
         <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
     </span>

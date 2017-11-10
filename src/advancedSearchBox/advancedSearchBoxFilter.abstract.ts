@@ -1,26 +1,48 @@
+import { HttpClient } from '@angular/common/http';
 import { ViewModelInterface } from './advancedSearchBoxViewModel.interface';
 import { FilterInterface } from './advancedSearchBoxFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { element } from 'protractor';
 import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, HostListener } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { fromEvent } from 'rxjs/observable/fromEvent';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/merge';
+import 'rxjs/add/operator/switchMap';
 import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { AdvancedSearchBoxConfigService } from './advancedSearchBoxConfig.service';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface {
 
     @Input() viewModel: ViewModelInterface;
     @ViewChild('inputRef') inputRef: ElementRef;
+    @ViewChild(NgbTypeahead) typeaheadController;
+    
     private _isFirstDocClick = true;
+    public searchboxInputClick$: Observable<any>;
+    public focusInput$: Subject<any> = new Subject();
 
     constructor(
         public advancedSearchBox: AdvancedSearchBoxComponent,
         public _renderer: Renderer2,
-        public _el: ElementRef
+        public _el: ElementRef,
+        public _http: HttpClient,
+        public _config: AdvancedSearchBoxConfigService
     ) {}
 
     ngOnInit(): void {
         this.advancedSearchBox.addFilterController(this.viewModel.uuid, this);
+
+        this.searchboxInputClick$ = fromEvent(this.inputRef.nativeElement, 'click').map((response: MouseEvent) => {
+            response.preventDefault();
+            response.stopPropagation();
+            return response;
+        });
+
+        this.typeaheadController._userInput = '';
     }
 
     ngOnDestroy(): void {
@@ -91,6 +113,30 @@ export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestr
             Object.assign(this.advancedSearchBox.model, newModel);
         }
     }
+
+    searchBoxFunc = (text$: Observable<string>) =>
+    text$
+        .merge(this.searchboxInputClick$)
+        .merge(this.focusInput$)
+        .flatMap((term:any):Observable<any> => {
+            if (term instanceof MouseEvent || term === undefined) {
+                term = this.inputRef.nativeElement.value;
+            }
+            if(!this.viewModel.suggestions){
+                return Observable.of(false);
+            }else{
+                if(typeof this.viewModel.suggestions === 'string'){
+                    return Observable.of(term)
+                    .switchMap((term) => this._http.get(this.viewModel.suggestions, {params:{query:term}}))
+                    .flatMap(() => this._config.suggestionsAsyncFn(term, this.viewModel.suggestions));
+                }else{
+                    return Observable.of(term)
+                    .flatMap((term) => this._config.suggestionsStaticFn(term, this.viewModel.suggestions));
+                }
+            }
+        })
+
+    formatter = this._config.suggestiosFormatter;
 
     @HostListener('document:click', ['$event'])
     clickout(event) {

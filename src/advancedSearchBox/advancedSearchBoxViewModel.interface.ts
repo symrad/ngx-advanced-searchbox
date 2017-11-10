@@ -10,7 +10,7 @@ export interface ViewModelInterface {
     multiple: any;
     date: boolean;
     domain: Array<Object>;
-    suggestions: Array<Object>;
+    suggestions: any;
     operators: Object;
     'operators-from': Object;
     'operators-to': Object;

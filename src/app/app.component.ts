@@ -64,6 +64,7 @@ export class AppComponent {
     'position' : 2147483647,
     'label' : 'Username 3',
     'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
+    'suggestions': ['ciao', 'ciao1', 'ciao2'],
     'required' : false,
     'multiple' : '*'
   }
