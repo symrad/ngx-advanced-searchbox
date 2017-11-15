@@ -10,15 +10,7 @@
             </a>
         </div>
     </div>
-    <input type="text" [(ngModel)]="viewModel.value.value" 
-    (keydown)="advancedSearchBox.keydown($event, viewModel)" 
-    (change)="onChange()" 
-    autosize
-    [ngbTypeahead]="searchBoxFunc"
-    [placeholder]="viewModel.label"
-    (focus)="focusInput$.next()"
-    [inputFormatter]="formatter"
-    #inputRef/>
+    <ng-container #inputView></ng-container>
     <span class="input-group-btn">
         <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
     </span>

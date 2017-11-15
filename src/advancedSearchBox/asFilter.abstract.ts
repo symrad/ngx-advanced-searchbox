@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { ViewModelInterface } from './advancedSearchBoxViewModel.interface';
-import { FilterInterface } from './advancedSearchBoxFilter.interface';
+import { ViewModelInterface } from './asViewModel.interface';
+import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
-import { element } from 'protractor';
-import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
+import { AsComponent } from './as.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, HostListener } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { fromEvent } from 'rxjs/observable/fromEvent';
@@ -12,37 +11,29 @@ import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/switchMap';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { AdvancedSearchBoxConfigService } from './advancedSearchBoxConfig.service';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { AsConfigService } from './asConfig.service';
+import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { AsInputInterface } from './input/asInput.interface';
 
-export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface {
+export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface {
 
     @Input() viewModel: ViewModelInterface;
-    @ViewChild('inputRef') inputRef: ElementRef;
-    @ViewChild(NgbTypeahead) typeaheadController;
-    
+
+    public abstract inputInstance;
     private _isFirstDocClick = true;
     public searchboxInputClick$: Observable<any>;
     public focusInput$: Subject<any> = new Subject();
 
     constructor(
-        public advancedSearchBox: AdvancedSearchBoxComponent,
+        public advancedSearchBox: AsComponent,
         public _renderer: Renderer2,
         public _el: ElementRef,
         public _http: HttpClient,
-        public _config: AdvancedSearchBoxConfigService
+        public _config: AsConfigService
     ) {}
 
     ngOnInit(): void {
         this.advancedSearchBox.addFilterController(this.viewModel.uuid, this);
-
-        this.searchboxInputClick$ = fromEvent(this.inputRef.nativeElement, 'click').map((response: MouseEvent) => {
-            response.preventDefault();
-            response.stopPropagation();
-            return response;
-        });
-
-        this.typeaheadController._userInput = '';
     }
 
     ngOnDestroy(): void {
@@ -50,16 +41,16 @@ export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestr
     }
 
     onFocus(prevNext): void {
-        this.inputRef.nativeElement.focus();
+       this.inputInstance.inputRef.nativeElement.focus();
     }
 
     onBlur(): void {
-        this.inputRef.nativeElement.blur();
+       this.inputInstance.inputRef.nativeElement.blur();
     }
 
     remove(): void {
-        this.advancedSearchBox.removeViewModel(this.viewModel);
-        this.viewToModel();
+       this.advancedSearchBox.removeViewModel(this.viewModel);
+       this.viewToModel();
     }
 
     removeEmpty(models: Array<any>): void {
@@ -114,13 +105,13 @@ export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestr
         }
     }
 
-    searchBoxFunc = (text$: Observable<string>) =>
+    suggestionsFunc = (text$: Observable<string>) =>
     text$
         .merge(this.searchboxInputClick$)
         .merge(this.focusInput$)
         .flatMap((term:any):Observable<any> => {
             if (term instanceof MouseEvent || term === undefined) {
-                term = this.inputRef.nativeElement.value;
+                term = this.inputInstance.inputRef.nativeElement.value;
             }
             if(!this.viewModel.suggestions){
                 return Observable.of(false);
@@ -136,8 +127,33 @@ export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestr
             }
         })
 
-    formatter = this._config.suggestiosFormatter;
+    public suggestionsFormatter = this._config.suggestionsFormatter;
 
+    domainsFunc = (text$: Observable<string>) =>
+    text$
+        .merge(this.searchboxInputClick$)
+        .merge(this.focusInput$)
+        .flatMap((term:any):Observable<any> => {
+            if (term instanceof MouseEvent || term === undefined) {
+                term = this.inputInstance.inputRef.nativeElement.value;
+            }
+            if(!this.viewModel.domains){
+                return Observable.of(false);
+            }else{
+                if(typeof this.viewModel.domains === 'string'){
+                    return Observable.of(term)
+                    .switchMap((term) => this._http.get(this.viewModel.domains, {params:{query:term}}))
+                    .flatMap(() => this._config.suggestionsAsyncFn(term, this.viewModel.domains));
+                }else{
+                    return Observable.of(term)
+                    .flatMap((term) => this._config.suggestionsStaticFn(term, this.viewModel.domains));
+                }
+            }
+        })
+
+    public domainsFormatter = this._config.suggestionsFormatter;
+
+    
     @HostListener('document:click', ['$event'])
     clickout(event) {
         if (!this._isFirstDocClick) {
@@ -150,4 +166,16 @@ export abstract class AdvancedSearchBoxFilterAbstract implements OnInit, OnDestr
         }
         this._isFirstDocClick = false;
     }
+    
+
+    public onSelectDomains($event:NgbTypeaheadSelectItemEvent){
+       this.viewModel.value = $event.item;
+       this.viewToModel();
+    }
+
+    public onChangeDomains($event){
+        
+    }
+
+    
 }

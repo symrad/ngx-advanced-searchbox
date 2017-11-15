@@ -1,15 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
-import { FilterInterface } from './advancedSearchBoxFilter.interface';
+import { NgbDropdown, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
-import { element } from 'protractor';
-import { AdvancedSearchBoxComponent } from './advancedSearchBox.component';
-import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { AsComponent } from './as.component';
+import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import 'rxjs/add/operator/filter';
-import { AdvancedSearchBoxFilterAbstract } from './advancedSearchBoxFilter.abstract';
+import { AsBoxFilterAbstract } from './asFilter.abstract';
 import { Key as KeyBoard} from 'ts-keycode-enum/Key.enum';
 import { Observable } from 'rxjs/Observable';
-import { AdvancedSearchBoxConfigService } from './advancedSearchBoxConfig.service';
+import { AsConfigService } from './asConfig.service';
+import { AsSimpleInputWithOperatorsComponent } from './input/asSimpleInputWithOperators.component';
+import { AsSuggestionsInputWithOperatorsComponent } from './input/asSuggestionsInputWithOperators.component';
+import { AsDomainsInputWithOperatorsComponent } from './input/asDomainsInputWithOperators.component';
 
 enum OperatorsEnum {
     eq = '=',
@@ -25,21 +27,24 @@ enum OperatorsEnum {
 
 @Component({
     selector: 'as-input-operators',
-    templateUrl: './advancedSearchBoxInputWithOperators.html'
+    templateUrl: './asInputWithOperators.html'
 })
-export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearchBoxFilterAbstract implements OnInit, OnChanges {
+export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implements OnInit, OnChanges {
 
    @ViewChild(NgbDropdown) operatorsDropDownDir: NgbDropdown;
    @ViewChild('buttonToggle') buttonToggleEr: ElementRef;
+   @ViewChild('inputView', { read: ViewContainerRef }) inputView;
    public operatorsList = [];
    public operatorsEnum = OperatorsEnum;
+   public inputInstance;
 
    constructor(
-        public advancedSearchBox: AdvancedSearchBoxComponent,
+        public advancedSearchBox: AsComponent,
         public renderer: Renderer2,
         public el: ElementRef,
         public _http: HttpClient,
-        public _config: AdvancedSearchBoxConfigService
+        public _config: AsConfigService,
+        protected resolver: ComponentFactoryResolver
     ) {
         super(advancedSearchBox, renderer, el, _http, _config);
 
@@ -63,7 +68,7 @@ export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearch
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
                 this.operatorsDropDownDir.close();
-                this.inputRef.nativeElement.focus();
+                this.inputInstance.inputRef.nativeElement.focus();
             }else {
                 this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
                 this.onBlur();
@@ -87,17 +92,32 @@ export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearch
         this.advancedSearchBox.searchboxInputClick$.subscribe((response) => {
             this.operatorsDropDownDir.close();
         });
+
+        if(!this.viewModel.suggestions && !this.viewModel.domains){
+            const asSimpleInputComponent = this.resolver.resolveComponentFactory(AsSimpleInputWithOperatorsComponent);
+            this.inputInstance = this.inputView.createComponent(asSimpleInputComponent).instance;
+        }
+        if(this.viewModel.suggestions){
+            const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsSuggestionsInputWithOperatorsComponent);
+            this.inputInstance = this.inputView.createComponent(asDomainsInputComponent).instance;
+        }
+        if(this.viewModel.domains){
+            const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsDomainsInputWithOperatorsComponent);
+            this.inputInstance = this.inputView.createComponent(asDomainsInputComponent).instance;
+        }
+
+        this.inputInstance._filter = this;
     }
     
     onBlur() {
         super.onBlur();
-        this.operatorsDropDownDir.close();
-        this.removeEmpty([this.viewModel.value.value]);
+        // this.operatorsDropDownDir.close();
+        // this.removeEmpty([this.viewModel.value.value]);
     }
 
     onFocus(prevNext) {
         if (prevNext === 'prev') {
-            this.inputRef.nativeElement.focus();
+            this.inputInstance.inputRef.nativeElement.focus();
         }else {
             setTimeout(() => {
                 this.buttonToggleEr.nativeElement.focus();
@@ -118,7 +138,7 @@ export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearch
                     $event.preventDefault();
                     this.viewModel.value.op = operator;
                     this.operatorsDropDownDir.close();
-                    this.inputRef.nativeElement.focus();
+                    this.inputInstance.inputRef.nativeElement.focus();
                     if (this.viewModel.value.value) {
                         this.viewToModel();
                     }
@@ -128,11 +148,16 @@ export class AdvancedSearchBoxInputWithOperatorsComponent extends AdvancedSearch
         if ($event instanceof MouseEvent) {
             this.viewModel.value.op = operator;
             this.operatorsDropDownDir.close();
-            this.inputRef.nativeElement.focus();
+            this.inputInstance.inputRef.nativeElement.focus();
             if (this.viewModel.value.value) {
                 this.viewToModel();
             }
         }
+    }
+
+    public onSelectDomains($event:NgbTypeaheadSelectItemEvent){
+        this.viewModel.value.value = $event.item;
+        this.viewToModel();
     }
 
 }

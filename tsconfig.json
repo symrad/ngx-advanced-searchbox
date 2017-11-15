@@ -1,9 +1,13 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
+    "rootDir": ".",
+    "outDir": "dist",
+    "baseUrl": ".",
     "sourceMap": true,
     "declaration": false,
+    "skipLibCheck": true,
+    "module": "es2015",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -15,5 +19,11 @@
       "es2017",
       "dom"
     ]
+  },
+  "files": [
+    "index.ts"
+  ],
+  "angularCompilerOptions": {
+    "strictMetadataEmit": true
   }
 }

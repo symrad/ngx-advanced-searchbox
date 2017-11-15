@@ -1,6 +1,6 @@
-import { ViewModelInterface } from './advancedSearchBoxViewModel.interface';
-import { FilterInterface } from './advancedSearchBoxFilter.interface';
-import { AdvancedSearchBoxTemplateDirective } from './advancedSearchBoxTemplate.directive';
+import { ViewModelInterface } from './asViewModel.interface';
+import { FilterInterface } from './asFilter.interface';
+import { AsTemplateDirective } from './asTemplate.directive';
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges,
     SimpleChanges, ContentChild, TemplateRef, ViewChild, ElementRef, Renderer2,
     ViewChildren, QueryList, ContentChildren, AfterViewInit, AfterContentInit, forwardRef, HostListener } from '@angular/core';
@@ -22,15 +22,15 @@ import { UUID } from 'angular2-uuid';
 
 @Component({
     selector: 'advanced-searchbox',
-    templateUrl: './advancedSearchBox.html',
+    templateUrl: './as.html',
     providers: [NgbTypeaheadConfig],
-    styleUrls: ['./advancedSearchBox.scss']
+    styleUrls: ['./as.scss']
 })
-export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
+export class AsComponent implements OnInit, OnChanges {
 
     @Output('editNext') editNext: EventEmitter<any>  = new EventEmitter();
     @Output('editPrev') editPrev: EventEmitter<any>  = new EventEmitter();
-    @ContentChild(AdvancedSearchBoxTemplateDirective, {read: TemplateRef}) externalTemplate;
+    @ContentChild(AsTemplateDirective, {read: TemplateRef}) externalTemplate;
     @ViewChild('searchbox') searchboxInput: ElementRef;
     @ViewChild('searchboxModel') searchboxModel: NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
@@ -44,7 +44,9 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
             const uuid = UUID.UUID();
             return Object.assign({'_templateUuid': uuid}, response);
         });
+        
         this._template = template;
+        
     }
     get template(){
         return this._template;
@@ -53,27 +55,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     @Input()
     set model(model: Object){
          // viene eseguito solo se si riassegna il model (es. model = [])
-        for (const singleTemplate of this.template){
-            const modelFinded = this.getterModelTree(model, singleTemplate.model.split('.'));
-            if (modelFinded) {
-                const typeOfModel: string = typeof modelFinded;
-                // se è un array
-                if (typeOfModel === 'array' || typeOfModel === 'object') {
-                    for (const singleModelValue of modelFinded) {
-                        this.createViewFilter(singleTemplate.model, singleModelValue);
-                    }
-                }else {
-                    this.createViewFilter(singleTemplate.model, modelFinded);
-                }
-            }
-        }
-
-        if (this.openOnLoad) {
-            setTimeout(() => {
-                this.focusInput$.next();
-            });
-        }
-
+        
         this._model = model;
     }
 
@@ -150,7 +132,19 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-
+        if(changes.template && changes.template.isFirstChange){
+            if (this.openOnLoad) {
+                setTimeout(() => {
+                    this.focusInput$.next();
+                });
+            }
+        }
+        if(changes.template && changes.template.currentValue){
+            this.createViewFilterFromModel(this.model);
+        }
+        if(changes.model && changes.model.currentValue){
+            this.createViewFilterFromModel(this.model);
+        }
     }
 
     findTemplate(key, value) {
@@ -196,7 +190,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
 
     // tslint:disable-next-line:no-shadowed-variable
     // tslint:disable-next-line:no-unnecessary-initializer
-    keydown(e, currentViewModel, options = {}) {
+    keydown(e, currentViewModel?, options = {}) {
         const valueEmitted = {
             viewModel: currentViewModel,
             options: options
@@ -270,6 +264,24 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
         return template;
     }
 
+    createViewFilterFromModel(model){
+        this.viewModel = [];
+        for (const singleTemplate of this.template){
+            const modelFinded = this.getterModelTree(model, singleTemplate.model.split('.'));
+            if (modelFinded) {
+                const typeOfModel: string = typeof modelFinded;
+                // se è un array
+                if (typeOfModel === 'array' || typeOfModel === 'object') {
+                    for (const singleModelValue of modelFinded) {
+                        this.createViewFilter(singleTemplate.model, singleModelValue);
+                    }
+                }else {
+                    this.createViewFilter(singleTemplate.model, modelFinded);
+                }
+            }
+        }
+    }
+
     addFilterController(uuid, controller): void {
         this.filtersControllers[uuid] = controller;
     }
@@ -278,7 +290,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
         delete this.filtersControllers[uuid];
     }
 
-    nextFilterController(viewModel): FilterInterface | AdvancedSearchBoxComponent {
+    nextFilterController(viewModel): FilterInterface | AsComponent {
         const indexViewModel = this.viewModel.indexOf(viewModel);
         if (indexViewModel >= 0 && indexViewModel + 1 < this.viewModel.length) {
             const nextFilter: any = this.viewModel[indexViewModel + 1];
@@ -287,7 +299,7 @@ export class AdvancedSearchBoxComponent implements OnInit, OnChanges {
         return this;
     }
 
-    prevFilterController(viewModel): FilterInterface | AdvancedSearchBoxComponent {
+    prevFilterController(viewModel): FilterInterface | AsComponent {
         const indexViewModel = this.viewModel.indexOf(viewModel);
         if (indexViewModel > 0 ) {
             const prevFilter: any = this.viewModel[indexViewModel - 1];

@@ -1,4 +1,4 @@
-export interface ViewModelInterface {
+export interface TemplateInterface {
     _templateUuid: string;
     uuid: string;
     model: string;
@@ -10,12 +10,12 @@ export interface ViewModelInterface {
     multiple: any;
     date: boolean;
     domain: Array<Object>;
-    suggestions: any;
+    suggestions: Array<Object>;
+    domains: Array<Object>;
     operators: Object;
     'operators-from': Object;
     'operators-to': Object;
     'labels-from': string;
     'labels-to': string;
     value: any;
-
 }

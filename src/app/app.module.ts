@@ -1,5 +1,5 @@
 import { DropdownNavigationModule } from './../dropdown-navigation/dropdownNavigation.module';
-import { AdvancedSearchBoxModule } from './../advancedSearchBox/advancedSearchBox.module';
+import { AsBoxModule } from './../advancedSearchBox/as.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -16,7 +16,7 @@ import { DropdownNavigationDirective } from '../dropdown-navigation/dropdownNavi
     BrowserModule,
     CommonModule,
     NgbModule.forRoot(),
-    AdvancedSearchBoxModule.forRoot(),
+    AsBoxModule.forRoot(),
     DropdownNavigationModule
   ],
   providers: [
