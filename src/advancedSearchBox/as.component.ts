@@ -13,12 +13,14 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/first';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { NgbTypeaheadConfig, NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { fromEvent } from 'rxjs/observable/fromEvent';
 import { NgModel } from '@angular/forms';
 import { UUID } from 'angular2-uuid';
+import { AsConfigService } from './asConfig.service';
 
 @Component({
     selector: 'advanced-searchbox',
@@ -70,6 +72,7 @@ export class AsComponent implements OnInit, OnChanges {
     public focusInput$: Subject<any> = new Subject();
     public filtersControllers = {};
     public focusIndex = 0;
+    public afterViewInitFilters$: Subject<any> = new Subject();
 
     filterSearchBox(): Array<any> {
         return this.template
@@ -80,7 +83,8 @@ export class AsComponent implements OnInit, OnChanges {
                   }
                   const maxOccurrence = param['multiple'];
                   if (maxOccurrence && maxOccurrence !== '*') {
-                      return param['model'] === value['model'] && param['multiple'] <= this.model[param['model']].length;
+                      const modelFinded = this.getterModelTree(this.model, param.model.split('.'));
+                      return param['model'] === value['model'] && (modelFinded && param['multiple'] <= modelFinded.length);
                   }else {
                       return param['model'] === value['model'] && !param['multiple'];
                   }
@@ -92,6 +96,8 @@ export class AsComponent implements OnInit, OnChanges {
         text$
         .merge(this.searchboxInputClick$)
         .merge(this.focusInput$)
+        .debounceTime(50)
+        .distinctUntilChanged()
         .map((term: any) => {
             if (term instanceof MouseEvent || term === undefined) {
                 term = this.searchBox;
@@ -112,7 +118,8 @@ export class AsComponent implements OnInit, OnChanges {
     constructor(
         public element: ElementRef,
         public typeahead: NgbTypeaheadConfig,
-        private _renderer: Renderer2) {
+        private _renderer: Renderer2,
+        private _config: AsConfigService) {
     }
 
     ngOnInit() {
@@ -129,6 +136,13 @@ export class AsComponent implements OnInit, OnChanges {
         });
 
         this.typeaheadController._userInput = '';
+        // allo start, per far si che entri nel subscribe dobbiamo fare in modo che abbia almeno sempre 2 elementi nella history
+        this._config.navigation.onNext({controller:null, from:null});
+        this._config.navigation.onNext({controller:this, from:'searchbox'});
+
+        this._config.navigation.subscribe((response) => {
+            console.log(response);
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -190,11 +204,15 @@ export class AsComponent implements OnInit, OnChanges {
 
     // tslint:disable-next-line:no-shadowed-variable
     // tslint:disable-next-line:no-unnecessary-initializer
-    keydown(e, currentViewModel?, options = {}) {
+    keydown(e, currentViewModel?, options:{id?: any , blackList?: any} = {}) {
         const valueEmitted = {
             viewModel: currentViewModel,
             options: options
         };
+
+        if(!options.blackList){
+            options.blackList = [];
+        }
 
         const handledKeys: KeyBoard[] = [
             KeyBoard.Backspace,
@@ -210,13 +228,13 @@ export class AsComponent implements OnInit, OnChanges {
 
         const cursorPosition = this.getCurrentCaretPosition(e.target);
 
-        if (e.which === KeyBoard.Backspace) {
+        if (e.which === KeyBoard.Backspace && options.blackList.indexOf('Backspace') < 0) {
             if (cursorPosition === 0) {
                 e.preventDefault();
                 this.editPrev.next(valueEmitted);
             }
 
-        } else if (e.which === KeyBoard.Tab) {
+        } else if (e.which === KeyBoard.Tab && options.blackList.indexOf('Tab') < 0) {
             if (e.shiftKey) {
                 e.preventDefault();
                 this.editPrev.emit(valueEmitted);
@@ -225,15 +243,15 @@ export class AsComponent implements OnInit, OnChanges {
                 this.editNext.emit(valueEmitted);
             }
 
-        } else if (e.which === KeyBoard.Enter) {
+        } else if (e.which === KeyBoard.Enter && options.blackList.indexOf('Enter') < 0) {
             this.editNext.emit(valueEmitted);
 
-        } else if (e.which === KeyBoard.LeftArrow) {
+        } else if (e.which === KeyBoard.LeftArrow && options.blackList.indexOf('LeftArrow') < 0) {
             if (cursorPosition === 0) {
                 this.editPrev.emit(valueEmitted);
             }
 
-        } else if (e.which === KeyBoard.RightArrow) {
+        } else if (e.which === KeyBoard.RightArrow && options.blackList.indexOf('RightArrow') < 0) {
             if (cursorPosition === e.target.value.length) {
                 this.editNext.emit(valueEmitted);
             }
@@ -243,9 +261,12 @@ export class AsComponent implements OnInit, OnChanges {
     addFilter(typeaheadSelected: NgbTypeaheadSelectItemEvent): void {
         typeaheadSelected.preventDefault();
         const viewModel = this.createViewFilter(typeaheadSelected.item.model);
-        setTimeout(() => {
+        this.afterViewInitFilters$.filter((response) => {
+            return response.uuid === viewModel.uuid;
+        }).first().subscribe((response) => {
             this.getFilterController(viewModel).onFocus('next');
         });
+        
     }
 
     createViewFilter(singleFilterModel, value?) {
@@ -294,8 +315,10 @@ export class AsComponent implements OnInit, OnChanges {
         const indexViewModel = this.viewModel.indexOf(viewModel);
         if (indexViewModel >= 0 && indexViewModel + 1 < this.viewModel.length) {
             const nextFilter: any = this.viewModel[indexViewModel + 1];
+            this._config.navigation.onNext({controller:<FilterInterface>this.filtersControllers[this.viewModel[indexViewModel].uuid], from:'next'});
             return <FilterInterface>this.filtersControllers[nextFilter.uuid];
         }
+        this._config.navigation.onNext({controller:this, from:'searchbox'});
         return this;
     }
 
@@ -303,8 +326,10 @@ export class AsComponent implements OnInit, OnChanges {
         const indexViewModel = this.viewModel.indexOf(viewModel);
         if (indexViewModel > 0 ) {
             const prevFilter: any = this.viewModel[indexViewModel - 1];
+            this._config.navigation.onNext({controller:<FilterInterface>this.filtersControllers[this.viewModel[indexViewModel].uuid], from:'prev'});
             return <FilterInterface>this.filtersControllers[prevFilter.uuid];
         }
+        this._config.navigation.onNext({controller:this, from:'searchbox'});
         return this;
     }
 

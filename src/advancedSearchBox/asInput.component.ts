@@ -13,13 +13,14 @@ import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputComponent } from './input/asSimpleInput.component';
 import { AsDomainsInputComponent } from './input/asDomainsInput.component';
 import { AsSuggestionsInputComponent } from './input/asSuggestionsInput.component';
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
     selector: 'as-input',
     templateUrl: './asInput.html',
     providers: [NgbTypeaheadConfig]
 })
-export class AsInputComponent extends AsBoxFilterAbstract implements OnInit {
+export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
 
    public inputInstance;
    @ViewChild('inputView', { read: ViewContainerRef }) inputView;
@@ -33,6 +34,7 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit {
         protected resolver: ComponentFactoryResolver
     ) {
         super(advancedSearchBox, _renderer, _el, _http, _config);
+        console.log(this.inputView);
     }
 
     ngOnInit() {
@@ -66,13 +68,14 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit {
         }
 
         this.inputInstance._filter = this;
+
     }
 
     onBlur() {
         super.onBlur();
-        setTimeout(()=>{
+        //setTimeout(()=>{
             this.removeEmpty([this.viewModel.value]);
-        },150);
+        //},200);
     }
 
     public onChange() {

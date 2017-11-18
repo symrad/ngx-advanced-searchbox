@@ -26,24 +26,24 @@ export class AppComponent {
 
     //this.model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
     this.template = [{
-      'model' : 'completeName2',
+      'model' : 'name',
       'type' : 'INPUT',
       'inputType' : 'TEXT',
       'position' : 2147483647,
       'label' : 'Nome Completo',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
-      'domains': [{'label':'ciao'}, {'label':'ciao1'}, {'label':'ciao2'}],
+      'suggestions': ['simone', 'marco', 'luca', 'matteo'],
       'required' : false,
       'multiple' : false
     }, {
-      'model' : 'email2',
+      'model' : 'email',
       'type' : 'INPUT',
       'inputType' : 'TEXT',
       'position' : 2147483647,
       'label' : 'Email',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'required' : false,
-      'multiple' : '*'
+      'multiple' : '2'
     },
     /*
     , {
@@ -64,23 +64,33 @@ export class AppComponent {
     },
     */
     {
-      'model' : 'username2.username.test.test',
+      'model' : 'birth.from',
       'type' : 'INPUT',
       'inputType' : 'TEXT',
       'position' : 2147483647,
-      'label' : 'Username',
+      'label' : 'Data di nascita da',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'required' : false,
-      'multiple' : '*'
+      'multiple' : '1'
     },
     {
-      'model' : 'username2.username.test.username3',
-      'type' : 'OPERATORS',
+      'model' : 'birth.to',
+      'type' : 'INPUT',
       'inputType' : 'TEXT',
       'position' : 2147483647,
-      'label' : 'Username 3',
+      'label' : 'Data di nascita a',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
-      'suggestions': [{'label':'ciao'}, {'label':'ciao1'}, {'label':'ciao2'}],
+      'required' : false,
+      'multiple' : '1'
+    },
+    {
+      'model' : 'occupazione',
+      'type' : 'INPUT',
+      'inputType' : 'TEXT',
+      'position' : 2147483647,
+      'label' : 'Occupazione',
+      'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
+      'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
       'required' : false,
       'multiple' : '*'
     }

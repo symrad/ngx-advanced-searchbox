@@ -9,19 +9,21 @@ import { Subject } from "rxjs/Subject";
 import { AsInputComponent } from "../asInput.component";
 
 @Component({
-    selector:'as-suggestions-input',
+    selector:'div[as-suggestions-input]',
     template: `<input type="text"
             [(ngModel)]="_filter.viewModel.value"
-            (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)" 
             (change)="_filter.onChange()"
-            (blur)="_filter.onBlur()"
+            (focus)="_filter.focusInput$.next()"
+            (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)"
+            (selectItem)="_filter.onSelectSuggestions($event)"
             autosize 
             [placeholder]="_filter.viewModel.label"
-            (focus)="_filter.focusInput$.next()"
             [ngbTypeahead]="suggestionsFunc"
             [inputFormatter]="suggestionsFormatter"
             [resultFormatter]="suggestionsFormatter"
             #inputRef
+            container="body"
+            editable="false"
             />`,
     styles:[`
         input{

@@ -9,15 +9,14 @@ import { Subject } from "rxjs/Subject";
 import { AsInputComponent } from "../asInput.component";
 
 @Component({
-    selector:'as-simple-input-with-operators',
+    selector:'div[as-simple-input-with-operators]',
     template: `<input type="text"
             [(ngModel)]="_filter.viewModel.value.value"
-            (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)" 
             (change)="_filter.onChange()"
-            (blur)="_filter.onBlur()"
+            (focus)="_filter.focusInput$.next()"
+            (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)" 
             autosize 
             [placeholder]="_filter.viewModel.label"
-            (focus)="_filter.focusInput$.next()"
             #inputRef
             />`,
     styles:[`
