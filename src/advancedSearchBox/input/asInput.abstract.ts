@@ -93,21 +93,48 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                 if(typeof this._filter.viewModel.domains === 'string'){
                     return Observable.of(term)
                     .switchMap((term) => this._http.get(this._filter.viewModel.domains, {params:{query:term}}))
-                    .flatMap(() => this._config.domainsAsyncFn(term, this._filter.viewModel.domains))
+                    .flatMap(() => this._config.domainsAsyncFn(term, this._filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
                         this.domainsResults$.next({viewModel:this._filter.viewModel, response: response});
                     });
                 }else{
                     return Observable.of(term)
-                    .flatMap((term) => this._config.domainsStaticFn(term, this._filter.viewModel.domains))
+                    .flatMap((term) => this._config.domainsStaticFn(term, this._filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
                         this.domainsResults$.next({viewModel:this._filter.viewModel, response: response});
-                    });
+                    })
+                    /*
+                    .map((viewModel) => { 
+                        let isModel = this.getterModelTree(this.advancedSearchBox.model, this._filter.viewModel.model.split('.')) || [];
+                        let viewModelFiltered = viewModel
+                        .filter((v) => {
+                            return isModel.filter((valModel) => {
+                                if(!valModel){
+                                    return false;
+                                }
+                                return this.domainsFormatter(valModel) === this.domainsFormatter(v);
+                            }).length === 0;
+                        });
+                        return viewModelFiltered;    
+                    })
+                    */
+                    ;
                 }
             }
         })
 
     public domainsFormatter = this._config.domainsFormatter;
 
-    
+    getterModelTree(parent, models) {
+        if (models.length === 0) {
+            return parent;
+        }
+        const firstModel = models[0];
+        if (!parent[firstModel]) {
+            return false;
+        }
+        models.shift();
+        return this.getterModelTree(parent[firstModel], models);
+    }
+
 }

@@ -22,9 +22,9 @@ export class AppComponent {
   }
 
   constructor(){
-    setTimeout(()=>{
+    //setTimeout(()=>{
 
-    //this.model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
+    this.model = { "name": "simone" };
     this.template = [{
       'model' : 'name',
       'type' : 'INPUT',
@@ -65,23 +65,23 @@ export class AppComponent {
     */
     {
       'model' : 'birth.from',
-      'type' : 'INPUT',
+      'type' : 'OPERATORS',
       'inputType' : 'TEXT',
       'position' : 2147483647,
       'label' : 'Data di nascita da',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'required' : false,
-      'multiple' : '1'
+      'multiple' : false
     },
     {
       'model' : 'birth.to',
-      'type' : 'INPUT',
+      'type' : 'OPERATORS',
       'inputType' : 'TEXT',
       'position' : 2147483647,
       'label' : 'Data di nascita a',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'required' : false,
-      'multiple' : '1'
+      'multiple' : false
     },
     {
       'model' : 'occupazione',
@@ -95,6 +95,6 @@ export class AppComponent {
       'multiple' : '*'
     }
     ];
-    },1000);
+    //},1000);
   }
 }

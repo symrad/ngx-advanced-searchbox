@@ -139,14 +139,10 @@ export class AsComponent implements OnInit, OnChanges {
         // allo start, per far si che entri nel subscribe dobbiamo fare in modo che abbia almeno sempre 2 elementi nella history
         this._config.navigation.onNext({controller:null, from:null});
         this._config.navigation.onNext({controller:this, from:'searchbox'});
-
-        this._config.navigation.subscribe((response) => {
-            console.log(response);
-        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if(changes.template && changes.template.isFirstChange){
+        if(changes.template && changes.template.firstChange){
             if (this.openOnLoad) {
                 setTimeout(() => {
                     this.focusInput$.next();
@@ -271,16 +267,20 @@ export class AsComponent implements OnInit, OnChanges {
 
     createViewFilter(singleFilterModel, value?) {
         const uuid = UUID.UUID();
+        /*
         const multiViewModel = this.viewModel.filter((param) => {
             return param['model'] === singleFilterModel;
         });
+        */
         const template = Object.assign({uuid: uuid}, this.findTemplate('model', singleFilterModel), {value: value});
+        /*
         if (multiViewModel.length > 0) {
             const indexFirstMulti = this.viewModel.indexOf(multiViewModel[0]);
             this.viewModel.splice(indexFirstMulti, 0, template);
         }else {
+            */
             this.viewModel.push(template);
-        }
+        //}
         this.searchBox = '';
         return template;
     }

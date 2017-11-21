@@ -5,9 +5,9 @@
     "outDir": "dist",
     "baseUrl": ".",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "skipLibCheck": true,
-    "module": "es2015",
+    "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -24,6 +24,6 @@
     "index.ts"
   ],
   "angularCompilerOptions": {
-    "strictMetadataEmit": true
+    "skipTemplateCodegen": true
   }
 }

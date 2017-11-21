@@ -23,18 +23,18 @@ export class AsConfigService{
        return x;
     };
 
-    domainsStaticFn(term, suggestions):Observable<Array<any>>{
+    domainsStaticFn(term, viewModel, model):Observable<Array<any>>{
         return Observable.of(term)
-        .map(term => term === '' ? suggestions
-          : suggestions.filter(v => {
+        .map(term => term === '' ? viewModel.domains
+          : viewModel.domains.filter(v => {
               return v.label.indexOf(term.toLowerCase()) > -1
           }).slice(0, 10));
     }
 
-    domainsAsyncFn(term, suggestions):Observable<Array<any>>{
+    domainsAsyncFn(term, viewModel, model):Observable<Array<any>>{
         return Observable.of(term)
-        .map(term => term === '' ? suggestions
-          : suggestions.filter(v => v.label.indexOf(term.toLowerCase()) > -1).slice(0, 10));
+        .map(term => term === '' ? viewModel.domains
+          : viewModel.domains.filter(v => v.label.indexOf(term.toLowerCase()) > -1).slice(0, 10));
     }
 
     domainsFormatter = (x: {label: string}) => {

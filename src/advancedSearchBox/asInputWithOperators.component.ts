@@ -13,7 +13,7 @@ import { AsSimpleInputWithOperatorsComponent } from './input/asSimpleInputWithOp
 import { AsSuggestionsInputWithOperatorsComponent } from './input/asSuggestionsInputWithOperators.component';
 import { AsDomainsInputWithOperatorsComponent } from './input/asDomainsInputWithOperators.component';
 
-enum OperatorsEnum {
+export enum OperatorsEnum {
     eq = '=',
     lt = '<',
     le = '\u2264',
@@ -122,7 +122,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
         if (prevNext === 'prev') {
             this.inputInstance.inputRef.nativeElement.focus();
         }else {
-            setTimeout(() => {
+            setTimeout(()=>{
                 this.buttonToggleEr.nativeElement.focus();
                 this.operatorsDropDownDir.open();
             });
@@ -161,7 +161,6 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
                     if (this.viewModel.value.value) {
                         this.viewToModel();
                     }
-
             }
         }
         if ($event instanceof MouseEvent) {
@@ -193,7 +192,6 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             }
         });
         this.viewToModel();
-        
     }
 
 }

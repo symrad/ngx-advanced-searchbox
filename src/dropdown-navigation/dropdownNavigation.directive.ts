@@ -6,7 +6,7 @@ enum Key {
     ArrowDown = 40
 }
 
-enum TypeDrop {
+export enum TypeDrop {
     Up,
     Down
 }
