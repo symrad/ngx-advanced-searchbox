@@ -24,5 +24,5 @@ export default {
   'ngx-input-autosize'
   ],
   sourceMap: false,
-  name: 'ng.searchbox'
+  name: 'ng.advancedSearchbox'
 }
