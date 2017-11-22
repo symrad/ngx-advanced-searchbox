@@ -20,9 +20,6 @@
       "dom"
     ]
   },
-  "files": [
-    "index.ts"
-  ],
   "angularCompilerOptions": {
     "skipTemplateCodegen": true
   }
