@@ -13,11 +13,19 @@ import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputComponent } from './input/asSimpleInput.component';
 import { AsDomainsInputComponent } from './input/asDomainsInput.component';
 import { AsSuggestionsInputComponent } from './input/asSuggestionsInput.component';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { AfterViewInit } from '@angular/core';
 
 @Component({
     selector: 'as-input',
-    templateUrl: './asInput.html',
+    template: `
+    <div class="input-group">
+        <span class="input-group-addon btn-outline-primary">{{viewModel.label}}</span>
+        <ng-container #inputView></ng-container>
+        <span class="input-group-btn">
+            <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
+        </span>
+    </div>
+    `,
     providers: [NgbTypeaheadConfig]
 })
 export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{

@@ -1,9 +1,24 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
-import { ReplaySubject } from "rx-dom";
+import { ReplaySubject } from "rxjs/ReplaySubject";
+import 'rxjs/add/operator/take';
 
 @Injectable()
 export class AsConfigService{
+
+    private _navigation;
+    public suggestionsFormatter;
+    public domainsFormatter;
+    
+    constructor(){
+        this._navigation = new ReplaySubject(2);
+        this.suggestionsFormatter = (x: {label: string}) => {
+            return x;
+        }; 
+        this.domainsFormatter = (x: {label: string}) => {
+            return x.label;
+        };
+    }
 
     suggestionsStaticFn(term, suggestions):Observable<Array<any>>{
         return Observable.of(term)
@@ -19,10 +34,6 @@ export class AsConfigService{
           : suggestions.filter(v => v.indexOf(term.toLowerCase()) > -1).slice(0, 10));
     }
 
-    suggestionsFormatter = (x: {label: string}) => {
-       return x;
-    };
-
     domainsStaticFn(term, viewModel, model):Observable<Array<any>>{
         return Observable.of(term)
         .map(term => term === '' ? viewModel.domains
@@ -37,11 +48,6 @@ export class AsConfigService{
           : viewModel.domains.filter(v => v.label.indexOf(term.toLowerCase()) > -1).slice(0, 10));
     }
 
-    domainsFormatter = (x: {label: string}) => {
-       return x.label;
-    };
-
-    private _navigation = new ReplaySubject(2);
     set navigation(navigation){
         this._navigation = navigation;
     } 

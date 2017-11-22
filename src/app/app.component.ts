@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { Search, API } from 'angular2-searchbox';
-import { setTimeout } from 'timers';
-
 
 @Component({
   selector: 'app-root',

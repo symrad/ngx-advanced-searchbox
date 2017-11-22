@@ -1,6 +1,6 @@
 import { DropdownNavigationDirective } from './../dropdown-navigation/dropdownNavigation.directive';
 import { CommonModule } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
         DropdownNavigationDirective
     ],
     imports: [
-        NgbModule,
+        NgbDropdownModule,
         CommonModule,
         FormsModule
     ],

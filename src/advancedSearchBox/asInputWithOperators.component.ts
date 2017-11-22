@@ -5,8 +5,9 @@ import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/takeLast';
 import { AsBoxFilterAbstract } from './asFilter.abstract';
-import { Key as KeyBoard} from 'ts-keycode-enum/Key.enum';
+import { Key as KeyBoard} from './Key.enum';
 import { Observable } from 'rxjs/Observable';
 import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputWithOperatorsComponent } from './input/asSimpleInputWithOperators.component';
@@ -27,15 +28,33 @@ export enum OperatorsEnum {
 
 @Component({
     selector: 'as-input-operators',
-    templateUrl: './asInputWithOperators.html'
+    template: `
+    <div class="input-group">
+        <span class="input-group-addon btn-outline-primary">{{viewModel.label}}</span>
+        <div ngbDropdown class="input-group-btn" appDropdownNavigation>
+            <button class="btn btn-outline-primary" type="button" ngbDropdownToggle #buttonToggle 
+            (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">{{viewModel.value.op ? operatorsEnum[viewModel.value.op] : '..'}}</button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+                <a class="dropdown-item" (focus)="viewModel.value.op = operator" *ngFor="let operator of operatorsList" 
+                (click)="onChangeOperators($event, operator)" (keydown)="onChangeOperators($event, operator)" href="javascript:void(0)">
+                    {{operatorsEnum[operator]}}
+                </a>
+            </div>
+        </div>
+        <ng-container #inputView></ng-container>
+        <span class="input-group-btn">
+            <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
+        </span>
+    </div>
+    `
 })
 export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implements OnInit, OnChanges {
 
    @ViewChild(NgbDropdown) operatorsDropDownDir: NgbDropdown;
    @ViewChild('buttonToggle') buttonToggleEr: ElementRef;
    @ViewChild('inputView', { read: ViewContainerRef }) inputView;
-   public operatorsList = [];
-   public operatorsEnum = OperatorsEnum;
+   public operatorsList;
+   public operatorsEnum;
    public inputInstance;
 
    constructor(
@@ -47,6 +66,8 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
         protected resolver: ComponentFactoryResolver
     ) {
         super(advancedSearchBox, renderer, el, _http, _config);
+        this.operatorsList = [];
+        this.operatorsEnum = OperatorsEnum;
 
     }
 

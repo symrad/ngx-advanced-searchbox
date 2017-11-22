@@ -4,7 +4,7 @@ import { AsTemplateDirective } from './asTemplate.directive';
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges,
     SimpleChanges, ContentChild, TemplateRef, ViewChild, ElementRef, Renderer2,
     ViewChildren, QueryList, ContentChildren, AfterViewInit, AfterContentInit, forwardRef, HostListener } from '@angular/core';
-import { Key as KeyBoard} from 'ts-keycode-enum/Key.enum';
+import { Key as KeyBoard} from './Key.enum';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
@@ -24,19 +24,32 @@ import { AsConfigService } from './asConfig.service';
 
 @Component({
     selector: 'advanced-searchbox',
-    templateUrl: './as.html',
-    providers: [NgbTypeaheadConfig],
-    styleUrls: ['./as.scss']
+    template: `
+    <ng-template #rt let-r="result" let-t="term">
+        {{ r.label}}
+    </ng-template>
+    <ng-container *ngFor="let filter of viewModel; trackBy: trackByFn" >
+        <ng-container [ngSwitch]="filter.type" >
+            <as-input *ngSwitchCase="'INPUT'" [viewModel]="filter" class="as-filter"></as-input>
+            <as-input-operators *ngSwitchCase="'OPERATORS'" [viewModel]="filter" class="as-filter"></as-input-operators>
+            <ng-container *ngTemplateOutlet="externalTemplate; context: {$implicit: filter}"></ng-container>
+        </ng-container>
+    </ng-container>
+    <input id="search" type="text" (selectItem)="addFilter($event)" (focus)="focusInput$.next()" 
+    [(ngModel)]="searchBox" (keydown)="keydown($event)" [ngbTypeahead]="searchBoxFunc" 
+    [resultTemplate]="rt" [inputFormatter]="formatter" #searchbox #searchboxModel="ngModel" placeholder="Cerca" autosize/>
+    `,
+    providers: [NgbTypeaheadConfig]
 })
 export class AsComponent implements OnInit, OnChanges {
 
-    @Output('editNext') editNext: EventEmitter<any>  = new EventEmitter();
-    @Output('editPrev') editPrev: EventEmitter<any>  = new EventEmitter();
+    @Output('editNext') editNext: EventEmitter<any>;
+    @Output('editPrev') editPrev: EventEmitter<any>;
     @ContentChild(AsTemplateDirective, {read: TemplateRef}) externalTemplate;
     @ViewChild('searchbox') searchboxInput: ElementRef;
     @ViewChild('searchboxModel') searchboxModel: NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
-    @Input('openOnLoad') openOnLoad: Boolean = true;
+    @Input('openOnLoad') openOnLoad: Boolean;
 
     private _template;
     @Input()
@@ -66,13 +79,48 @@ export class AsComponent implements OnInit, OnChanges {
     }
 
     private _model: Object;
-    public viewModel: Array<ViewModelInterface> = [];
-    public searchBox = '';
+    public viewModel: Array<ViewModelInterface>;
+    public searchBox;
     public searchboxInputClick$: Observable<any>;
-    public focusInput$: Subject<any> = new Subject();
-    public filtersControllers = {};
-    public focusIndex = 0;
-    public afterViewInitFilters$: Subject<any> = new Subject();
+    public focusInput$: Subject<any>;
+    public filtersControllers;
+    public focusIndex;
+    public afterViewInitFilters$: Subject<any>;
+    public searchBoxFunc;
+    public formatter;
+
+    constructor(
+        public element: ElementRef,
+        public typeahead: NgbTypeaheadConfig,
+        private _renderer: Renderer2,
+        private _config: AsConfigService) {
+            this.editNext = new EventEmitter();
+            this.editPrev = new EventEmitter();
+            this.openOnLoad = true;
+            this.viewModel = [];
+            this.searchBox = '';
+            this.focusInput$ = new Subject();
+            this.filtersControllers = {};
+            this.focusIndex = 0;
+            this.afterViewInitFilters$ = new Subject();
+            this.searchBoxFunc = (text$: Observable<string>) =>
+                text$
+                .merge(this.searchboxInputClick$)
+                .merge(this.focusInput$)
+                .debounceTime(50)
+                .distinctUntilChanged()
+                .map((term: any) => {
+                    if (term instanceof MouseEvent || term === undefined) {
+                        term = this.searchBox;
+                    }
+        
+                    const test = this.filterSearchBox()
+                        .filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
+                        .slice(0, 10);
+                        return test;
+            });
+            this.formatter = (x: {label: string}) => x.label;
+    }
 
     filterSearchBox(): Array<any> {
         return this.template
@@ -92,34 +140,8 @@ export class AsComponent implements OnInit, OnChanges {
         });
     }
 
-    searchBoxFunc = (text$: Observable<string>) =>
-        text$
-        .merge(this.searchboxInputClick$)
-        .merge(this.focusInput$)
-        .debounceTime(50)
-        .distinctUntilChanged()
-        .map((term: any) => {
-            if (term instanceof MouseEvent || term === undefined) {
-                term = this.searchBox;
-            }
-
-            const test = this.filterSearchBox()
-                  .filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
-                  .slice(0, 10);
-                  return test;
-        })
-
-    formatter = (x: {label: string}) => x.label;
-
     trackByFn(index, item) {
         return item.uuid;
-    }
-
-    constructor(
-        public element: ElementRef,
-        public typeahead: NgbTypeaheadConfig,
-        private _renderer: Renderer2,
-        private _config: AsConfigService) {
     }
 
     ngOnInit() {
@@ -137,8 +159,8 @@ export class AsComponent implements OnInit, OnChanges {
 
         this.typeaheadController._userInput = '';
         // allo start, per far si che entri nel subscribe dobbiamo fare in modo che abbia almeno sempre 2 elementi nella history
-        this._config.navigation.onNext({controller:null, from:null});
-        this._config.navigation.onNext({controller:this, from:'searchbox'});
+        this._config.navigation.next({controller:null, from:null});
+        this._config.navigation.next({controller:this, from:'searchbox'});
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -163,7 +185,7 @@ export class AsComponent implements OnInit, OnChanges {
         })[0];
     }
 
-    getCurrentCaretPosition = function(input) {
+    getCurrentCaretPosition(input) {
         if (!input) {
             return 0;
         }
@@ -315,10 +337,10 @@ export class AsComponent implements OnInit, OnChanges {
         const indexViewModel = this.viewModel.indexOf(viewModel);
         if (indexViewModel >= 0 && indexViewModel + 1 < this.viewModel.length) {
             const nextFilter: any = this.viewModel[indexViewModel + 1];
-            this._config.navigation.onNext({controller:<FilterInterface>this.filtersControllers[this.viewModel[indexViewModel].uuid], from:'next'});
+            this._config.navigation.next({controller:<FilterInterface>this.filtersControllers[this.viewModel[indexViewModel].uuid], from:'next'});
             return <FilterInterface>this.filtersControllers[nextFilter.uuid];
         }
-        this._config.navigation.onNext({controller:this, from:'searchbox'});
+        this._config.navigation.next({controller:this, from:'searchbox'});
         return this;
     }
 
@@ -326,10 +348,10 @@ export class AsComponent implements OnInit, OnChanges {
         const indexViewModel = this.viewModel.indexOf(viewModel);
         if (indexViewModel > 0 ) {
             const prevFilter: any = this.viewModel[indexViewModel - 1];
-            this._config.navigation.onNext({controller:<FilterInterface>this.filtersControllers[this.viewModel[indexViewModel].uuid], from:'prev'});
+            this._config.navigation.next({controller:<FilterInterface>this.filtersControllers[this.viewModel[indexViewModel].uuid], from:'prev'});
             return <FilterInterface>this.filtersControllers[prevFilter.uuid];
         }
-        this._config.navigation.onNext({controller:this, from:'searchbox'});
+        this._config.navigation.next({controller:this, from:'searchbox'});
         return this;
     }
 

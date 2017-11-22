@@ -21,9 +21,9 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     @Input() viewModel: ViewModelInterface;
 
     public abstract inputInstance;
-    private _isFirstDocClick = true;
+    private _isFirstDocClick;
     public searchboxInputClick$: Observable<any>;
-    public focusInput$: Subject<any> = new Subject();
+    public focusInput$: Subject<any>;
 
     constructor(
         public advancedSearchBox: AsComponent,
@@ -31,7 +31,10 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
         public _el: ElementRef,
         public _http: HttpClient,
         public _config: AsConfigService
-    ) {}
+    ) {
+        this._isFirstDocClick = true;
+        this.focusInput$ = new Subject();
+    }
 
     ngAfterViewInit(){
         this.advancedSearchBox.afterViewInitFilters$.next(this.viewModel);

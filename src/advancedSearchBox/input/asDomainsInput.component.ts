@@ -10,7 +10,7 @@ import { AsBoxFilterAbstract } from "../asFilter.abstract";
 import { Subject, SubjectSubscriber } from "rxjs/Subject";
 import { AsInputComponent } from "../asInput.component";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { OnInit } from "@angular/core/src/metadata/lifecycle_hooks";
+import { OnInit } from "@angular/core";
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/first';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';

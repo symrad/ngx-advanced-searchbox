@@ -1,0 +1,51 @@
+{
+  "name": "ngx-advanced-searchbox",
+  "version": "0.0.24",
+  "description": "",
+  "main": "bundles/searchbox.umd.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "keywords": [
+    "angular",
+    "angular2",
+    "angular 2",
+    "angular4"
+  ],
+  "author": "Simone Radice",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/symrad/ngx-advanced-searchbox.git"
+  },
+  "homepage": "https://github.com/symrad/ngx-advanced-searchbox",
+  "bugs": {
+    "url": "https://github.com/symrad/ngx-advanced-searchbox/issues"
+  },
+  "peerDependencies": {
+    "@angular/core": "^5.0.0",
+    "rxjs": "^5.0.1",
+    "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.5",
+    "angular2-uuid": "^1.1.1",
+    "bootstrap": "^4.0.0-beta.2",
+    "ngx-input-autosize": "^1.1.2",
+    "ts-keycode-enum": "^1.0.4"
+  },
+  "dependencies": {
+    "@angular/animations": "^5.0.0",
+    "@angular/common": "^5.0.0",
+    "@angular/compiler": "^5.0.0",
+    "@angular/core": "^5.0.0",
+    "@angular/forms": "^5.0.0",
+    "@angular/http": "^5.0.0",
+    "@angular/platform-browser": "^5.0.0",
+    "@angular/platform-browser-dynamic": "^5.0.0",
+    "@angular/router": "^5.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.5",
+    "angular2-uuid": "^1.1.1",
+    "bootstrap": "^4.0.0-beta.2",
+    "ngx-input-autosize": "^1.1.2",
+    "rx-dom": "^7.0.3",
+    "rxjs": "^5.5.0",
+    "ts-keycode-enum": "^1.0.4"
+  }
+}
