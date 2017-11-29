@@ -25,7 +25,8 @@
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
-    "ngx-advanced-searchbox": "0.0.27"
+    "ngx-advanced-searchbox": "0.0.27",
+    "ngx-input-autosize": "1.1.4"
   },
   "devDependencies": {
     "@angular/cli": "1.5.3",
