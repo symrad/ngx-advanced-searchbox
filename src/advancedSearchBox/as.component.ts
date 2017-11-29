@@ -82,6 +82,7 @@ export class AsComponent implements OnInit, OnChanges {
     public viewModel: Array<ViewModelInterface>;
     public searchBox;
     public searchboxInputClick$: Observable<any>;
+    public searchboxClick$: Observable<any>;
     public focusInput$: Subject<any>;
     public filtersControllers;
     public focusIndex;
@@ -152,6 +153,7 @@ export class AsComponent implements OnInit, OnChanges {
             response.stopPropagation();
             return response;
         });
+
 
         this.searchboxModel.valueChanges.subscribe(response => {
             // console.log(response);

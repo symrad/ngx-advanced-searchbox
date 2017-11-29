@@ -15,6 +15,8 @@ import { AsConfigService } from './asConfig.service';
 import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { AsInputInterface } from './input/asInput.interface';
 import { AfterViewInit } from '@angular/core';
+import { Subscriber } from 'rxjs/Subscriber';
+import { Subscription } from 'rxjs/Subscription';
 
 export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface, AfterViewInit {
 
@@ -22,7 +24,8 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
 
     public abstract inputInstance;
     private _isFirstDocClick;
-    public searchboxInputClick$: Observable<any>;
+    public searchboxInputClick$;
+    public inputClickUnsubscribe$_:Subscription;
     public focusInput$: Subject<any>;
 
     constructor(
@@ -42,14 +45,27 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
 
     ngOnInit(): void {
         this.advancedSearchBox.addFilterController(this.viewModel.uuid, this);
+        this.inputClickUnsubscribe$_ = fromEvent(this._el.nativeElement, 'click').map((response: MouseEvent) => {
+            response.preventDefault();
+            response.stopPropagation();
+            return response;
+        }).subscribe(()=>{});
     }
 
     ngOnDestroy(): void {
         this.advancedSearchBox.removeFilterController(this.viewModel.uuid);
+        this.inputClickUnsubscribe$_.unsubscribe();
     }
 
     onFocus(prevNext): void {
-       this.inputInstance.inputRef.nativeElement.focus();
+        setTimeout(()=>{
+            if(this.inputInstance.inputRef.nativeElement){
+                this.inputInstance.inputRef.nativeElement.focus();
+            }else{
+                this.inputInstance.inputRef.open();
+                this.inputInstance.focusInput$.next(undefined);
+            }
+        },0);
     }
 
     onBlur(): void {
@@ -95,7 +111,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     }
 
     viewToModel() {
-        if (this.viewModel.value) {
+        //if (this.viewModel.value) {
             const newModel = {};
             for (const singleViewModel of this.advancedSearchBox.viewModel){
                 if (singleViewModel.multiple) {
@@ -110,7 +126,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
                 }
             }
             Object.assign(this.advancedSearchBox.model, newModel);
-        }
+        //}
     }
 
     @HostListener('document:click', ['$event'])
@@ -127,8 +143,8 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     }
     
 
-    public onSelectDomains($event:NgbTypeaheadSelectItemEvent){
-        this.viewModel.value = $event.item;
+    public onSelectDomains($event){
+        this.viewModel.value = $event;
         this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
         this.viewToModel();
     }

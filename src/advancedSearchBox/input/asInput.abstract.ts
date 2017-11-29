@@ -12,6 +12,7 @@ import { FilterInterface } from '../asFilter.interface';
 import { AfterViewInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { NgModel } from '@angular/forms';
+import { EventEmitter } from '@angular/core';
 
 export abstract class AsInputAbstract implements OnInit, AsInputInterface{
 
@@ -24,8 +25,11 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
     public domainsFormatter;
     public suggestionsFunc;
     public domainsFunc;
+    public domainTypeahead;
+    public itemsDomain;
     
-    @ViewChild('inputRef') inputRef:ElementRef;
+    @ViewChild('inputRef') inputRef;
+    @ViewChild('inputRef', {read: ElementRef}) inputElementRef:ElementRef;
     @ViewChild(NgbTypeahead) typeaheadController;
     @ViewChild(NgModel) ngModel:NgModel;
 
@@ -40,6 +44,8 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
         this.suggestionsResults$ = new ReplaySubject(1);
         this.suggestionsFormatter = this._config.suggestionsFormatter;
         this.domainsFormatter = this._config.domainsFormatter;
+        this.domainTypeahead = new EventEmitter();
+        
         this.suggestionsFunc = (text$: Observable<string>) =>
             text$
                 .merge(this.searchboxInputClick$)
@@ -85,7 +91,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                     }else{
                         if(typeof this._filter.viewModel.domains === 'string'){
                             return Observable.of(term)
-                            .switchMap((term) => this._http.get(this._filter.viewModel.domains, {params:{query:term}}))
+                            .switchMap((term) => this._http.get(this._filter.viewModel.domains, {params:{q:term}}))
                             .flatMap(() => this._config.domainsAsyncFn(term, this._filter.viewModel, this.advancedSearchBox.model))
                             .do((response) => {
                                 this.domainsResults$.next({viewModel:this._filter.viewModel, response: response});
@@ -96,7 +102,6 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                             .do((response) => {
                                 this.domainsResults$.next({viewModel:this._filter.viewModel, response: response});
                             })
-                            /*
                             .map((viewModel) => { 
                                 let isModel = this.getterModelTree(this.advancedSearchBox.model, this._filter.viewModel.model.split('.')) || [];
                                 let viewModelFiltered = viewModel
@@ -109,16 +114,14 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                                     }).length === 0;
                                 });
                                 return viewModelFiltered;    
-                            })
-                            */
-                            ;
+                            });
                         }
                     }
         });
     }
 
     ngOnInit(){
-        this.searchboxInputClick$ = fromEvent(this.inputRef.nativeElement, 'click').map((response: MouseEvent) => {
+        this.searchboxInputClick$ = fromEvent(this.inputElementRef.nativeElement, 'click').map((response: MouseEvent) => {
             response.preventDefault();
             response.stopPropagation();
             return response;
@@ -128,6 +131,57 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
         }
 
         this._filter.focusInput$ = this.focusInput$;
+
+        this.domainTypeahead
+        .merge(this.searchboxInputClick$)
+        .merge(this.focusInput$)
+        //.distinctUntilChanged()
+        //.debounceTime(50)
+        .flatMap((term:any):Observable<any> => {
+            if (term instanceof MouseEvent || !term) {
+                if(this.inputRef.value){
+                    term = this.inputRef.value[this.inputRef.bindLabel] || '';
+                }else{
+                    term = '';
+                }
+            }
+            if(!this._filter.viewModel.domains){
+                return Observable.of(false);
+            }else{
+                if(typeof this._filter.viewModel.domains === 'string'){
+                    if(!term){
+                        return Observable.of([]);
+                    }
+                    return Observable.of(term)
+                    .switchMap((term) => this._http.get(this._filter.viewModel.domains, {params:{q:term}}))
+                    .flatMap((response) => this._config.domainsAsyncFn(response, this._filter.viewModel, this.advancedSearchBox.model))
+                    .do((response) => {
+                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
+                    });
+                }else{
+                    return Observable.of(term)
+                    .flatMap((term) => this._config.domainsStaticFn(term, this._filter.viewModel, this.advancedSearchBox.model))
+                    .do((response) => {
+                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
+                    })
+                    .map((viewModel) => { 
+                        let isModel = this.getterModelTree(this.advancedSearchBox.model, this._filter.viewModel.model.split('.')) || [];
+                        let viewModelFiltered = viewModel
+                        .filter((v) => {
+                            return isModel.filter((valModel) => {
+                                if(!valModel){
+                                    return false;
+                                }
+                                return valModel === this.domainsFormatter(v) && valModel.toLowerCase() !== term.toLowerCase();
+                            }).length === 0;
+                        });
+                        return viewModelFiltered;    
+                    });
+                }
+            }
+        }).subscribe(items => {
+            this.itemsDomain = items;
+        });
     }
 
     getterModelTree(parent, models) {

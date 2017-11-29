@@ -21,6 +21,7 @@ export default {
     '@angular/core', 
     'ts-keycode-enum/Key.enum',
     '@ng-bootstrap/ng-bootstrap', 
+    '@ng-select/ng-select', 
     '@angular/forms', 
     'angular2-uuid',
     '@angular/common/http',

@@ -22,7 +22,6 @@ import { AsInputComponent } from "../asInput.component";
             [inputFormatter]="suggestionsFormatter"
             [resultFormatter]="suggestionsFormatter"
             #inputRef
-            container="body"
             editable="false"
             />`,
     styles:[`

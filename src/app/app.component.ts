@@ -89,8 +89,31 @@ export class AppComponent {
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
       'required' : false,
-      'multiple' : '*'
-    }
+      'multiple' : '3'
+    },
+    {
+      'model' : 'github',
+      'type' : 'INPUT',
+      'inputType' : 'TEXT',
+      'position' : 2147483647,
+      'label' : 'Github Users',
+      'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
+      'domains': 'https://api.github.com/search/users',
+      'required' : false,
+      'multiple' : '3'
+      
+    },
+    {
+      'model' : 'test',
+      'type' : 'OPERATORS',
+      'inputType' : 'TEXT',
+      'position' : 2147483647,
+      'label' : 'Test',
+      'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
+      'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
+      'required' : false,
+      'multiple' : '3'
+    },
     ];
     //},1000);
   }

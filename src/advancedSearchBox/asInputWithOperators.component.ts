@@ -89,7 +89,15 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
                 this.operatorsDropDownDir.close();
-                this.inputInstance.inputRef.nativeElement.focus();
+                if(this.inputInstance.inputRef.nativeElement){
+                    this.inputInstance.inputRef.nativeElement.focus();
+                }else{
+                    setTimeout(() => {
+                        this.inputInstance.inputRef.open();
+                        this.inputInstance.focusInput$.next(undefined);
+                    },0);
+                }
+                //this.inputInstance.inputElementRef.nativeElement.focus();
                 this.focusInput$.next();
             }else {
                 this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
@@ -141,7 +149,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
 
     onFocus(prevNext) {
         if (prevNext === 'prev') {
-            this.inputInstance.inputRef.nativeElement.focus();
+            this.inputInstance.inputElementRef.nativeElement.focus();
         }else {
             setTimeout(()=>{
                 this.buttonToggleEr.nativeElement.focus();
@@ -155,15 +163,6 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
     }
 
     onChangeOperators($event: MouseEvent | KeyboardEvent, operator: string) {
-        var comeFrom = 'searchbox';
-        this._config.historyNavigation.takeLast(1).subscribe((response) => {
-            //console.log(response);
-            if(response.from === 'searchbox' || response.from === 'next'){
-                comeFrom = 'next';
-            }else{
-                comeFrom = 'prev';
-            }
-        });
         const valueEmitted = {
             viewModel: this.viewModel,
             options: {id:'buttonDropDown'}
@@ -174,11 +173,8 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
                 // case KeyBoard.Tab:
                     $event.preventDefault();
                     this.viewModel.value.op = operator;
-                    if(comeFrom === 'next'){
-                        this.advancedSearchBox.editNext.next(valueEmitted);
-                    }else{
-                        this.advancedSearchBox.editPrev.next(valueEmitted);
-                    }
+                    this.advancedSearchBox.editNext.next(valueEmitted);
+                    
                     if (this.viewModel.value.value) {
                         this.viewToModel();
                     }
@@ -188,19 +184,22 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             $event.preventDefault();
             $event.stopPropagation();
             this.viewModel.value.op = operator;
-            if(comeFrom === 'next'){
-                this.advancedSearchBox.editNext.next(valueEmitted);
-            }else{
-                this.advancedSearchBox.editPrev.next(valueEmitted);
-            }
+            this.advancedSearchBox.editNext.next(valueEmitted);
+            
             if (this.viewModel.value.value) {
                 this.viewToModel();
             }
         }
     }
 
-    public onSelectDomains($event:NgbTypeaheadSelectItemEvent){
-        this.viewModel.value.value = $event.item;
+    public onSelectDomains(data){
+        this.viewModel.value.value = data;
+        const valueEmitted = {
+            viewModel: this.viewModel,
+            options: {}
+        };
+        this.advancedSearchBox.editNext.next(valueEmitted);
+        /*
         this._config.historyNavigation.takeLast(1).subscribe((response) => {
             const valueEmitted = {
                 viewModel: this.viewModel,
@@ -212,6 +211,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
                 this.advancedSearchBox.editPrev.next(valueEmitted);
             }
         });
+        */
         this.viewToModel();
     }
 

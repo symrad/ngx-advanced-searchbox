@@ -42,10 +42,13 @@ export class AsConfigService{
           }).slice(0, 10));
     }
 
-    domainsAsyncFn(term, viewModel, model):Observable<Array<any>>{
-        return Observable.of(term)
-        .map(term => term === '' ? viewModel.domains
-          : viewModel.domains.filter(v => v.label.indexOf(term.toLowerCase()) > -1).slice(0, 10));
+    domainsAsyncFn(response, viewModel, model):Observable<Array<any>>{
+        return Observable.of(response.items)
+        .map(items => {
+            return items.map((item)=>{
+                return {label:item.login};
+            });
+        });
     }
 
     set navigation(navigation){

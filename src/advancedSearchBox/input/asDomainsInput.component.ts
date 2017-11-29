@@ -1,8 +1,8 @@
 import { NgModel } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { Component, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnDestroy, ViewChild, SimpleChanges, OnChanges } from "@angular/core";
 import { AsComponent } from "../as.component";
-import { Renderer2, ElementRef } from "@angular/core";
+import { Renderer2, ElementRef, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AsConfigService } from "../asConfig.service";
 import { AsInputAbstract } from "./asInput.abstract";
@@ -10,40 +10,47 @@ import { AsBoxFilterAbstract } from "../asFilter.abstract";
 import { Subject, SubjectSubscriber } from "rxjs/Subject";
 import { AsInputComponent } from "../asInput.component";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { OnInit } from "@angular/core";
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/first';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { AfterViewChecked, DoCheck } from '@angular/core';
 
 @Component({
     selector:'div[as-domains-input]',
-    template: `<input type="text"
-            [(ngModel)]="_filter.viewModel.value"
-            (focus)="_filter.focusInput$.next()"
-            (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)" 
-            (selectItem)="_filter.onSelectDomains($event)"
-            (blur)="onBlur()"
-            autosize 
-            [placeholder]="_filter.viewModel.label"
-            [ngbTypeahead]="domainsFunc"
-            [inputFormatter]="domainsFormatter"
-            [resultFormatter]="domainsFormatter"
-            focusFirst="true"
-            #inputRef
-            container="body"
-            editable="false"
-            />`,
+    template: `
+    <ng-select 
+        bindLabel="label"
+        bindValue="label"
+        (focus)="_filter.focusInput$.next()"
+        (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)" 
+        #inputRef
+        [placeholder]="_filter.viewModel.label"
+        [typeahead]="domainTypeahead"
+        [items]="itemsDomain"
+        (change)="onChange($event)"
+        [(ngModel)]="_filter.viewModel.value">
+    </ng-select>
+    <input autosize #inputAutosize type="text" [(ngModel)]="filterValue" [hidden]="true" />`,
     styles:[`
-        input{
+        ng-select{
             height:100%;
         }
     `]
-    
 })
-export class AsDomainsInputComponent extends AsInputAbstract {
+export class AsDomainsInputComponent extends AsInputAbstract implements AfterViewChecked, DoCheck {
 
     public domainsResults$_;
-    @ViewChild(NgbTypeahead) typeahead;
+    @ViewChild(NgSelectComponent) typeahead;
+    @ViewChild('inputAutosize', {read: ElementRef}) inputAutosize:ElementRef;
+    
+    private _filterValue = '';
+    set filterValue(val){
+        this._filterValue = val;
+    }
+    get filterValue(){
+        return this._filterValue;
+    }
     
     constructor(
         public advancedSearchBox: AsComponent,
@@ -54,19 +61,24 @@ export class AsDomainsInputComponent extends AsInputAbstract {
         super(advancedSearchBox, _http, _config, _element);
     }
 
-    onBlur(){
-        this.domainsResults$_ = this.domainsResults$
-        .filter((response) => {
-            return response.viewModel.uuid === this._filter.viewModel.uuid;
-        })
-        .first()
-        .subscribe((response) => {
-            if(response.response.length < 1){
-                this._filter.viewModel.value = '';
-            }else{
-                this._filter.viewModel.value = response.response[0];
-                this.typeahead._userInput = this.domainsFormatter(response.response[0]);
-            }
-        });
+    ngDoCheck(){
+        if(this.typeahead.filterValue){
+            this._filterValue = this.typeahead.filterValue;
+        }
+    }
+
+    ngAfterViewChecked(){
+        this.inputElementRef.nativeElement.style.width = 'calc('+this.inputAutosize.nativeElement.style.width + ' + 50px)';
+    }
+
+    onChange(data){
+        if(!data){
+            this.focusInput$.next(undefined);
+            this.inputRef.open();
+            this._filter.removeEmpty([this._filter.viewModel.value]);
+        }else{
+            this._filterValue = data.label;
+            this._filter.onSelectDomains(data.label);
+        }
     }
 }

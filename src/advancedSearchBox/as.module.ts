@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { AutosizeInputModule } from 'ngx-input-autosize';
 import { HttpClientModule } from '@angular/common/http';
 import { AsConfigService } from './asConfig.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { AsConfigService } from './asConfig.service';
     imports: [
         NgbDropdownModule.forRoot(),
         NgbTypeaheadModule.forRoot(),
+        NgSelectModule,
         CommonModule,
         FormsModule,
         DropdownNavigationModule,
