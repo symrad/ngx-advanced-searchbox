@@ -20,8 +20,8 @@ import { AfterViewChecked, DoCheck } from '@angular/core';
     selector:'div[as-domains-input]',
     template: `
     <ng-select 
-        bindLabel="label"
-        bindValue="label"
+        [bindLabel]="_filter.viewModel.bindLabel"
+        [bindValue]="_filter.viewModel.bindValue"
         (focus)="_filter.focusInput$.next()"
         (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)" 
         #inputRef
@@ -77,7 +77,7 @@ export class AsDomainsInputComponent extends AsInputAbstract implements AfterVie
             this.inputRef.open();
             this._filter.removeEmpty([this._filter.viewModel.value]);
         }else{
-            this._filterValue = data.label;
+            this._filterValue = data[this._filter.viewModel.bindLabel];
             this._filter.onSelectDomains(data.label);
         }
     }

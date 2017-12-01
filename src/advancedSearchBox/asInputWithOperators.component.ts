@@ -199,19 +199,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             options: {}
         };
         this.advancedSearchBox.editNext.next(valueEmitted);
-        /*
-        this._config.historyNavigation.takeLast(1).subscribe((response) => {
-            const valueEmitted = {
-                viewModel: this.viewModel,
-                options: {}
-            };
-            if(response.from === 'searchbox' || response.from === 'next'){
-                this.advancedSearchBox.editNext.next(valueEmitted);
-            }else{
-                this.advancedSearchBox.editPrev.next(valueEmitted);
-            }
-        });
-        */
+        
         this.viewToModel();
     }
 

@@ -1,4 +1,3 @@
-import angular from 'rollup-plugin-angular';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
@@ -14,8 +13,7 @@ export default {
   },
   plugins: [
     resolve(),
-    commonjs(),
-    angular()
+    commonjs()
   ],
   external:[
     '@angular/core', 

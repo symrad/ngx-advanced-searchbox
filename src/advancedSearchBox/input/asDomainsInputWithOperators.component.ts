@@ -16,8 +16,8 @@ import { NgSelectComponent } from '@ng-select/ng-select';
     selector:'div[as-domains-input-with-operators]',
     template: `
     <ng-select 
-        bindLabel="label"
-        bindValue="label"
+        [bindLabel]="_filter.viewModel.bindLabel"
+        [bindValue]="_filter.viewModel.bindValue"
         (focus)="_filter.focusInput$.next()"
         (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)"
         #inputRef
@@ -75,7 +75,7 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
             this.inputRef.open();
             this._filter.removeEmpty([this._filter.viewModel.value.value]);
         }else{
-            this._filterValue = data.label;
+            this._filterValue = data[this._filter.viewModel.bindLabel];
             this._filter.onSelectDomains(data.label);
         }
     }

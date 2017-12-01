@@ -78,7 +78,9 @@ export class AppComponent {
       'label' : 'Data di nascita a',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'required' : false,
-      'multiple' : false
+      'multiple' : false,
+      'bindLabel': 'label',
+      'bindValue': 'label'
     },
     {
       'model' : 'occupazione',
@@ -89,7 +91,9 @@ export class AppComponent {
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
       'required' : false,
-      'multiple' : '3'
+      'multiple' : '3',
+      'bindLabel': 'label',
+      'bindValue': 'label'
     },
     {
       'model' : 'github',
@@ -100,7 +104,9 @@ export class AppComponent {
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'domains': 'https://api.github.com/search/users',
       'required' : false,
-      'multiple' : '3'
+      'multiple' : '3',
+      'bindLabel': 'label',
+      'bindValue': 'label'
       
     },
     {
@@ -112,7 +118,9 @@ export class AppComponent {
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
       'required' : false,
-      'multiple' : '3'
+      'multiple' : '3',
+      'bindLabel': 'label',
+      'bindValue': 'label'
     },
     ];
     //},1000);

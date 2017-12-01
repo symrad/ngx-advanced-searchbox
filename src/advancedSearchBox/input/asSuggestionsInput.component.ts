@@ -19,8 +19,8 @@ import { AsInputComponent } from "../asInput.component";
             autosize 
             [placeholder]="_filter.viewModel.label"
             [ngbTypeahead]="suggestionsFunc"
-            [inputFormatter]="suggestionsFormatter"
-            [resultFormatter]="suggestionsFormatter"
+            [inputFormatter]="suggestionsFormatter(_filter.viewModel)"
+            [resultFormatter]="suggestionsFormatter(_filter.viewModel)"
             #inputRef
             editable="false"
             />`,
