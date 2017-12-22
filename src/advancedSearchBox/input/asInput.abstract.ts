@@ -11,8 +11,13 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { FilterInterface } from '../asFilter.interface';
 import { AfterViewInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { NgModel } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
+import { map } from 'rxjs/operators/map';
+import { pipe } from 'rxjs/util/pipe';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/operator/let';
 
 export abstract class AsInputAbstract implements OnInit, AsInputInterface{
 
@@ -27,6 +32,8 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
     public domainsFunc;
     public domainTypeahead;
     public itemsDomain;
+
+    public domainsAsyncSubject = new Subject();
     
     @ViewChild('inputRef') inputRef;
     @ViewChild('inputRef', {read: ElementRef}) inputElementRef:ElementRef;
@@ -50,28 +57,31 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
             text$
                 .merge(this.searchboxInputClick$)
                 .merge(this.focusInput$)
-                .debounceTime(50)
+                //.debounceTime(50)
                 .distinctUntilChanged()
-                .flatMap((term:any):Observable<any> => {
+                .map((term)=>{
                     if (term instanceof MouseEvent || term === undefined) {
                         term = this.inputRef.nativeElement.value || '';
                     }
-                    if(!this._filter.viewModel.suggestions){
-                        return Observable.of(false);
-                    }else{
+                    return term;
+                })
+                .let((obs):Observable<any> => {
+                    if(this._filter.viewModel.suggestions){
                         if(typeof this._filter.viewModel.suggestions === 'string'){
-                            return Observable.of(term)
-                            .flatMap(() => this._config.suggestionsAsyncFn(term, this._filter.viewModel, this._filter.viewModel.suggestions))
+                            return obs
+                            .let((obs) => this._config.suggestionsAsyncFn(obs, this._filter.viewModel, this._filter.viewModel.suggestions))
                             .do((response) => {
                                 this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
                             });
                         }else{
-                            return Observable.of(term)
-                            .flatMap((term) => this._config.suggestionsStaticFn(term, this._filter.viewModel, this._filter.viewModel.suggestions))
+                            return obs
+                            .let((obs) => this._config.suggestionsStaticFn(obs, this._filter.viewModel, this._filter.viewModel.suggestions))
                             .do((response) => {
                                 this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
                             });
                         }
+                    }else{
+                        return obs;
                     }
         });
         
@@ -82,68 +92,77 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
     }
 
     ngOnInit(){
+    
+        let term = '';
         this.searchboxInputClick$ = fromEvent(this.inputElementRef.nativeElement, 'click').map((response: MouseEvent) => {
             response.preventDefault();
             response.stopPropagation();
             return response;
         });
+
         if(this.typeaheadController){
             this.typeaheadController._userInput = '';
         }
 
         this._filter.focusInput$ = this.focusInput$;
 
-        this.domainTypeahead
-        .merge(this.searchboxInputClick$)
-        .merge(this.focusInput$)
-        //.distinctUntilChanged()
-        //.debounceTime(50)
-        .flatMap((term:any):Observable<any> => {
-            if (term instanceof MouseEvent || !term) {
-                if(this.inputRef.value){
-                    term = this.inputRef.value[this.inputRef.bindLabel] || '';
-                }else{
-                    term = '';
-                }
-            }
-            if(!this._filter.viewModel.domains){
-                return Observable.of(false);
-            }else{
-                if(typeof this._filter.viewModel.domains === 'string'){
-                    if(!term){
-                        return Observable.of([]);
+        var filterNotDuplicate = map((viewModel:Array<any>) => { 
+            let isModel = this.getterModelTree(this.advancedSearchBox.model, this._filter.viewModel.model.split('.')) || [];
+            let viewModelFiltered = viewModel
+            .filter((v) => {
+                return isModel.filter((valModel) => {
+                    if(!valModel){
+                        return false;
                     }
-                    return Observable.of(term)
-                    .switchMap((term) => this._http.get(this._filter.viewModel.domains, {params:{q:term}}))
-                    .flatMap((response) => this._config.domainsAsyncFn(response, this._filter.viewModel, this.advancedSearchBox.model))
-                    .do((response) => {
-                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
-                    });
-                }else{
-                    return Observable.of(term)
-                    .flatMap((term) => this._config.domainsStaticFn(term, this._filter.viewModel, this.advancedSearchBox.model))
+                    return this._config.domainsModelFormatter(this._filter.viewModel, valModel) === this.domainsFormatter(this._filter.viewModel, v) 
+                    && this._config.domainsModelFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
+                }).length === 0;
+            });
+            return viewModelFiltered;    
+        });
+
+        if(this._filter.viewModel.domains){
+            this.domainTypeahead
+            .merge(this.searchboxInputClick$)
+            .merge(this.focusInput$)
+            .distinctUntilChanged()
+            .map((term)=>{
+                if (term instanceof MouseEvent || !term) {
+                    if(this.inputRef.value){
+                        term = this.inputRef.value[this.inputRef.bindLabel] || '';
+                    }else{
+                        term = '';
+                    }
+                }
+                return term;
+            })
+            .filter((term) => this._filter.viewModel.domains)
+            .do((doTerm) => term = doTerm )
+            //.debounceTime(1000)
+            .let((obs) => {
+                if(typeof this._filter.viewModel.domains === 'string'){
+                    return obs
+                    .filter((term)=>term)
+                    .let((obs) => this._config.domainsAsyncFn(obs, this._filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
                         this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
                     })
-                    .map((viewModel) => { 
-                        let isModel = this.getterModelTree(this.advancedSearchBox.model, this._filter.viewModel.model.split('.')) || [];
-                        let viewModelFiltered = viewModel
-                        .filter((v) => {
-                            return isModel.filter((valModel) => {
-                                if(!valModel){
-                                    return false;
-                                }
-                                return this._config.domainsModelFormatter(this._filter.viewModel, valModel) === this.domainsFormatter(this._filter.viewModel, v) 
-                                && this._config.domainsModelFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
-                            }).length === 0;
-                        });
-                        return viewModelFiltered;    
-                    });
+                    .let(filterNotDuplicate);
+                }else{
+                    return obs
+                    .let((obs) => this._config.domainsStaticFn(obs, this._filter.viewModel, this.advancedSearchBox.model))
+                    .do((response) => {
+                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
+                    })
+                    .let(filterNotDuplicate);
                 }
-            }
-        }).subscribe(items => {
-            this.itemsDomain = items;
-        });
+            })
+            .subscribe(items => {
+                if(typeof items === 'object'){
+                    this.itemsDomain = items;
+                }
+            });
+        }
     }
 
     getterModelTree(parent, models) {

@@ -48,7 +48,10 @@ export default {
     'rxjs/add/operator/mergeMap',
     'rxjs/add/operator/flatMap',
     'rxjs/add/operator/takeLast',
-    'rxjs/Subscription'
+    'rxjs/Subscription',
+    'rxjs/operators/map',
+    'rxjs/util/pipe',
+    'rxjs/add/operator/let'
   ],
   sourceMap: false,
   name: 'ng.advancedSearchbox',

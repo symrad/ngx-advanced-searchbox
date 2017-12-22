@@ -4,7 +4,7 @@ import { AsTemplateDirective } from './asTemplate.directive';
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges,
     SimpleChanges, ContentChild, TemplateRef, ViewChild, ElementRef, Renderer2,
     ViewChildren, QueryList, ContentChildren, AfterViewInit, AfterContentInit, forwardRef, HostListener } from '@angular/core';
-import { Key as KeyBoard} from './Key.enum';
+import { Key as KeyBoard} from 'ts-keycode-enum';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';

@@ -7,7 +7,7 @@ import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, 
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeLast';
 import { AsBoxFilterAbstract } from './asFilter.abstract';
-import { Key as KeyBoard} from './Key.enum';
+import { Key as KeyBoard} from 'ts-keycode-enum';
 import { Observable } from 'rxjs/Observable';
 import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputWithOperatorsComponent } from './input/asSimpleInputWithOperators.component';
@@ -149,7 +149,12 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
 
     onFocus(prevNext) {
         if (prevNext === 'prev') {
-            this.inputInstance.inputElementRef.nativeElement.focus();
+            if(this.inputInstance.inputRef.nativeElement){
+                this.inputInstance.inputRef.nativeElement.focus();
+            }else{
+                this.inputInstance.inputRef.open();
+                this.inputInstance.focusInput$.next(undefined);
+            }
         }else {
             setTimeout(()=>{
                 this.buttonToggleEr.nativeElement.focus();

@@ -11,11 +11,8 @@ export class AppComponent {
   //model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
   public template: Array<{}> = [];
 
-  
-
-
   onEditNext(data) {
-    // console.log(data);
+    
   }
 
   constructor(){
@@ -101,6 +98,20 @@ export class AppComponent {
       'inputType' : 'TEXT',
       'position' : 2147483647,
       'label' : 'Github Users',
+      'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
+      'suggestions': 'https://api.github.com/search/users',
+      'required' : false,
+      'multiple' : '3',
+      'bindLabel': 'label',
+      'bindValue': 'label'
+      
+    },
+    {
+      'model' : 'youtube',
+      'type' : 'INPUT',
+      'inputType' : 'TEXT',
+      'position' : 2147483647,
+      'label' : 'Youtube users',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'domains': 'https://api.github.com/search/users',
       'required' : false,

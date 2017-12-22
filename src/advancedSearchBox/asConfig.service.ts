@@ -1,8 +1,10 @@
+import { Subject } from 'rxjs/Subject';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { ReplaySubject } from "rxjs/ReplaySubject";
 import 'rxjs/add/operator/take';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class AsConfigService{
@@ -20,6 +22,8 @@ export class AsConfigService{
     public domainsFormatter;
     public domainsModelFormatter;
     public suggestionsFormatter;
+
+    public domainsAsyncSubject:Subject<any> = new Subject();
     
     constructor(private _http:HttpClient){
         this._navigation = new ReplaySubject(2);
@@ -31,12 +35,34 @@ export class AsConfigService{
         this.customSuggestionsAsyncFn = {};
         this.customDomainsStaticFn = {};
         this.customDomainsAsyncFn = {};
+
+        this.customDomainsAsyncFn['youtube'] = (observable, viewModel, model) => {
+            return observable
+            .switchMap((term) => {
+                return this._http.get('https://www.googleapis.com/youtube/v3/search', {params:{
+                q:term,
+                key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
+                type: 'video',
+                maxResults: '12',
+                part: 'id,snippet'
+                }});
+                }
+            )
+            .map((response:any) => {
+                return response.items.map((item)=>{
+                    return {label:item.snippet.title};
+                });
+            });
+        }
         
         this.suggestionsFormatter = (viewModel) => {
             if(this.customSuggestionsFormatter[viewModel.model]){
                 return this.customSuggestionsFormatter[viewModel.model];
             }
             return (val)=>{
+                if(typeof val === 'object'){
+                    return val.label;
+                }
                 return val;
             };
         }; 
@@ -57,45 +83,49 @@ export class AsConfigService{
         };
     }
 
-    suggestionsStaticFn(term, viewModel, suggestions):Observable<Array<any>>{
+    suggestionsStaticFn(observable, viewModel, suggestions):Observable<Array<any>>{
         if(this.customSuggestionsStaticFn[viewModel.model]){
-            return this.customSuggestionsStaticFn[viewModel.model](term, viewModel, suggestions);
+            return this.customSuggestionsStaticFn[viewModel.model](observable, viewModel, suggestions);
         }
-        return Observable.of(term)
+        return observable
         .map(term => term === '' ? suggestions
           : suggestions.filter(v => {
               return v.indexOf(term.toLowerCase()) > -1
           }).slice(0, 10));
     }
 
-    suggestionsAsyncFn(term, viewModel, suggestions):Observable<Array<any>>{
+    suggestionsAsyncFn(observable, viewModel, suggestions):Observable<Array<any>>{
         if(this.customSuggestionsAsyncFn[viewModel.model]){
-            return this.customSuggestionsAsyncFn[viewModel.model](term, viewModel, suggestions);
+            return this.customSuggestionsAsyncFn[viewModel.model](observable, viewModel, suggestions);
         }
-        return Observable.of(term)
-        .switchMap((term) => this._http.get(viewModel.suggestions, {params:{query:term}}))
-        .map(() => term === '' ? suggestions
-          : suggestions.filter(v => v.indexOf(term.toLowerCase()) > -1).slice(0, 10));
+        return observable
+        .switchMap((term) => this._http.get(viewModel.suggestions, {params:{q:term}}))
+        .map((response:any) => {
+            return response.items.map((item)=>{
+                return {label:item.login};
+            });
+        });
     }
 
-    domainsStaticFn(term, viewModel, model):Observable<Array<any>>{
+    domainsStaticFn(observable, viewModel, model):Observable<Array<any>>{
         if(this.customDomainsStaticFn[viewModel.model]){
-            return this.customDomainsStaticFn[viewModel.model](term, viewModel, model);
+            return this.customDomainsStaticFn[viewModel.model](observable, viewModel, model);
         }
-        return Observable.of(term)
+        return observable
         .map(term => term === '' ? viewModel.domains
           : viewModel.domains.filter(v => {
               return v[viewModel.bindLabel].indexOf(term.toLowerCase()) > -1
           }).slice(0, 10));
     }
 
-    domainsAsyncFn(response, viewModel, model):Observable<Array<any>>{
+    domainsAsyncFn(observable, viewModel, model):Observable<Array<any>>{
         if(this.customDomainsAsyncFn[viewModel.model]){
-            return this.customDomainsAsyncFn[viewModel.model](response, viewModel, model);
+            return this.customDomainsAsyncFn[viewModel.model](observable, viewModel, model);
         }
-        return Observable.of(response.items)
+        
+        return observable
         .switchMap((term) => this._http.get(viewModel.domains, {params:{q:term}}))
-        .map(() => {
+        .map((response:any) => {
             return response.items.map((item)=>{
                 return {label:item.login};
             });
