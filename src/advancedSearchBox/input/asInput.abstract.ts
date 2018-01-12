@@ -32,7 +32,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
     public domainsFunc;
     public domainTypeahead;
     public itemsDomain;
-
+    
     public domainsAsyncSubject = new Subject();
     
     @ViewChild('inputRef') inputRef;

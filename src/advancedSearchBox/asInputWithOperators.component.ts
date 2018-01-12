@@ -13,6 +13,7 @@ import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputWithOperatorsComponent } from './input/asSimpleInputWithOperators.component';
 import { AsSuggestionsInputWithOperatorsComponent } from './input/asSuggestionsInputWithOperators.component';
 import { AsDomainsInputWithOperatorsComponent } from './input/asDomainsInputWithOperators.component';
+import { AsSimpleInputWithOperatorsMaskComponent } from './input/asSimpleInputWithOperatorsMask.component';
 
 export enum OperatorsEnum {
     eq = '=',
@@ -30,19 +31,23 @@ export enum OperatorsEnum {
     selector: 'as-input-operators',
     template: `
     <div class="input-group">
-        <span class="input-group-addon btn-outline-primary">{{viewModel.label}}</span>
-        <div ngbDropdown class="input-group-btn" appDropdownNavigation>
-            <button class="btn btn-outline-primary" type="button" ngbDropdownToggle #buttonToggle 
-            (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">{{viewModel.value.op ? operatorsEnum[viewModel.value.op] : '..'}}</button>
-            <div class="dropdown-menu" ngbDropdownMenu>
-                <a class="dropdown-item" (focus)="viewModel.value.op = operator" *ngFor="let operator of operatorsList" 
-                (click)="onChangeOperators($event, operator)" (keydown)="onChangeOperators($event, operator)" href="javascript:void(0)">
-                    {{operatorsEnum[operator]}}
-                </a>
+        <span class="input-group-prepend">
+            <div class="btn-group">
+                <span class="btn btn-outline-primary notClickable">{{viewModel.label}}</span>
+                <div ngbDropdown class="btn-group" appDropdownNavigation>
+                    <button class="btn btn-outline-primary noRadius" type="button" ngbDropdownToggle #buttonToggle 
+                    (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">{{viewModel.value.op ? operatorsEnum[viewModel.value.op] : '..'}}</button>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                        <a class="dropdown-item" (focus)="viewModel.value.op = operator" *ngFor="let operator of operatorsList" 
+                        (click)="onChangeOperators($event, operator)" (keydown)="onChangeOperators($event, operator)" href="javascript:void(0)">
+                            {{operatorsEnum[operator]}}
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
+        </span>
         <ng-container #inputView></ng-container>
-        <span class="input-group-btn">
+        <span class="input-group-append">
             <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
         </span>
     </div>
@@ -124,8 +129,13 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
         });
 
         if(!this.viewModel.suggestions && !this.viewModel.domains){
-            const asSimpleInputComponent = this.resolver.resolveComponentFactory(AsSimpleInputWithOperatorsComponent);
-            this.inputInstance = this.inputView.createComponent(asSimpleInputComponent).instance;
+            if(this.viewModel.mask){
+                const asSimpleInputMaskComponent = this.resolver.resolveComponentFactory(AsSimpleInputWithOperatorsMaskComponent);
+                this.inputInstance = this.inputView.createComponent(asSimpleInputMaskComponent).instance;
+            }else{
+                const asSimpleInputComponent = this.resolver.resolveComponentFactory(AsSimpleInputWithOperatorsComponent);
+                this.inputInstance = this.inputView.createComponent(asSimpleInputComponent).instance;
+            }
         }
         if(this.viewModel.suggestions){
             const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsSuggestionsInputWithOperatorsComponent);

@@ -4,6 +4,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { ReplaySubject } from "rxjs/ReplaySubject";
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
@@ -48,6 +49,7 @@ export class AsConfigService{
                 }});
                 }
             )
+            .catch(()=>[])
             .map((response:any) => {
                 return response.items.map((item)=>{
                     return {label:item.snippet.title};
@@ -100,6 +102,7 @@ export class AsConfigService{
         }
         return observable
         .switchMap((term) => this._http.get(viewModel.suggestions, {params:{q:term}}))
+        .catch(()=>[])
         .map((response:any) => {
             return response.items.map((item)=>{
                 return {label:item.login};
@@ -125,6 +128,7 @@ export class AsConfigService{
         
         return observable
         .switchMap((term) => this._http.get(viewModel.domains, {params:{q:term}}))
+        .catch(()=>[])
         .map((response:any) => {
             return response.items.map((item)=>{
                 return {label:item.login};

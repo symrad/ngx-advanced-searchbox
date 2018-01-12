@@ -17,6 +17,9 @@ import { AutosizeInputModule } from 'ngx-input-autosize';
 import { HttpClientModule } from '@angular/common/http';
 import { AsConfigService } from './asConfig.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgxMaskModule } from 'ngx-mask';
+import { AsSimpleInputWithOperatorsMaskComponent } from './input/asSimpleInputWithOperatorsMask.component';
+import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component';
 
 
 @NgModule({
@@ -26,15 +29,18 @@ import { NgSelectModule } from '@ng-select/ng-select';
         AsInputWithOperatorsComponent,
         AsTemplateDirective,
         AsSimpleInputComponent,
+        AsSimpleInputMaskComponent,
         AsDomainsInputComponent,
         AsSuggestionsInputComponent,
         AsDomainsInputWithOperatorsComponent,
         AsSuggestionsInputWithOperatorsComponent,
-        AsSimpleInputWithOperatorsComponent
+        AsSimpleInputWithOperatorsComponent,
+        AsSimpleInputWithOperatorsMaskComponent
     ],
     imports: [
         NgbDropdownModule.forRoot(),
         NgbTypeaheadModule.forRoot(),
+        NgxMaskModule.forRoot(),
         NgSelectModule,
         CommonModule,
         FormsModule,
@@ -50,10 +56,12 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ],
     entryComponents: [
         AsSimpleInputComponent, 
+        AsSimpleInputMaskComponent,
         AsDomainsInputComponent, 
         AsSuggestionsInputComponent,
         AsSimpleInputWithOperatorsComponent,
         AsDomainsInputWithOperatorsComponent,
+        AsSimpleInputWithOperatorsMaskComponent,
         AsSuggestionsInputWithOperatorsComponent
     ]
 })

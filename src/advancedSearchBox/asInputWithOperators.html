@@ -1,7 +1,9 @@
 <div class="input-group">
-    <span class="input-group-addon btn-outline-primary">{{viewModel.label}}</span>
+    <span class="input-group-prepend">
+        <span class="btn btn-outline-primary notClickable">{{viewModel.label}}</span>
+    </span>
     <div ngbDropdown class="input-group-btn" appDropdownNavigation>
-        <button class="btn btn-outline-primary" type="button" ngbDropdownToggle #buttonToggle 
+        <button class="btn btn-outline-primary noRadius" type="button" ngbDropdownToggle #buttonToggle 
         (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">{{viewModel.value.op ? operatorsEnum[viewModel.value.op] : '..'}}</button>
         <div class="dropdown-menu" ngbDropdownMenu>
             <a class="dropdown-item" (focus)="viewModel.value.op = operator" *ngFor="let operator of operatorsList" 
@@ -11,7 +13,7 @@
         </div>
     </div>
     <ng-container #inputView></ng-container>
-    <span class="input-group-btn">
+    <span class="input-group-append">
         <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
     </span>
 </div>

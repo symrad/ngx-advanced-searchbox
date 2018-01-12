@@ -14,14 +14,17 @@ import { AsSimpleInputComponent } from './input/asSimpleInput.component';
 import { AsDomainsInputComponent } from './input/asDomainsInput.component';
 import { AsSuggestionsInputComponent } from './input/asSuggestionsInput.component';
 import { AfterViewInit } from '@angular/core';
+import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component';
 
 @Component({
     selector: 'as-input',
     template: `
     <div class="input-group">
-        <span class="input-group-addon btn-outline-primary">{{viewModel.label}}</span>
+        <span class="input-group-prepend">
+            <span class="btn btn-outline-primary notClickable">{{viewModel.label}}</span>
+        </span>
         <ng-container #inputView></ng-container>
-        <span class="input-group-btn">
+        <span class="input-group-append">
             <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
         </span>
     </div>
@@ -48,6 +51,14 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
     ngOnInit() {
         super.ngOnInit();
 
+        if(this.viewModel.mask){
+            this.viewModel.mask.mask = this.viewModel.mask || false;
+            this.viewModel.mask.clearIfNotMatch = this.viewModel.mask.clearIfNotMatch !== undefined ? this.viewModel.mask.clearIfNotMatch : false;
+            this.viewModel.mask.dropSpecialCharacters = this.viewModel.mask.dropSpecialCharacters !== undefined ? this.viewModel.mask.dropSpecialCharacters : false;
+            this.viewModel.mask.patterns = this.viewModel.mask.patterns !== undefined ? this.viewModel.mask.patterns : {};
+            this.viewModel.mask.specialCharacters = this.viewModel.mask.specialCharacters !== undefined ? this.viewModel.mask.specialCharacters : [];
+        }
+
         this.advancedSearchBox.editNext
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
         .subscribe((response) => {
@@ -63,8 +74,13 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
         });
 
         if(!this.viewModel.suggestions && !this.viewModel.domains){
-            const asSimpleInputComponent = this.resolver.resolveComponentFactory(AsSimpleInputComponent);
-            this.inputInstance = this.inputView.createComponent(asSimpleInputComponent).instance;
+            if(this.viewModel.mask){
+                const asSimpleInputMaskComponent = this.resolver.resolveComponentFactory(AsSimpleInputMaskComponent);
+                this.inputInstance = this.inputView.createComponent(asSimpleInputMaskComponent).instance;
+            }else{
+                const asSimpleInputComponent = this.resolver.resolveComponentFactory(AsSimpleInputComponent);
+                this.inputInstance = this.inputView.createComponent(asSimpleInputComponent).instance;
+            }
         }
         if(this.viewModel.suggestions){
             const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsSuggestionsInputComponent);

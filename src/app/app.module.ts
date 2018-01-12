@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropdownNavigationDirective } from '../dropdown-navigation/dropdownNavigation.directive';
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({

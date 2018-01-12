@@ -18,5 +18,14 @@ export interface ViewModelInterface {
     'labels-from': string;
     'labels-to': string;
     value: any;
+    mask: MaskInterface;
 
+}
+
+export interface MaskInterface {
+    mask: any;
+    specialCharacters:any;
+    patterns:any;
+    dropSpecialCharacters:boolean;
+    clearIfNotMatch:boolean;
 }

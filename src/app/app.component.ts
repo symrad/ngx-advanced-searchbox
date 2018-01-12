@@ -35,7 +35,6 @@ export class AppComponent {
       'inputType' : 'TEXT',
       'position' : 2147483647,
       'label' : 'Email',
-      'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'required' : false,
       'multiple' : '2'
     },
@@ -65,7 +64,10 @@ export class AppComponent {
       'label' : 'Data di nascita da',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'required' : false,
-      'multiple' : false
+      'multiple' : false,
+      'mask':{
+        mask:'99-99-9999'
+      }
     },
     {
       'model' : 'birth.to',
@@ -77,7 +79,8 @@ export class AppComponent {
       'required' : false,
       'multiple' : false,
       'bindLabel': 'label',
-      'bindValue': 'label'
+      'bindValue': 'label',
+      'mask':'99-99-9999'
     },
     {
       'model' : 'occupazione',
@@ -88,7 +91,7 @@ export class AppComponent {
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
       'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
       'required' : false,
-      'multiple' : '3',
+      'multiple' : '1',
       'bindLabel': 'label',
       'bindValue': 'label'
     },
