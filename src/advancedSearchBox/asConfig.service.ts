@@ -21,7 +21,6 @@ export class AsConfigService{
     public customDomainsAsyncFn;
     
     public domainsFormatter;
-    public domainsModelFormatter;
     public suggestionsFormatter;
 
     public domainsAsyncSubject:Subject<any> = new Subject();
@@ -41,45 +40,46 @@ export class AsConfigService{
             return observable
             .switchMap((term) => {
                 return this._http.get('https://www.googleapis.com/youtube/v3/search', {params:{
-                q:term,
-                key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
-                type: 'video',
-                maxResults: '12',
-                part: 'id,snippet'
-                }});
+                    q:term,
+                    key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
+                    type: 'video',
+                    maxResults: '12',
+                    part: 'id,snippet'
+                    }})
+                    .catch(()=>[])
+                    .map((response:any) => {
+                        let newResponse = {response:[], term:''};
+                        newResponse.response = response.items.map((item)=>{
+                            return {label:item.snippet.title};
+                        });
+                        newResponse.term = term;
+                        return newResponse;
+                    })
                 }
-            )
-            .catch(()=>[])
-            .map((response:any) => {
-                return response.items.map((item)=>{
-                    return {label:item.snippet.title};
-                });
-            });
+            );
         }
         
-        this.suggestionsFormatter = (viewModel) => {
+        this.suggestionsFormatter = (viewModel, val) => {
             if(this.customSuggestionsFormatter[viewModel.model]){
                 return this.customSuggestionsFormatter[viewModel.model];
             }
-            return (val)=>{
-                if(typeof val === 'object'){
-                    return val.label;
-                }
-                return val;
-            };
-        }; 
-        this.domainsFormatter = (viewModel, val) => {
-            if(this.customDomainsFormatter[viewModel.model]){
-                return this.customSuggestionsFormatter[viewModel.model];
+            
+            if(typeof val === 'object'){
+                return val.label;
             }
-            return val.label;
-        };
-        this.domainsModelFormatter = (viewModel, val) => {
+            return val;
+            
+        }; 
+        
+        this.domainsFormatter = (viewModel, val) => {
             if(this.customDomainsModelFormatter[viewModel.model]){
                 return this.customDomainsModelFormatter[viewModel.model];
             }
-            if(viewModel.type === 'OPERATORS'){
-                return val.value;
+            if(typeof val === 'object'){
+                if(viewModel.bindLabel){
+                    return val[viewModel.bindLabel];
+                }
+                return val.label;
             }
             return val;
         };
@@ -90,10 +90,16 @@ export class AsConfigService{
             return this.customSuggestionsStaticFn[viewModel.model](observable, viewModel, suggestions);
         }
         return observable
-        .map(term => term === '' ? suggestions
-          : suggestions.filter(v => {
-              return v.indexOf(term.toLowerCase()) > -1
-          }).slice(0, 10));
+        .map(term => {
+            let response = {response:suggestions, term:term};
+            if(term === ''){
+                return response;
+            }
+            response.response = suggestions.filter(v => {
+                return v.indexOf(term.toLowerCase()) > -1
+            }).slice(0, 10);
+            return response;
+        });
     }
 
     suggestionsAsyncFn(observable, viewModel, suggestions):Observable<Array<any>>{
@@ -101,13 +107,18 @@ export class AsConfigService{
             return this.customSuggestionsAsyncFn[viewModel.model](observable, viewModel, suggestions);
         }
         return observable
-        .switchMap((term) => this._http.get(viewModel.suggestions, {params:{q:term}}))
-        .catch(()=>[])
-        .map((response:any) => {
-            return response.items.map((item)=>{
-                return {label:item.login};
-            });
-        });
+        .switchMap((term) => 
+            this._http.get(viewModel.suggestions, {params:{q:term}})
+            .catch(()=>[])
+            .map((response:any) => {
+                let newResponse = {response:[], term:''};
+                newResponse.response = response.map((item)=>{
+                    return {label:item.label};
+                });
+                newResponse.term = term;
+                return newResponse;
+            })
+        );
     }
 
     domainsStaticFn(observable, viewModel, model):Observable<Array<any>>{
@@ -115,10 +126,16 @@ export class AsConfigService{
             return this.customDomainsStaticFn[viewModel.model](observable, viewModel, model);
         }
         return observable
-        .map(term => term === '' ? viewModel.domains
-          : viewModel.domains.filter(v => {
-              return v[viewModel.bindLabel].indexOf(term.toLowerCase()) > -1
-          }).slice(0, 10));
+        .map(term => {
+            let response = {response:viewModel.domains, term:term};
+            if(term === ''){
+                return response;
+            }
+            response.response = viewModel.domains.filter(v => {
+                return v.indexOf(term.toLowerCase()) > -1
+            }).slice(0, 10);
+            return response;
+        });
     }
 
     domainsAsyncFn(observable, viewModel, model):Observable<Array<any>>{

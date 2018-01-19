@@ -16,6 +16,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
     selector:'div[as-domains-input-with-operators]',
     template: `
     <ng-select 
+        appendTo="body"
         [bindLabel]="_filter.viewModel.bindLabel"
         [bindValue]="_filter.viewModel.bindValue"
         (focus)="_filter.focusInput$.next()"
@@ -70,13 +71,18 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
     }
 
     onChange(data){
-        if(!data){
+        if(data === '' || data === undefined || data === null){
             this.focusInput$.next(undefined);
             this.inputRef.open();
             this._filter.removeEmpty([this._filter.viewModel.value.value]);
         }else{
-            this._filterValue = data[this._filter.viewModel.bindLabel];
-            this._filter.onSelectDomains(data.label);
+            if(this._filter.viewModel.bindValue){
+                this._filterValue = data[this._filter.viewModel.bindValue];
+                this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
+            }else{
+                this._filterValue = data;
+                this._filter.onSelectDomains(data);
+            }
         }
     }
 }

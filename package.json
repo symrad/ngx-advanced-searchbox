@@ -26,7 +26,7 @@
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.9",
-    "@ng-select/ng-select": "^0.14.3",
+    "@ng-select/ng-select": "^0.15.2",
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^4.0.0-beta.3",
     "core-js": "^2.4.1",

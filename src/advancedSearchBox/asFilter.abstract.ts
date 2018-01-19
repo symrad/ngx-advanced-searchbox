@@ -80,7 +80,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     removeEmpty(models: Array<any>): void {
         let isToRemove = true;
         for (const model of models){
-            if (model) {
+            if (model || model === false || model === null) {
                 isToRemove = false;
                 break;
             }
@@ -114,10 +114,14 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
         //if (this.viewModel.value) {
             const newModel = {};
             for (const singleViewModel of this.advancedSearchBox.viewModel){
+                let formattedValue = singleViewModel.value;
+                if(singleViewModel.formatModelValue){
+                    formattedValue = singleViewModel.formatModelValue(singleViewModel.value);
+                }
                 if (singleViewModel.multiple) {
-                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), []).push(singleViewModel.value);
+                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), []).push(formattedValue);
                 }else {
-                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), singleViewModel.value);
+                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), formattedValue);
                 }
             }
             for (const key in this.advancedSearchBox.model) {
@@ -144,14 +148,20 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     
 
     public onSelectDomains($event){
+        const isModified = this.viewModel.value !== $event;
         this.viewModel.value = $event;
-        this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
+        if(isModified){
+            this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
+        }
         this.viewToModel();
     }
 
     public onSelectSuggestions($event:NgbTypeaheadSelectItemEvent){
+        const isModified = this.viewModel.value !== $event.item;
         this.viewModel.value = $event.item;
-        this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
+        if(isModified){
+            this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
+        }
         this.viewToModel();
         this.inputInstance.typeaheadController._userInput = this.inputInstance.suggestionsFormatter($event.item);
     }

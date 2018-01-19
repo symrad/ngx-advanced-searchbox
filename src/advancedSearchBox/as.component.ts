@@ -291,20 +291,8 @@ export class AsComponent implements OnInit, OnChanges {
 
     createViewFilter(singleFilterModel, value?) {
         const uuid = UUID.UUID();
-        /*
-        const multiViewModel = this.viewModel.filter((param) => {
-            return param['model'] === singleFilterModel;
-        });
-        */
         const template = Object.assign({uuid: uuid}, this.findTemplate('model', singleFilterModel), {value: value});
-        /*
-        if (multiViewModel.length > 0) {
-            const indexFirstMulti = this.viewModel.indexOf(multiViewModel[0]);
-            this.viewModel.splice(indexFirstMulti, 0, template);
-        }else {
-            */
-            this.viewModel.push(template);
-        //}
+        this.viewModel.push(template);
         this.searchBox = '';
         return template;
     }
@@ -316,12 +304,20 @@ export class AsComponent implements OnInit, OnChanges {
             if (modelFinded) {
                 const typeOfModel: string = typeof modelFinded;
                 // se è un array
-                if (typeOfModel === 'array' || typeOfModel === 'object') {
+                if (Array.isArray(modelFinded)) {
                     for (const singleModelValue of modelFinded) {
-                        this.createViewFilter(singleTemplate.model, singleModelValue);
+                        let singleModelValueFormatted = singleModelValue;
+                        if(singleTemplate.formatModelViewValue){
+                            singleModelValueFormatted = singleTemplate.formatModelViewValue(singleModelValue.value);
+                        }
+                        this.createViewFilter(singleTemplate.model, singleModelValueFormatted);
                     }
                 }else {
-                    this.createViewFilter(singleTemplate.model, modelFinded);
+                    let modelFindedFormatted = modelFinded;
+                    if(singleTemplate.formatModelViewValue){
+                        modelFindedFormatted = singleTemplate.formatModelViewValue(modelFindedFormatted);
+                    }
+                    this.createViewFilter(singleTemplate.model, modelFindedFormatted);
                 }
             }
         }

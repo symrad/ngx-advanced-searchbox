@@ -19,6 +19,11 @@ import { pipe } from 'rxjs/util/pipe';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/let';
 
+enum notDuplicate{
+    Domains,
+    Suggestions
+}
+
 export abstract class AsInputAbstract implements OnInit, AsInputInterface{
 
     public focusInput$: Subject<any>;
@@ -72,13 +77,15 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                             .let((obs) => this._config.suggestionsAsyncFn(obs, this._filter.viewModel, this._filter.viewModel.suggestions))
                             .do((response) => {
                                 this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
-                            });
+                            })
+                            .let(this.filterNotDuplicateSuggestions());
                         }else{
                             return obs
                             .let((obs) => this._config.suggestionsStaticFn(obs, this._filter.viewModel, this._filter.viewModel.suggestions))
                             .do((response) => {
                                 this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
-                            });
+                            })
+                            .let(this.filterNotDuplicateSuggestions());
                         }
                     }else{
                         return obs;
@@ -87,13 +94,41 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
         
     }
 
-    suggestionsFormatter(viewModel){
-        return this._config.suggestionsFormatter(viewModel);
+    private _filterNotDuplicate(type:notDuplicate){
+        return map((response:any) => { 
+            let viewModel = response.response;
+            let term = response.term;
+            let isModel = this.getterModelTree(this.advancedSearchBox.model, this._filter.viewModel.model.split('.')) || [];
+            let viewModelFiltered = viewModel
+            .filter((v) => {
+                return isModel.filter((valModel) => {
+                    if(!valModel){
+                        return false;
+                    }
+                    if(type === notDuplicate.Domains){
+                        return this._config.domainsFormatter(this._filter.viewModel, valModel) === this._config.domainsFormatter(this._filter.viewModel, v) 
+                        && this._config.domainsFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
+                    }else{
+                        return valModel === this._config.suggestionsFormatter(this._filter.viewModel,v) 
+                        && this._config.suggestionsFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
+                    }
+                }).length === 0;
+            });
+            return viewModelFiltered;    
+        });
     }
+
+    filterNotDuplicateDomains(){
+        return this._filterNotDuplicate(notDuplicate.Domains);
+    }
+
+    filterNotDuplicateSuggestions(){
+        return this._filterNotDuplicate(notDuplicate.Suggestions);
+    }
+
 
     ngOnInit(){
     
-        let term = '';
         this.searchboxInputClick$ = fromEvent(this.inputElementRef.nativeElement, 'click').map((response: MouseEvent) => {
             response.preventDefault();
             response.stopPropagation();
@@ -105,21 +140,6 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
         }
 
         this._filter.focusInput$ = this.focusInput$;
-
-        var filterNotDuplicate = map((viewModel:Array<any>) => { 
-            let isModel = this.getterModelTree(this.advancedSearchBox.model, this._filter.viewModel.model.split('.')) || [];
-            let viewModelFiltered = viewModel
-            .filter((v) => {
-                return isModel.filter((valModel) => {
-                    if(!valModel){
-                        return false;
-                    }
-                    return this._config.domainsModelFormatter(this._filter.viewModel, valModel) === this.domainsFormatter(this._filter.viewModel, v) 
-                    && this._config.domainsModelFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
-                }).length === 0;
-            });
-            return viewModelFiltered;    
-        });
 
         if(this._filter.viewModel.domains){
             this.domainTypeahead
@@ -137,24 +157,22 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                 return term;
             })
             .filter((term) => this._filter.viewModel.domains)
-            .do((doTerm) => term = doTerm )
             //.debounceTime(1000)
             .let((obs) => {
                 if(typeof this._filter.viewModel.domains === 'string'){
                     return obs
-                    .filter((term)=>term)
                     .let((obs) => this._config.domainsAsyncFn(obs, this._filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
-                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
+                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response.response});
                     })
-                    .let(filterNotDuplicate);
+                    .let(this.filterNotDuplicateDomains());
                 }else{
                     return obs
                     .let((obs) => this._config.domainsStaticFn(obs, this._filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
                         this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
                     })
-                    .let(filterNotDuplicate);
+                    .let(this.filterNotDuplicateDomains());
                 }
             })
             .subscribe(items => {

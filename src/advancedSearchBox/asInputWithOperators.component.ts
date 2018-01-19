@@ -86,8 +86,9 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
         super.ngOnInit();
 
         if (!this.viewModel.value) {
-            this.viewModel.value = {};
+            this.viewModel.value = {op:this.operatorsList[0]};
         }
+
 
         this.advancedSearchBox.editNext
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)

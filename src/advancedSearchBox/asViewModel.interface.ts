@@ -19,6 +19,8 @@ export interface ViewModelInterface {
     'labels-to': string;
     value: any;
     mask: MaskInterface;
+    formatModelValue:Function;
+    formatModelViewValue:Function;
 
 }
 
