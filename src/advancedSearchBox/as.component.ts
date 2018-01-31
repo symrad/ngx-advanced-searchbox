@@ -21,6 +21,8 @@ import { fromEvent } from 'rxjs/observable/fromEvent';
 import { NgModel } from '@angular/forms';
 import { UUID } from 'angular2-uuid';
 import { AsConfigService } from './asConfig.service';
+import { AsSimpleInputComponent } from './input/asSimpleInput.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'advanced-searchbox',
@@ -70,7 +72,6 @@ export class AsComponent implements OnInit, OnChanges {
     @Input()
     set model(model: Object){
          // viene eseguito solo se si riassegna il model (es. model = [])
-        
         this._model = model;
     }
 
@@ -94,6 +95,7 @@ export class AsComponent implements OnInit, OnChanges {
         public element: ElementRef,
         public typeahead: NgbTypeaheadConfig,
         private _renderer: Renderer2,
+        protected _http: HttpClient,
         private _config: AsConfigService) {
             this.editNext = new EventEmitter();
             this.editPrev = new EventEmitter();
@@ -280,7 +282,7 @@ export class AsComponent implements OnInit, OnChanges {
 
     addFilter(typeaheadSelected: NgbTypeaheadSelectItemEvent): void {
         typeaheadSelected.preventDefault();
-        const viewModel = this.createViewFilter(typeaheadSelected.item.model);
+        const viewModel = this.createViewFilter(typeaheadSelected.item);
         this.afterViewInitFilters$.filter((response) => {
             return response.uuid === viewModel.uuid;
         }).first().subscribe((response) => {
@@ -289,12 +291,29 @@ export class AsComponent implements OnInit, OnChanges {
         
     }
 
-    createViewFilter(singleFilterModel, value?) {
+    createViewFilter(singleTemplate, value?) {
         const uuid = UUID.UUID();
-        const template = Object.assign({uuid: uuid}, this.findTemplate('model', singleFilterModel), {value: value});
-        this.viewModel.push(template);
+        let viewModel = Object.assign({uuid: uuid}, this.findTemplate('model', singleTemplate.model), {value: value});
+        if(singleTemplate.formatModelViewValue){
+            viewModel = Object.assign({uuid: uuid}, this.findTemplate('model', singleTemplate.model));
+        }
+        this.viewModel.push(viewModel);
         this.searchBox = '';
-        return template;
+        this.afterViewInitFilters$.filter((response) => {
+            return response.uuid === viewModel.uuid;
+        }).first().subscribe((response) => {
+            if(value){
+                this.getFilterController(viewModel).inputInstance.domainsResults$.subscribe((response)=>{
+                    viewModel.value = value;
+                    if(singleTemplate.formatModelViewValue){
+                        viewModel.value = singleTemplate.formatModelViewValue(value,singleTemplate,response.response.response);
+                    }
+                });
+            }
+            this.getFilterController(viewModel).inputInstance.focusInput$.next('');
+        });
+        
+        return viewModel;
     }
 
     createViewFilterFromModel(model){
@@ -306,18 +325,10 @@ export class AsComponent implements OnInit, OnChanges {
                 // se è un array
                 if (Array.isArray(modelFinded)) {
                     for (const singleModelValue of modelFinded) {
-                        let singleModelValueFormatted = singleModelValue;
-                        if(singleTemplate.formatModelViewValue){
-                            singleModelValueFormatted = singleTemplate.formatModelViewValue(singleModelValue.value);
-                        }
-                        this.createViewFilter(singleTemplate.model, singleModelValueFormatted);
+                        this.createViewFilter(singleTemplate, singleModelValue);
                     }
                 }else {
-                    let modelFindedFormatted = modelFinded;
-                    if(singleTemplate.formatModelViewValue){
-                        modelFindedFormatted = singleTemplate.formatModelViewValue(modelFindedFormatted);
-                    }
-                    this.createViewFilter(singleTemplate.model, modelFindedFormatted);
+                    this.createViewFilter(singleTemplate, modelFinded);
                 }
             }
         }

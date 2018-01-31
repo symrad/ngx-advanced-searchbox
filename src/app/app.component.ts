@@ -56,7 +56,7 @@ export class AppComponent {
     */
 
 
-    this.model = { "city": [ { "label": "Milan", "value": 3 } ] };
+    this.model = { "city": [ 1 ] };
     this.template = [
       {
         'model' : 'isEnabled',
@@ -76,7 +76,24 @@ export class AppComponent {
         'label' : 'Città',
         'domains': [{label:'Berlin', value:1}, {label:'London', value:2}, {label:'Milan', value:3}, {label:'Paris', value:4}],
         'multiple' : '4',
-        'bindLabel': 'label'
+        'bindLabel': 'label',
+        formatModelValue: function(val){
+          if(val){
+            return val.value;
+          }
+          return val;
+        },
+        formatModelViewValue: function(val, template, domains){
+          var domainsFiltered = template.domains.filter((par)=>{
+            return par.value == val;
+          });
+          if(domainsFiltered.length>0){
+            return domainsFiltered[0]
+          }
+          return val;
+          
+          //return {label:'Berlin', value:1};
+        }
       },
       {
         'model' : 'email',

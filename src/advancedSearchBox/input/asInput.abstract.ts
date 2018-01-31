@@ -1,3 +1,4 @@
+import { AsInputComponent } from './../asInput.component';
 import { Subject } from 'rxjs/Subject';
 import { ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AsConfigService } from './../asConfig.service';
@@ -18,6 +19,7 @@ import { map } from 'rxjs/operators/map';
 import { pipe } from 'rxjs/util/pipe';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/let';
+import { AsInputWithOperatorsComponent } from './../asInputWithOperators.component';
 
 enum notDuplicate{
     Domains,
@@ -30,13 +32,13 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
     public domainsResults$:ReplaySubject<any>;
     public suggestionsResults$:ReplaySubject<any>;
     public searchboxInputClick$;
-    public _filter;
-    //public suggestionsFormatter;
+    public _filter:AsInputWithOperatorsComponent | AsInputComponent;
+    public suggestionsFormatter;
     public domainsFormatter;
     public suggestionsFunc;
     public domainsFunc;
     public domainTypeahead;
-    public itemsDomain;
+    public itemsDomain = [];
     
     public domainsAsyncSubject = new Subject();
     
@@ -54,7 +56,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
         this.focusInput$ = new Subject();
         this.domainsResults$ = new ReplaySubject(1);
         this.suggestionsResults$ = new ReplaySubject(1);
-        //this.suggestionsFormatter = this._config.suggestionsFormatter;
+        this.suggestionsFormatter = this._config.suggestionsFormatter;
         this.domainsFormatter = this._config.domainsFormatter;
         this.domainTypeahead = new EventEmitter();
         
@@ -106,6 +108,9 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                         return false;
                     }
                     if(type === notDuplicate.Domains){
+                        if(this._filter.viewModel.formatModelViewValue){
+                            valModel = this._filter.viewModel.formatModelViewValue(valModel, this._filter.viewModel);
+                        }
                         return this._config.domainsFormatter(this._filter.viewModel, valModel) === this._config.domainsFormatter(this._filter.viewModel, v) 
                         && this._config.domainsFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
                     }else{
@@ -145,7 +150,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
             this.domainTypeahead
             .merge(this.searchboxInputClick$)
             .merge(this.focusInput$)
-            .distinctUntilChanged()
+            //.distinctUntilChanged()
             .map((term)=>{
                 if (term instanceof MouseEvent || !term) {
                     if(this.inputRef.value){
@@ -163,14 +168,14 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                     return obs
                     .let((obs) => this._config.domainsAsyncFn(obs, this._filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
-                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response.response});
+                        this.domainsResults$.next({viewModel:this._filter.viewModel, response: response.response});
                     })
                     .let(this.filterNotDuplicateDomains());
                 }else{
                     return obs
                     .let((obs) => this._config.domainsStaticFn(obs, this._filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
-                        this.suggestionsResults$.next({viewModel:this._filter.viewModel, response: response});
+                        this.domainsResults$.next({viewModel:this._filter.viewModel, response: response});
                     })
                     .let(this.filterNotDuplicateDomains());
                 }

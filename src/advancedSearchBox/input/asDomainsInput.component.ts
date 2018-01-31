@@ -15,6 +15,7 @@ import 'rxjs/add/operator/first';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { AfterViewChecked, DoCheck } from '@angular/core';
+import { NgControl } from '@angular/forms';
 
 @Component({
     selector:'div[as-domains-input]',
@@ -30,6 +31,7 @@ import { AfterViewChecked, DoCheck } from '@angular/core';
         [typeahead]="domainTypeahead"
         [items]="itemsDomain"
         (change)="onChange($event)"
+        (clear)="onClear()"
         [(ngModel)]="_filter.viewModel.value">
     </ng-select>
     <input autosize #inputAutosize type="text" [(ngModel)]="filterValue" [hidden]="true" />`,
@@ -44,6 +46,7 @@ export class AsDomainsInputComponent extends AsInputAbstract implements AfterVie
     public domainsResults$_;
     @ViewChild(NgSelectComponent) typeahead;
     @ViewChild('inputAutosize', {read: ElementRef}) inputAutosize:ElementRef;
+    @ViewChild('inputRef', {read: NgControl}) ngControl:NgControl;
     
     private _filterValue = '';
     set filterValue(val){
@@ -62,6 +65,20 @@ export class AsDomainsInputComponent extends AsInputAbstract implements AfterVie
         super(advancedSearchBox, _http, _config, _element);
     }
 
+    ngOnInit(){
+        super.ngOnInit();
+        this.ngControl.valueChanges.subscribe((res)=>{
+            if(res === '' || res === undefined || res === null){
+            }else{
+                if(this._filter.viewModel.bindLabel){
+                    this.filterValue = res[this._filter.viewModel.bindLabel];
+                }else{
+                    this.filterValue = res;
+                }
+            }
+        });
+    }
+
     ngDoCheck(){
         if(this.typeahead.filterValue){
             this._filterValue = this.typeahead.filterValue;
@@ -72,17 +89,28 @@ export class AsDomainsInputComponent extends AsInputAbstract implements AfterVie
         this.inputElementRef.nativeElement.style.width = 'calc('+this.inputAutosize.nativeElement.style.width + ' + 50px)';
     }
 
+    onClear(){
+        this._filterValue = null;
+        this.focusInput$.next(undefined);
+        this._filter.remove();
+        //this._filter.viewToModel();
+    }
+
     onChange(data){
         if(data === '' || data === undefined || data === null){
+            this._filter.removeEmpty([this._filter.viewModel.value]);
             this.focusInput$.next(undefined);
             this.inputRef.open();
-            this._filter.removeEmpty([this._filter.viewModel.value]);
         }else{
-            if(this._filter.viewModel.bindValue){
-                this._filterValue = data[this._filter.viewModel.bindValue];
-                this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
+            if(this._filter.viewModel.bindLabel){
+                this._filterValue = data[this._filter.viewModel.bindLabel];
             }else{
                 this._filterValue = data;
+            }
+
+            if(this._filter.viewModel.bindValue){
+                this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
+            }else{
                 this._filter.onSelectDomains(data);
             }
         }

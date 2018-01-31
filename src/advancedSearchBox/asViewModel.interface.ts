@@ -21,6 +21,8 @@ export interface ViewModelInterface {
     mask: MaskInterface;
     formatModelValue:Function;
     formatModelViewValue:Function;
+    bindLabel:any;
+    bindValue:any;
 
 }
 

@@ -11,6 +11,7 @@ import { AsInputComponent } from "../asInput.component";
 import { Subscription } from "rxjs/Subscription";
 import 'rxjs/add/operator/first';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { NgControl } from '@angular/forms';
 
 @Component({
     selector:'div[as-domains-input-with-operators]',
@@ -26,6 +27,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
         [typeahead]="domainTypeahead"
         [items]="itemsDomain"
         (change)="onChange($event)"
+        (clear)="onClear()"
         [(ngModel)]="_filter.viewModel.value.value">
     </ng-select>
     <input autosize #inputAutosize type="text" [(ngModel)]="filterValue" [hidden]="true" />`,
@@ -42,6 +44,7 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
     public domainsResults$_;
     @ViewChild(NgSelectComponent) typeahead;
     @ViewChild('inputAutosize', {read: ElementRef}) inputAutosize:ElementRef;
+    @ViewChild('inputRef', {read: NgControl}) ngControl:NgControl;
     
     private _filterValue = '';
     set filterValue(val){
@@ -60,9 +63,23 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
         super(advancedSearchBox, _http, _config, _element);
     }
 
+    ngOnInit(){
+        super.ngOnInit();
+        this.ngControl.valueChanges.subscribe((res)=>{
+            if(res === '' || res === undefined || res === null){
+            }else{
+                if(this._filter.viewModel.bindLabel){
+                    this.filterValue = res[this._filter.viewModel.bindLabel];
+                }else{
+                    this.filterValue = res;
+                }
+            }
+        });
+    }
+
     ngDoCheck(){
         if(this.typeahead.filterValue){
-            this._filterValue = this.typeahead.filterValue;
+            this.filterValue = this.typeahead.filterValue;
         }
     }
 
@@ -70,17 +87,25 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
         this.inputElementRef.nativeElement.style.width = 'calc('+this.inputAutosize.nativeElement.style.width + ' + 50px)';
     }
 
+    onClear(){
+        this.focusInput$.next(undefined);
+    }
+
     onChange(data){
         if(data === '' || data === undefined || data === null){
             this.focusInput$.next(undefined);
             this.inputRef.open();
-            this._filter.removeEmpty([this._filter.viewModel.value.value]);
+            this._filter.removeEmpty([this._filter.viewModel.value]);
         }else{
-            if(this._filter.viewModel.bindValue){
-                this._filterValue = data[this._filter.viewModel.bindValue];
-                this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
+            if(this._filter.viewModel.bindLabel){
+                this._filterValue = data[this._filter.viewModel.bindLabel];
             }else{
                 this._filterValue = data;
+            }
+
+            if(this._filter.viewModel.bindValue){
+                this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
+            }else{
                 this._filter.onSelectDomains(data);
             }
         }

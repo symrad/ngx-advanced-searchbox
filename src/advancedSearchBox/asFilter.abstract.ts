@@ -80,7 +80,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     removeEmpty(models: Array<any>): void {
         let isToRemove = true;
         for (const model of models){
-            if (model || model === false || model === null) {
+            if (model || model === false) {
                 isToRemove = false;
                 break;
             }
