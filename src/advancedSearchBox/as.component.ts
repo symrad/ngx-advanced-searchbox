@@ -45,13 +45,13 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AsComponent implements OnInit, OnChanges {
 
-    @Output('editNext') editNext: EventEmitter<any>;
-    @Output('editPrev') editPrev: EventEmitter<any>;
-    @ContentChild(AsTemplateDirective, {read: TemplateRef}) externalTemplate;
-    @ViewChild('searchbox') searchboxInput: ElementRef;
-    @ViewChild('searchboxModel') searchboxModel: NgModel;
+    @Output('editNext') editNext:EventEmitter<any>;
+    @Output('editPrev') editPrev:EventEmitter<any>;
+    @ContentChild(AsTemplateDirective, {read: TemplateRef}) externalTemplate:TemplateRef<any>;
+    @ViewChild('searchbox') searchboxInput:ElementRef;
+    @ViewChild('searchboxModel') searchboxModel:NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
-    @Input('openOnLoad') openOnLoad: Boolean;
+    @Input('openOnLoad') openOnLoad:Boolean;
 
     private _template;
     @Input()
@@ -65,7 +65,7 @@ export class AsComponent implements OnInit, OnChanges {
         this._template = template;
         
     }
-    get template(){
+    get template(): Array<ViewModelInterface>{
         return this._template;
     }
 
@@ -165,6 +165,14 @@ export class AsComponent implements OnInit, OnChanges {
         // allo start, per far si che entri nel subscribe dobbiamo fare in modo che abbia almeno sempre 2 elementi nella history
         this._config.navigation.next({controller:null, from:null});
         this._config.navigation.next({controller:this, from:'searchbox'});
+
+    
+        this.editPrev
+        .filter((response) => !response.viewModel)
+        .subscribe((response) => {
+            this.prevFilterControllerFromSearchbox(this.viewModel[this.viewModel.length-1]).onFocus('prev');
+        });
+
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -183,13 +191,13 @@ export class AsComponent implements OnInit, OnChanges {
         }
     }
 
-    findTemplate(key, value) {
+    findTemplate(key, value):ViewModelInterface {
         return this.template.filter((param) => {
             return param[key] === value;
         })[0];
     }
 
-    getCurrentCaretPosition(input) {
+    getCurrentCaretPosition(input):number {
         if (!input) {
             return 0;
         }
@@ -253,7 +261,7 @@ export class AsComponent implements OnInit, OnChanges {
         if (e.which === KeyBoard.Backspace && options.blackList.indexOf('Backspace') < 0) {
             if (cursorPosition === 0) {
                 e.preventDefault();
-                this.editPrev.next(valueEmitted);
+                this.editPrev.emit(valueEmitted);
             }
 
         } else if (e.which === KeyBoard.Tab && options.blackList.indexOf('Tab') < 0) {
@@ -293,8 +301,8 @@ export class AsComponent implements OnInit, OnChanges {
 
     createViewFilter(singleTemplate, value?) {
         const uuid = UUID.UUID();
-        let viewModel = Object.assign({uuid: uuid}, this.findTemplate('model', singleTemplate.model), {value: value});
-        if(singleTemplate.formatModelViewValue){
+        let viewModel:ViewModelInterface = Object.assign({uuid: uuid}, this.findTemplate('model', singleTemplate.model), {value: value});
+        if(this._config.formatModelViewValue[singleTemplate.model]){
             viewModel = Object.assign({uuid: uuid}, this.findTemplate('model', singleTemplate.model));
         }
         this.viewModel.push(viewModel);
@@ -303,14 +311,16 @@ export class AsComponent implements OnInit, OnChanges {
             return response.uuid === viewModel.uuid;
         }).first().subscribe((response) => {
             if(value){
-                this.getFilterController(viewModel).inputInstance.domainsResults$.subscribe((response)=>{
-                    viewModel.value = value;
-                    if(singleTemplate.formatModelViewValue){
-                        viewModel.value = singleTemplate.formatModelViewValue(value,singleTemplate,response.response.response);
-                    }
-                });
+                viewModel.value = value;
+                if(this._config.formatModelViewValue[singleTemplate.model]){
+                    viewModel.value = this._config.formatModelViewValue[singleTemplate.model](value,singleTemplate);
+                }
             }
-            this.getFilterController(viewModel).inputInstance.focusInput$.next('');
+            
+            if(typeof viewModel.domains === 'string'){
+                this.getFilterController(viewModel).inputInstance.itemsDomain = [value];
+            }
+            //this.getFilterController(viewModel).inputInstance.focusInput$.next('');
         });
         
         return viewModel;
@@ -362,6 +372,10 @@ export class AsComponent implements OnInit, OnChanges {
         }
         this._config.navigation.next({controller:this, from:'searchbox'});
         return this;
+    }
+
+    prevFilterControllerFromSearchbox(viewModel): FilterInterface | AsComponent {
+        return <FilterInterface>this.filtersControllers[viewModel.uuid];
     }
 
     getFilterController(viewModel): FilterInterface {

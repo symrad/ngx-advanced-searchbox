@@ -41,7 +41,6 @@ import { NgControl } from '@angular/forms';
 })
 export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implements AfterViewChecked, DoCheck{
     
-    public domainsResults$_;
     @ViewChild(NgSelectComponent) typeahead;
     @ViewChild('inputAutosize', {read: ElementRef}) inputAutosize:ElementRef;
     @ViewChild('inputRef', {read: NgControl}) ngControl:NgControl;
@@ -92,22 +91,25 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
     }
 
     onChange(data){
-        if(data === '' || data === undefined || data === null){
-            this.focusInput$.next(undefined);
-            this.inputRef.open();
-            this._filter.removeEmpty([this._filter.viewModel.value]);
-        }else{
-            if(this._filter.viewModel.bindLabel){
-                this._filterValue = data[this._filter.viewModel.bindLabel];
+        // without timeout it is execute before keydown event
+        setTimeout(()=>{
+            if(data === '' || data === undefined || data === null){
+                this.focusInput$.next(undefined);
+                this.inputRef.open();
+                this._filter.removeEmpty([this._filter.viewModel.value]);
             }else{
-                this._filterValue = data;
-            }
+                if(this._filter.viewModel.bindLabel){
+                    this._filterValue = data[this._filter.viewModel.bindLabel];
+                }else{
+                    this._filterValue = data;
+                }
 
-            if(this._filter.viewModel.bindValue){
-                this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
-            }else{
-                this._filter.onSelectDomains(data);
+                if(this._filter.viewModel.bindValue){
+                    this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
+                }else{
+                    this._filter.onSelectDomains(data);
+                }
             }
-        }
+        },0);
     }
 }

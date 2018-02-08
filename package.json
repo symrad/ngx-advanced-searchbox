@@ -12,7 +12,8 @@
     "transpile": "ngc",
     "package": "rollup -c",
     "minify": "uglifyjs dist/bundles/searchbox.umd.js --screw-ie8 --compress --mangle --comments --output dist/bundles/searchbox.umd.min.js",
-    "buildlib": "rm -rf dist && npm run transpile && npm run package && npm run minify && mkdir dist/scss && cp src/assets/app.scss dist/scss/"
+    "buildlib": "rm -rf dist && npm run transpile && npm run package && npm run minify && mkdir dist/scss && cp src/assets/app.scss dist/scss/",
+    "doc": "typedoc --out ./docs --mode file --target ES6 ./src/"
   },
   "private": true,
   "dependencies": {
@@ -30,7 +31,7 @@
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^4.0.0-beta.3",
     "core-js": "^2.4.1",
-    "ngx-input-autosize": "^1.1.6",
+    "ngx-input-autosize": "^1.1.7",
     "ngx-mask": "2.2.2",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.5.5",

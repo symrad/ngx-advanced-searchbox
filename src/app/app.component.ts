@@ -53,10 +53,12 @@ export class AppComponent {
           }
         }
       autocomplete
+      con formatModelViewValue e formatModelValue non si può mettere bindValue (solo bindLabel)
     */
 
 
-    this.model = { "city": [ 1 ] };
+    this.model = 
+    { "isEnabled": [ { "label": "Yes", "value": true } ], "city": [ 1, 2, 3, 4 ], "youtube": [ "Marvel Studios' Avengers: Infinity War Official Trailer", "Atalanta vs Juventus 0-1 ● All Goals & Highlights HD ● 30 Jan 2018 - Coppa Italia" ] };
     this.template = [
       {
         'model' : 'isEnabled',
@@ -76,24 +78,7 @@ export class AppComponent {
         'label' : 'Città',
         'domains': [{label:'Berlin', value:1}, {label:'London', value:2}, {label:'Milan', value:3}, {label:'Paris', value:4}],
         'multiple' : '4',
-        'bindLabel': 'label',
-        formatModelValue: function(val){
-          if(val){
-            return val.value;
-          }
-          return val;
-        },
-        formatModelViewValue: function(val, template, domains){
-          var domainsFiltered = template.domains.filter((par)=>{
-            return par.value == val;
-          });
-          if(domainsFiltered.length>0){
-            return domainsFiltered[0]
-          }
-          return val;
-          
-          //return {label:'Berlin', value:1};
-        }
+        'bindLabel': 'label'
       },
       {
         'model' : 'email',
@@ -112,18 +97,6 @@ export class AppComponent {
         'label' : 'Data di nascita da',
         'operators' : [ 'ge'],
         'multiple' : false,
-        formatModelValue: function(val){
-          const newVal = Object.assign({},val);
-          const daySplitted = val.value.split('-');
-          newVal.value = new Date(parseInt(daySplitted[2]),parseInt(daySplitted[1])-1,parseInt(daySplitted[0]),12);
-          return newVal;
-        },
-        formatModelViewValue: function(val){
-          const newVal = Object.assign({},val);
-          newVal.value = new Date(val.value);
-          newVal.value = newVal.value.getDate()  + "-" + (newVal.value.getMonth()+1) + "-" + newVal.value.getFullYear();
-          return newVal;
-        },
         'mask':{
           mask:'99-99-9999'
         }
@@ -136,25 +109,13 @@ export class AppComponent {
         'label' : 'Data di nascita a',
         'operators' : [ 'le', 'lt'],
         'multiple' : false,
-        formatModelValue: function(val){
-          const newVal = Object.assign({},val);
-          const daySplitted = val.value.split('-');
-          newVal.value = new Date(parseInt(daySplitted[2]),parseInt(daySplitted[1])-1,parseInt(daySplitted[0]),12);
-          return newVal;
-        },
-        formatModelViewValue: function(val){
-          const newVal = Object.assign({},val);
-          newVal.value = new Date(val.value);
-          newVal.value = newVal.value.getDate()  + "-" + (newVal.value.getMonth()+1) + "-" + newVal.value.getFullYear();
-          return newVal;
-        },
         'mask':{
           mask:'99-99-9999'
         }
     },
     {
       'model' : 'occupazione',
-      'type' : 'INPUT',
+      'type' : 'OPERATORS',
       'inputType' : 'TEXT',
       'position' : 2147483647,
       'label' : 'Occupazione',
@@ -166,17 +127,16 @@ export class AppComponent {
       'bindValue': 'label'
     },
     {
-      'model' : 'github',
-      'type' : 'INPUT',
+      'model' : 'gmap',
+      'type' : 'OPERATORS',
       'inputType' : 'TEXT',
       'position' : 2147483647,
-      'label' : 'Github Users',
+      'label' : 'Location',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
-      'suggestions': 'https://api.github.com/search/users',
+      'suggestions': 'https://maps.googleapis.com/maps/api/place/textsearch/json',
       'required' : false,
       'multiple' : '3',
-      'bindLabel': 'label',
-      'bindValue': 'label'
+      'bindLabel': 'label'
       
     },
     {
@@ -189,8 +149,7 @@ export class AppComponent {
       'domains': 'https://api.github.com/search/users',
       'required' : false,
       'multiple' : '3',
-      'bindLabel': 'label',
-      'bindValue': 'label'
+      'bindLabel' : 'label'
       
     },
     {

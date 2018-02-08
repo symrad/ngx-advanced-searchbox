@@ -2,7 +2,7 @@ export interface ViewModelInterface {
     _templateUuid: string;
     uuid: string;
     model: string;
-    type: string;
+    type: TypesFilterEnum;
     inputType: string;
     position: number;
     label: string;
@@ -32,4 +32,9 @@ export interface MaskInterface {
     patterns:any;
     dropSpecialCharacters:boolean;
     clearIfNotMatch:boolean;
+}
+
+export enum TypesFilterEnum {
+    OPERATORS = 'OPERATORS',
+    INPUT = 'INPUT'
 }

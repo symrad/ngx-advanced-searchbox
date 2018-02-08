@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ViewModelInterface } from './asViewModel.interface';
+import { ViewModelInterface, TypesFilterEnum } from './asViewModel.interface';
 import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
@@ -17,14 +17,14 @@ import { AsInputInterface } from './input/asInput.interface';
 import { AfterViewInit } from '@angular/core';
 import { Subscriber } from 'rxjs/Subscriber';
 import { Subscription } from 'rxjs/Subscription';
+import { AsInputAbstract } from './../advancedSearchBox/input/asInput.abstract';
 
 export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface, AfterViewInit {
 
     @Input() viewModel: ViewModelInterface;
 
-    public abstract inputInstance;
-    private _isFirstDocClick;
-    public searchboxInputClick$;
+    public abstract inputInstance:AsInputAbstract;
+    private _isFirstDocClick:boolean;
     public inputClickUnsubscribe$_:Subscription;
     public focusInput$: Subject<any>;
 
@@ -111,26 +111,24 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     }
 
     viewToModel() {
-        //if (this.viewModel.value) {
-            const newModel = {};
-            for (const singleViewModel of this.advancedSearchBox.viewModel){
-                let formattedValue = singleViewModel.value;
-                if(singleViewModel.formatModelValue){
-                    formattedValue = singleViewModel.formatModelValue(singleViewModel.value);
-                }
-                if (singleViewModel.multiple) {
-                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), []).push(formattedValue);
-                }else {
-                    this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), formattedValue);
-                }
+        const newModel = {};
+        for (const singleViewModel of this.advancedSearchBox.viewModel){
+            let formattedValue = singleViewModel.value;
+            if(this._config.formatModelValue[singleViewModel.model]){
+                formattedValue = this._config.formatModelValue[singleViewModel.model](singleViewModel.value);
             }
-            for (const key in this.advancedSearchBox.model) {
-                if (this.advancedSearchBox.model.hasOwnProperty(key)) {
-                    delete this.advancedSearchBox.model[key];
-                }
+            if (singleViewModel.multiple) {
+                this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), []).push(formattedValue);
+            }else {
+                this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), formattedValue);
             }
-            Object.assign(this.advancedSearchBox.model, newModel);
-        //}
+        }
+        for (const key in this.advancedSearchBox.model) {
+            if (this.advancedSearchBox.model.hasOwnProperty(key)) {
+                delete this.advancedSearchBox.model[key];
+            }
+        }
+        Object.assign(this.advancedSearchBox.model, newModel);
     }
 
     @HostListener('document:click', ['$event'])
@@ -146,10 +144,16 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
         this._isFirstDocClick = false;
     }
     
-
     public onSelectDomains($event){
-        const isModified = this.viewModel.value !== $event;
-        this.viewModel.value = $event;
+        let isModified;
+        if(this.viewModel.type === TypesFilterEnum.OPERATORS){
+            isModified = this._config.domainsFormatter(this.viewModel,this.viewModel.value.value) !== this._config.domainsFormatter(this.viewModel,$event);
+            this.viewModel.value.value = $event;
+        }else{
+            isModified = this._config.domainsFormatter(this.viewModel,this.viewModel.value) !== this._config.domainsFormatter(this.viewModel,$event);
+            this.viewModel.value = $event;
+        }
+
         if(isModified){
             this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
         }
@@ -157,14 +161,19 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     }
 
     public onSelectSuggestions($event:NgbTypeaheadSelectItemEvent){
-        const isModified = this.viewModel.value !== $event.item;
-        this.viewModel.value = $event.item;
+        let isModified;
+        if(this.viewModel.type === TypesFilterEnum.OPERATORS){
+            isModified = this._config.suggestionsFormatter(this.viewModel)(this.viewModel.value.value) !== this._config.suggestionsFormatter(this.viewModel)($event.item);
+            this.viewModel.value.value = $event.item;
+        }else{
+            isModified = this._config.suggestionsFormatter(this.viewModel)(this.viewModel.value) !== this._config.suggestionsFormatter(this.viewModel)($event.item);
+            this.viewModel.value = $event.item;
+        }
+        
         if(isModified){
             this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
         }
         this.viewToModel();
         this.inputInstance.typeaheadController._userInput = this.inputInstance.suggestionsFormatter($event.item);
     }
-
-    
 }

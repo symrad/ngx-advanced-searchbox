@@ -1,3 +1,4 @@
+import { ViewModelInterface } from './asViewModel.interface';
 import { Subject } from 'rxjs/Subject';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
@@ -6,69 +7,41 @@ import { ReplaySubject } from "rxjs/ReplaySubject";
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { FunctionCall } from '@angular/compiler';
 
 @Injectable()
 export class AsConfigService{
 
-    private _navigation;
-    public customDomainsFormatter;
-    public customDomainsModelFormatter;
-    public customSuggestionsFormatter;
+    private _navigation:ReplaySubject<any> = new ReplaySubject(2);
+    public customDomainsFormatter:Object = {};
+    public customDomainsModelFormatter:Object = {};
+    public customSuggestionsFormatter:Object = {};
 
-    public customSuggestionsStaticFn;
-    public customSuggestionsAsyncFn;
-    public customDomainsStaticFn;
-    public customDomainsAsyncFn;
+    public formatModelValue:{[key:string]:(val:any)=>Object|String} = {};
+    public formatModelViewValue:{[key:string]:(val:any, template:any)=>Object|String} = {};
+
+    public customSuggestionsStaticFn:{[key: string]:(observable:Observable<any>,viewModel:ViewModelInterface,model:any)=>any} = {};
+    public customSuggestionsAsyncFn:{[key: string]:(observable:Observable<any>,viewModel:ViewModelInterface,model:any)=>any} = {};
+    public customDomainsStaticFn:{[key: string]:(observable:Observable<any>,viewModel:ViewModelInterface,model:any)=>any} = {};
+    public customDomainsAsyncFn:{[key: string]:(observable:Observable<any>,viewModel:ViewModelInterface,model:any)=>any} = {};
     
-    public domainsFormatter;
-    public suggestionsFormatter;
+    public domainsFormatter:(viewModel:ViewModelInterface,model:any)=>any;
+    public suggestionsFormatter:(viewModel: ViewModelInterface)=>any;
 
     public domainsAsyncSubject:Subject<any> = new Subject();
     
     constructor(private _http:HttpClient){
-        this._navigation = new ReplaySubject(2);
-        this.customSuggestionsFormatter = {};
-        this.customDomainsFormatter = {};
-        this.customDomainsModelFormatter = {};
-
-        this.customSuggestionsStaticFn = {};
-        this.customSuggestionsAsyncFn = {};
-        this.customDomainsStaticFn = {};
-        this.customDomainsAsyncFn = {};
-
-        this.customDomainsAsyncFn['youtube'] = (observable, viewModel, model) => {
-            return observable
-            .switchMap((term) => {
-                return this._http.get('https://www.googleapis.com/youtube/v3/search', {params:{
-                    q:term,
-                    key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
-                    type: 'video',
-                    maxResults: '12',
-                    part: 'id,snippet'
-                    }})
-                    .catch(()=>[])
-                    .map((response:any) => {
-                        let newResponse = {response:[], term:''};
-                        newResponse.response = response.items.map((item)=>{
-                            return {label:item.snippet.title};
-                        });
-                        newResponse.term = term;
-                        return newResponse;
-                    })
-                }
-            );
-        }
         
-        this.suggestionsFormatter = (viewModel, val) => {
+        this.suggestionsFormatter = (viewModel):any => {
             if(this.customSuggestionsFormatter[viewModel.model]){
                 return this.customSuggestionsFormatter[viewModel.model];
             }
-            
-            if(typeof val === 'object'){
-                return val.label;
-            }
-            return val;
-            
+            return (val)=>{
+                if(typeof val === 'object'){
+                    return val.label;
+                }
+                return val;
+            };
         }; 
         
         this.domainsFormatter = (viewModel, val) => {
@@ -83,6 +56,7 @@ export class AsConfigService{
             }
             return val;
         };
+        
     }
 
     suggestionsStaticFn(observable, viewModel, suggestions):Observable<Array<any>>{
@@ -112,8 +86,8 @@ export class AsConfigService{
             .catch(()=>[])
             .map((response:any) => {
                 let newResponse = {response:[], term:''};
-                newResponse.response = response.map((item)=>{
-                    return {label:item.label};
+                newResponse.response = response.items.map((item)=>{
+                    return {label:item.login};
                 });
                 newResponse.term = term;
                 return newResponse;

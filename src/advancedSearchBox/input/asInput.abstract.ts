@@ -1,3 +1,4 @@
+import { ViewModelInterface } from './../asViewModel.interface';
 import { AsInputComponent } from './../asInput.component';
 import { Subject } from 'rxjs/Subject';
 import { ElementRef, OnInit, ViewChild } from '@angular/core';
@@ -31,9 +32,9 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
     public focusInput$: Subject<any>;
     public domainsResults$:ReplaySubject<any>;
     public suggestionsResults$:ReplaySubject<any>;
-    public searchboxInputClick$;
+    public searchboxInputClick$:Observable<any>;
     public _filter:AsInputWithOperatorsComponent | AsInputComponent;
-    public suggestionsFormatter;
+    public suggestionsFormatter:(viewModel: ViewModelInterface)=>any;
     public domainsFormatter;
     public suggestionsFunc;
     public domainsFunc;
@@ -108,14 +109,14 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                         return false;
                     }
                     if(type === notDuplicate.Domains){
-                        if(this._filter.viewModel.formatModelViewValue){
-                            valModel = this._filter.viewModel.formatModelViewValue(valModel, this._filter.viewModel);
+                        if(this._config.formatModelViewValue[this._filter.viewModel.model]){
+                            valModel = this._config.formatModelViewValue[this._filter.viewModel.model](valModel, this._filter.viewModel);
                         }
                         return this._config.domainsFormatter(this._filter.viewModel, valModel) === this._config.domainsFormatter(this._filter.viewModel, v) 
                         && this._config.domainsFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
                     }else{
-                        return valModel === this._config.suggestionsFormatter(this._filter.viewModel,v) 
-                        && this._config.suggestionsFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
+                        return valModel === this._config.suggestionsFormatter(this._filter.viewModel)(v) 
+                        && this._config.suggestionsFormatter(this._filter.viewModel)(valModel).toLowerCase() !== term.toLowerCase();
                     }
                 }).length === 0;
             });

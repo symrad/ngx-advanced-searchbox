@@ -66,5 +66,10 @@ import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component'
     ]
 })
 export class AsBoxModule {
-    static forRoot(): ModuleWithProviders { return {ngModule: AsBoxModule, providers: [AsConfigService]}; }
+    static forRoot(): ModuleWithProviders { 
+        return {
+            ngModule: AsBoxModule, 
+            providers: [AsConfigService]
+        }; 
+    }
 }

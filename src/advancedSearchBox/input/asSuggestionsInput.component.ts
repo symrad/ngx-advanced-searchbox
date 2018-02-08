@@ -17,6 +17,7 @@ import { AsInputComponent } from "../asInput.component";
             (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)"
             (selectItem)="_filter.onSelectSuggestions($event)"
             autosize 
+            [autosizeProp]="_filter.viewModel.bindLabel"
             [placeholder]="_filter.viewModel.label"
             [ngbTypeahead]="suggestionsFunc"
             [inputFormatter]="suggestionsFormatter(_filter.viewModel)"

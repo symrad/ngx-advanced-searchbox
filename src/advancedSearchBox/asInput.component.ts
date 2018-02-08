@@ -103,7 +103,9 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
     }
 
     public onChange() {
-        this.viewToModel();
+        setTimeout(()=>{
+            this.viewToModel();
+        },0);
     }
 
 }

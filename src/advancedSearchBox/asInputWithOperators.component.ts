@@ -174,8 +174,10 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
         }
     }
 
-    onChange() {
-        this.viewToModel();
+    public onChange() {
+        setTimeout(()=>{
+            this.viewToModel();
+        },0);
     }
 
     onChangeOperators($event: MouseEvent | KeyboardEvent, operator: string) {
