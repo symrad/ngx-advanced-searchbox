@@ -1,5 +1,6 @@
 // Core variables and mixins
 @import "~bootstrap/scss/bootstrap";
+@import "~@ng-select/ng-select/themes/default.theme.css";
 
 advanced-searchbox{
     width: 100%;
@@ -16,11 +17,20 @@ advanced-searchbox{
         input{
             padding: 0 15px;
         }
-        .input-group-addon{
+        ng-select{
+            input{
+                padding:0;
+            }
+        }
+        .input-group-prepend .notClickable{
             color: #007bff;
             background-color: transparent;
             background-image: none;
             border-color: #007bff;
+            cursor: default;
+        }
+        .input-group-prepend .noRadius{
+            border-radius:0; 
         }
     }
     #search{
@@ -29,7 +39,18 @@ advanced-searchbox{
         margin-bottom: 15px;
         padding: 0 15px;
     }
+    ng-select, .ng-select{
+        .ng-menu-outer{
+            width:auto!important;
+            min-width: 200px;
+        }
+        &.ng-single .ng-control{
+            height:100%;
+            border-radius:0;
+        }
+    }
 }
 
-
-
+.ng-select-dropdown-outer{
+    width: auto!important;
+}
