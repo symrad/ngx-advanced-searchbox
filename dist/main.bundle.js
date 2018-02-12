@@ -362,12 +362,6 @@ var AppConfigService = /** @class */ (function (_super) {
                     return val.value;
                 }
                 return val;
-            },
-            'test': function (val) {
-                if (val) {
-                    return val.value;
-                }
-                return val;
             }
         };
         _this.formatModelViewValue = {
