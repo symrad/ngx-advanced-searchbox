@@ -7,7 +7,7 @@
     {
       "root": "src",
       "outDir": "dist",
-      "deployUrl": "dist",
+      "deployUrl": "ngx-advanced-searchbox/dist",
       "assets": [
         "assets",
         "favicon.ico"
