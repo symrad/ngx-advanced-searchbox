@@ -87,7 +87,9 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
     }
 
     onClear(){
+        this._filterValue = null;
         this.focusInput$.next(undefined);
+        this._filter.remove();
     }
 
     onChange(data){

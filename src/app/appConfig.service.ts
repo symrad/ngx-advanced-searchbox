@@ -63,12 +63,6 @@ export class AppConfigService extends AsConfigService{
                   return val.value;
                 }
                 return val;
-            },
-            'test':function(val){
-                if(val){
-                    return val.value;
-                  }
-                  return val;
             }
         };
 
