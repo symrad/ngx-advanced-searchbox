@@ -5,12 +5,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "npm run clean:index && ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "transpile": "ngc",
     "package": "rollup -c",
+    "clean:index": "cp src/index.html index.html && touch index.html",
     "minify": "uglifyjs dist/bundles/searchbox.umd.js --screw-ie8 --compress --mangle --comments --output dist/bundles/searchbox.umd.min.js",
     "buildlib": "npm run transpile && npm run package && npm run minify"
   },
