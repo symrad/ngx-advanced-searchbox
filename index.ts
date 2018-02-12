@@ -6,5 +6,4 @@ export * from './src/advancedSearchBox/asFilter.interface';
 export * from './src/advancedSearchBox/asInput.component';
 export * from './src/advancedSearchBox/asInputWithOperators.component';
 export * from './src/advancedSearchBox/asTemplate.directive';
-export * from './src/advancedSearchBox/asTemplate.interface';
 export * from './src/advancedSearchBox/asViewModel.interface';
