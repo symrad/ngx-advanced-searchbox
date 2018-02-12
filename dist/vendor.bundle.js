@@ -9611,7 +9611,7 @@ function toComment(sourceMap) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_advancedSearchBox_as_module__ = __webpack_require__("../../../../ngx-advanced-searchbox/src/advancedSearchBox/as.module.js");
 /* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__src_advancedSearchBox_as_module__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__src_advancedSearchBox_asConfig_service__ = __webpack_require__("../../../../ngx-advanced-searchbox/src/advancedSearchBox/asConfig.service.js");
-/* unused harmony namespace reexport */
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_2__src_advancedSearchBox_asConfig_service__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__src_advancedSearchBox_asFilter_abstract__ = __webpack_require__("../../../../ngx-advanced-searchbox/src/advancedSearchBox/asFilter.abstract.js");
 /* unused harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__src_advancedSearchBox_asInput_component__ = __webpack_require__("../../../../ngx-advanced-searchbox/src/advancedSearchBox/asInput.component.js");
