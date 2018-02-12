@@ -13,9 +13,9 @@ import { FunctionCall } from '@angular/compiler';
 export class AsConfigService{
 
     private _navigation:ReplaySubject<any> = new ReplaySubject(2);
-    public customDomainsFormatter:Object = {};
-    public customDomainsModelFormatter:Object = {};
-    public customSuggestionsFormatter:Object = {};
+
+    public customDomainsModelFormatter:{[key:string]:(viewModel:ViewModelInterface,val:any)=>any} = {};
+    public customSuggestionsFormatter:{[key:string]:(viewModel:ViewModelInterface)=>any} = {};
 
     public formatModelValue:{[key:string]:(val:any)=>Object|String} = {};
     public formatModelViewValue:{[key:string]:(val:any, template:any)=>Object|String} = {};
@@ -46,7 +46,7 @@ export class AsConfigService{
         
         this.domainsFormatter = (viewModel, val) => {
             if(this.customDomainsModelFormatter[viewModel.model]){
-                return this.customDomainsModelFormatter[viewModel.model];
+                return this.customDomainsModelFormatter[viewModel.model](viewModel,val);
             }
             if(typeof val === 'object'){
                 if(viewModel.bindLabel){

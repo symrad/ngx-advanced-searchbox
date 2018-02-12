@@ -63,6 +63,12 @@ export class AppConfigService extends AsConfigService{
                   return val.value;
                 }
                 return val;
+            },
+            'test':function(val){
+                if(val){
+                    return val.value;
+                  }
+                  return val;
             }
         };
 
@@ -93,7 +99,28 @@ export class AppConfigService extends AsConfigService{
                   return domainsFiltered[0]
                 }
                 return val;
+            },
+            'test':function(val, template){
+                var domainsFiltered = template.domains.filter((par)=>{
+                  return par.value == val;
+                });
+                if(domainsFiltered.length>0){
+                  return domainsFiltered[0]
+                }
+                return val;
             }
         };
+
+        this.customDomainsModelFormatter = {
+            'test':function(viewModel,val){
+                let current = viewModel.domains.filter((item)=>{
+                    if(typeof val === 'object'){
+                        return item.id == val.id;
+                    }
+                    return item.id == val;
+                });
+                return current[0].label;
+            }
+        }
     }
 }
