@@ -10,31 +10,8 @@ import { Component, OnInit } from '@angular/core';
     <code>
       {{model | json}}
     </code>
-        ---js
-        public model = {{'{'}};
-        public template = {{'{'}};
-
-        constructor(){{'{'}
-          this.model = {{'{'} "isEnabled": [ {{'{'} "label": "Yes", "value": true } ]};
-          this.template = [
-            {{'{'}
-              'model' : 'isEnabled',
-              'type' : 'INPUT',
-              'inputType' : 'TEXT',
-              'position' : 1,
-              'label' : 'Enabled',
-              'domains': [{{'{'}label:'Yes', value:true}, {{'{'}label:'No', value:false}],
-              'multiple' : '1',
-              'bindLabel': 'label'
-            }
-          ];
-        }
-        ---
-
-        ---html, true
-        <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
-        </advanced-searchbox>
-        ---
+    <pre><code highlight [code]="codeJs"></code></pre>
+    <pre><code highlight [code]="codeHtml"></code></pre>
   </div>
     `,
     styles: [
@@ -54,6 +31,8 @@ export class SwitchRadioComponent {
   
   public model = {};
   public template = {};
+  public codeHtml;
+  public codeJs;
 
   constructor(){
     this.model = { "isEnabled": [ { "label": "Yes", "value": true } ]};
@@ -69,5 +48,24 @@ export class SwitchRadioComponent {
         'bindLabel': 'label'
       }
     ];
+    this.codeJs = `
+      public model = {};
+      public template = {};
+
+      constructor(){
+        this.model = { "isEnabled": [ { "label": "Yes", "value": true } ]};
+        this.template = [
+          {
+            'model' : 'isEnabled',
+            'type' : 'INPUT',
+            'inputType' : 'TEXT',
+            'position' : 1,
+            'label' : 'Enabled',
+            'domains': [{label:'Yes', value:true}, {label:'No', value:false}],
+            'multiple' : '1',
+            'bindLabel': 'label'
+          }
+        ];
+      }`;
   }
 }

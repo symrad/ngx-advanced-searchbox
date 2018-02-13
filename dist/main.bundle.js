@@ -245,12 +245,14 @@ var AppComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__layout_sidenav_component__ = __webpack_require__("../../../../../src/app/layout/sidenav.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__ = __webpack_require__("../../../../../src/app/routes/appendTo.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__routes_switchRadio_component__ = __webpack_require__("../../../../../src/app/routes/switchRadio.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_ngx_highlightjs__ = __webpack_require__("../../../../ngx-highlightjs/ngx-highlightjs.es5.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -289,7 +291,8 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_4_ngx_advanced_searchbox__["a" /* AsBoxModule */].forRoot(),
                 __WEBPACK_IMPORTED_MODULE_6__angular_router__["a" /* RouterModule */].forRoot(appRoutes, {
                     useHash: true
-                })
+                }),
+                __WEBPACK_IMPORTED_MODULE_11_ngx_highlightjs__["a" /* HighlightModule */].forRoot()
             ],
             providers: [
                 { provide: __WEBPACK_IMPORTED_MODULE_4_ngx_advanced_searchbox__["b" /* AsConfigService */], useClass: __WEBPACK_IMPORTED_MODULE_5__appConfig_service__["a" /* AppConfigService */] }
@@ -745,11 +748,12 @@ var SwitchRadioComponent = /** @class */ (function () {
                 'bindLabel': 'label'
             }
         ];
+        this.codeJs = "\n      public model = {};\n      public template = {};\n\n      constructor(){\n        this.model = { \"isEnabled\": [ { \"label\": \"Yes\", \"value\": true } ]};\n        this.template = [\n          {\n            'model' : 'isEnabled',\n            'type' : 'INPUT',\n            'inputType' : 'TEXT',\n            'position' : 1,\n            'label' : 'Enabled',\n            'domains': [{label:'Yes', value:true}, {label:'No', value:false}],\n            'multiple' : '1',\n            'bindLabel': 'label'\n          }\n        ];\n      }";
     }
     SwitchRadioComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'switch-radio',
-            template: "\n    <advanced-searchbox [template]=\"template\" [model]=\"model\" [openOnLoad]=\"true\">\n    </advanced-searchbox>\n  <br/>\n  <div>\n    <code>\n      {{model | json}}\n    </code>\n        ---js\n        public model = {{'{'}};\n        public template = {{'{'}};\n\n        constructor(){{'{'}\n          this.model = {{'{'} \"isEnabled\": [ {{'{'} \"label\": \"Yes\", \"value\": true } ]};\n          this.template = [\n            {{'{'}\n              'model' : 'isEnabled',\n              'type' : 'INPUT',\n              'inputType' : 'TEXT',\n              'position' : 1,\n              'label' : 'Enabled',\n              'domains': [{{'{'}label:'Yes', value:true}, {{'{'}label:'No', value:false}],\n              'multiple' : '1',\n              'bindLabel': 'label'\n            }\n          ];\n        }\n        ---\n\n        ---html, true\n        <advanced-searchbox [template]=\"template\" [model]=\"model\" [openOnLoad]=\"true\">\n        </advanced-searchbox>\n        ---\n  </div>\n    ",
+            template: "\n    <advanced-searchbox [template]=\"template\" [model]=\"model\" [openOnLoad]=\"true\">\n    </advanced-searchbox>\n  <br/>\n  <div>\n    <code>\n      {{model | json}}\n    </code>\n    <pre><code highlight [code]=\"codeJs\"></code></pre>\n    <pre><code highlight [code]=\"codeHtml\"></code></pre>\n  </div>\n    ",
             styles: [
                 "\n           .overflow-box {\n               widht: 300px;\n               padding: 5px;\n               height: 100px;\n               border: 1px solid #999;\n               overflow: hidden;\n           }\n        "
             ]

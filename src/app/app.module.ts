@@ -9,6 +9,7 @@ import { LayoutHeaderComponent } from './layout/header.component';
 import { LayoutSidenavComponent } from './layout/sidenav.component';
 import { AppendToComponent } from './routes/appendTo.component';
 import { SwitchRadioComponent } from './routes/switchRadio.component';
+import { HighlightModule } from 'ngx-highlightjs';
  
 var appRoutes = [
   {
@@ -37,7 +38,8 @@ var appRoutes = [
       {
           useHash: true
       }
-    )
+    ),
+    HighlightModule.forRoot()
   ],
   providers: [
     {provide:AsConfigService, useClass:AppConfigService}

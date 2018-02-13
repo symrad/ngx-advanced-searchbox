@@ -26,7 +26,8 @@
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
-    "ngx-advanced-searchbox": "0.0.35"
+    "ngx-advanced-searchbox": "0.0.35",
+    "ngx-highlightjs": "^1.4.1"
   },
   "devDependencies": {
     "@angular/cli": "1.5.4",
