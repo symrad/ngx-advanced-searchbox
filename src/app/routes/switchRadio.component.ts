@@ -11,7 +11,6 @@ import { Component, OnInit } from '@angular/core';
       {{model | json}}
     </code>
     <pre><code highlight [code]="codeJs"></code></pre>
-    <pre><code highlight [code]="codeHtml"></code></pre>
   </div>
     `,
     styles: [
