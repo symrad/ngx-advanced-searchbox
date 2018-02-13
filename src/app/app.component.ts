@@ -159,7 +159,7 @@ export class AppComponent {
       'position' : 2147483647,
       'label' : 'Test',
       'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
-      'domains': [{'label':'disoccupato','id':'1'}, {'label':'impiegato',id:'2'}, {'label':'operaio',id:'3'}],
+      'domains': [{'label':'disoccupato',id:'1'}, {'label':'impiegato',id:'2'}, {'label':'operaio',id:'3'}],
       'required' : false,
       'multiple' : '3',
       'bindLabel': 'label',

@@ -28,6 +28,7 @@ import { NgControl } from '@angular/forms';
         [items]="itemsDomain"
         (change)="onChange($event)"
         (clear)="onClear()"
+        (remove)="onRemove($event)"
         [(ngModel)]="_filter.viewModel.value.value">
     </ng-select>
     <input autosize #inputAutosize type="text" [(ngModel)]="filterValue" [hidden]="true" />`,
@@ -90,6 +91,12 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
         this._filterValue = null;
         this.focusInput$.next(undefined);
         this._filter.remove();
+    }
+
+    onRemove(data){
+        this.focusInput$.next(undefined);
+        this.inputRef.open();
+        this._filter.removeEmpty([this._filter.viewModel.value]);
     }
 
     onChange(data){

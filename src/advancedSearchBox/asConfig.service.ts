@@ -14,6 +14,7 @@ export class AsConfigService{
 
     private _navigation:ReplaySubject<any> = new ReplaySubject(2);
 
+    public customDomainsFormatter:{[key:string]:(viewModel:ViewModelInterface,val:any)=>any} = {};
     public customDomainsModelFormatter:{[key:string]:(viewModel:ViewModelInterface,val:any)=>any} = {};
     public customSuggestionsFormatter:{[key:string]:(viewModel:ViewModelInterface)=>any} = {};
 
@@ -25,7 +26,9 @@ export class AsConfigService{
     public customDomainsStaticFn:{[key: string]:(observable:Observable<any>,viewModel:ViewModelInterface,model:any)=>any} = {};
     public customDomainsAsyncFn:{[key: string]:(observable:Observable<any>,viewModel:ViewModelInterface,model:any)=>any} = {};
     
+
     public domainsFormatter:(viewModel:ViewModelInterface,model:any)=>any;
+    public domainsModelFormatter:(viewModel:ViewModelInterface,model:any)=>any;
     public suggestionsFormatter:(viewModel: ViewModelInterface)=>any;
 
     public domainsAsyncSubject:Subject<any> = new Subject();
@@ -45,6 +48,19 @@ export class AsConfigService{
         }; 
         
         this.domainsFormatter = (viewModel, val) => {
+            if(this.customDomainsFormatter[viewModel.model]){
+                return this.customDomainsFormatter[viewModel.model](viewModel,val);
+            }
+            if(typeof val === 'object'){
+                if(viewModel.bindLabel){
+                    return val[viewModel.bindLabel];
+                }
+                return val.label;
+            }
+            return val;
+        };
+
+        this.domainsModelFormatter = (viewModel, val) => {
             if(this.customDomainsModelFormatter[viewModel.model]){
                 return this.customDomainsModelFormatter[viewModel.model](viewModel,val);
             }

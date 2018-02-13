@@ -96,10 +96,13 @@ export class AppConfigService extends AsConfigService{
             },
             'test':function(val, template){
                 var domainsFiltered = template.domains.filter((par)=>{
-                  return par.value == val;
+                  return par.label == val.value;
                 });
                 if(domainsFiltered.length>0){
-                  return domainsFiltered[0]
+                  return domainsFiltered[0].value.id;
+                }
+                if(val.value){
+                    return val.value;
                 }
                 return val;
             }
@@ -113,7 +116,25 @@ export class AppConfigService extends AsConfigService{
                     }
                     return item.id == val;
                 });
-                return current[0].label;
+                if(current.length > 0){
+                    return current[0].label;
+                }
+                return val;
+            }
+        }
+
+        this.customDomainsFormatter = {
+            'test':function(viewModel,val){
+                let current = viewModel.domains.filter((item)=>{
+                    if(typeof val === 'object'){
+                        return item.id == val.value;
+                    }
+                    return item.id == val;
+                });
+                if(current.length > 0){
+                    return current[0].label;
+                }
+                return val;
             }
         }
     }

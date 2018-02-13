@@ -112,7 +112,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
                         if(this._config.formatModelViewValue[this._filter.viewModel.model]){
                             valModel = this._config.formatModelViewValue[this._filter.viewModel.model](valModel, this._filter.viewModel);
                         }
-                        return this._config.domainsFormatter(this._filter.viewModel, valModel) === this._config.domainsFormatter(this._filter.viewModel, v) 
+                        return this._config.domainsFormatter(this._filter.viewModel, valModel) === this._config.domainsModelFormatter(this._filter.viewModel, v) 
                         && this._config.domainsFormatter(this._filter.viewModel, valModel).toLowerCase() !== term.toLowerCase();
                     }else{
                         return valModel === this._config.suggestionsFormatter(this._filter.viewModel)(v) 
@@ -154,8 +154,8 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface{
             //.distinctUntilChanged()
             .map((term)=>{
                 if (term instanceof MouseEvent || !term) {
-                    if(this.inputRef.value){
-                        term = this.inputRef.value[this.inputRef.bindLabel] || '';
+                    if(this.inputRef._value){
+                        term = this.inputRef._value[this.inputRef.bindLabel] || '';
                     }else{
                         term = '';
                     }
