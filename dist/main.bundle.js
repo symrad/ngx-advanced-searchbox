@@ -244,6 +244,7 @@ var AppComponent = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__layout_header_component__ = __webpack_require__("../../../../../src/app/layout/header.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__layout_sidenav_component__ = __webpack_require__("../../../../../src/app/layout/sidenav.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__ = __webpack_require__("../../../../../src/app/routes/appendTo.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__routes_switchRadio_component__ = __webpack_require__("../../../../../src/app/routes/switchRadio.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -260,13 +261,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 var appRoutes = [
     {
         path: '',
         redirectTo: '/general',
         pathMatch: 'full'
     },
-    { path: 'general', component: __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__["a" /* AppendToComponent */], data: { title: 'General' } }
+    { path: 'general', component: __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__["a" /* AppendToComponent */], data: { title: 'General' } },
+    { path: 'switch-radio', component: __WEBPACK_IMPORTED_MODULE_10__routes_switchRadio_component__["a" /* SwitchRadioComponent */], data: { title: 'Switch - Radio' } }
 ];
 var AppModule = /** @class */ (function () {
     function AppModule() {
@@ -277,7 +280,8 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_2__app_component__["a" /* AppComponent */],
                 __WEBPACK_IMPORTED_MODULE_7__layout_header_component__["a" /* LayoutHeaderComponent */],
                 __WEBPACK_IMPORTED_MODULE_8__layout_sidenav_component__["a" /* LayoutSidenavComponent */],
-                __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__["a" /* AppendToComponent */]
+                __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__["a" /* AppendToComponent */],
+                __WEBPACK_IMPORTED_MODULE_10__routes_switchRadio_component__["a" /* SwitchRadioComponent */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -509,7 +513,7 @@ var LayoutSidenavComponent = /** @class */ (function () {
     LayoutSidenavComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'layout-sidenav',
-            template: "\n        <ul class=\"nav nav-pills flex-column\">\n            <li class=\"nav-item\" routerLinkActive=\"active\">\n                <a class=\"nav-link\" routerLink=\"/general\" routerLinkActive=\"active\">General</a>\n            </li>\n        </ul>\n    "
+            template: "\n        <ul class=\"nav nav-pills flex-column\">\n            <li class=\"nav-item\" routerLinkActive=\"active\">\n                <a class=\"nav-link\" routerLink=\"/general\" routerLinkActive=\"active\">General</a>\n            </li>\n            <li class=\"nav-item\" routerLinkActive=\"active\">\n                <a class=\"nav-link\" routerLink=\"/switch-radio\" routerLinkActive=\"active\">Switch/Radio</a>\n            </li>\n        </ul>\n    "
         })
     ], LayoutSidenavComponent);
     return LayoutSidenavComponent;
@@ -702,6 +706,57 @@ var AppendToComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [])
     ], AppendToComponent);
     return AppendToComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/routes/switchRadio.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SwitchRadioComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var SwitchRadioComponent = /** @class */ (function () {
+    function SwitchRadioComponent() {
+        this.model = {};
+        this.template = {};
+        this.model = { "isEnabled": [{ "label": "Yes", "value": true }] };
+        this.template = [
+            {
+                'model': 'isEnabled',
+                'type': 'INPUT',
+                'inputType': 'TEXT',
+                'position': 1,
+                'label': 'Enabled',
+                'domains': [{ label: 'Yes', value: true }, { label: 'No', value: false }],
+                'multiple': '1',
+                'bindLabel': 'label'
+            }
+        ];
+    }
+    SwitchRadioComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+            selector: 'switch-radio',
+            template: "\n    <advanced-searchbox [template]=\"template\" [model]=\"model\" [openOnLoad]=\"true\">\n    </advanced-searchbox>\n  <br/>\n  <div>\n    <code>\n      {{model | json}}\n    </code>\n        ---js\n        public model = {{'{'}};\n        public template = {{'{'}};\n\n        constructor(){{'{'}\n          this.model = {{'{'} \"isEnabled\": [ {{'{'} \"label\": \"Yes\", \"value\": true } ]};\n          this.template = [\n            {{'{'}\n              'model' : 'isEnabled',\n              'type' : 'INPUT',\n              'inputType' : 'TEXT',\n              'position' : 1,\n              'label' : 'Enabled',\n              'domains': [{{'{'}label:'Yes', value:true}, {{'{'}label:'No', value:false}],\n              'multiple' : '1',\n              'bindLabel': 'label'\n            }\n          ];\n        }\n        ---\n\n        ---html, true\n        <advanced-searchbox [template]=\"template\" [model]=\"model\" [openOnLoad]=\"true\">\n        </advanced-searchbox>\n        ---\n  </div>\n    ",
+            styles: [
+                "\n           .overflow-box {\n               widht: 300px;\n               padding: 5px;\n               height: 100px;\n               border: 1px solid #999;\n               overflow: hidden;\n           }\n        "
+            ]
+        }),
+        __metadata("design:paramtypes", [])
+    ], SwitchRadioComponent);
+    return SwitchRadioComponent;
 }());
 
 

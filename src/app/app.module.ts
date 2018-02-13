@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router'
 import { LayoutHeaderComponent } from './layout/header.component';
 import { LayoutSidenavComponent } from './layout/sidenav.component';
 import { AppendToComponent } from './routes/appendTo.component';
+import { SwitchRadioComponent } from './routes/switchRadio.component';
  
 var appRoutes = [
   {
@@ -15,7 +16,8 @@ var appRoutes = [
       redirectTo: '/general',
       pathMatch: 'full'
   },
-  { path: 'general', component: AppendToComponent, data: { title: 'General' } }
+  { path: 'general', component: AppendToComponent, data: { title: 'General' } },
+  { path: 'switch-radio', component: SwitchRadioComponent, data: { title: 'Switch - Radio' } }
 ];
 
 @NgModule({
@@ -23,7 +25,8 @@ var appRoutes = [
     AppComponent,
     LayoutHeaderComponent,
     LayoutSidenavComponent,
-    AppendToComponent
+    AppendToComponent,
+    SwitchRadioComponent
   ],
   imports: [
     BrowserModule,

@@ -7,6 +7,9 @@ import { Component } from '@angular/core';
             <li class="nav-item" routerLinkActive="active">
                 <a class="nav-link" routerLink="/general" routerLinkActive="active">General</a>
             </li>
+            <li class="nav-item" routerLinkActive="active">
+                <a class="nav-link" routerLink="/switch-radio" routerLinkActive="active">Switch/Radio</a>
+            </li>
         </ul>
     `
 })
