@@ -1,14 +1,16 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)" [openOnLoad]="true">
-  <ng-container *asTemplate="let filter">
-    <ng-container [ngSwitch]="filter.type">
-      <!--<app-as-operators *ngSwitchCase="'RANGE'" [viewModel]="filter" class="as-filter"></app-as-operators>-->
-    </ng-container>
-  </ng-container>
-</advanced-searchbox>
-<br/>
-<div>
-  <code>
-    {{model | json}}
-  </code>
-</div>
+<layout-header></layout-header>
+<div class="container fill">
+    <div class="row">
+        <div class="col-12 col-md-2 col-xl-3 py-md-4 bd-sidebar">
+            <layout-sidenav></layout-sidenav>
+        </div>
+        <main class="col-12 col-md-10 col-xl-8 py-md-4 pl-md-4 bd-content">
+            <h2 class="bd-title">
+                {{title}}
+            </h2>
+            
+            <router-outlet></router-outlet>
+                
+        </main>
+    </div>
+</div><!--The content below is only a placeholder and can be replaced.-->

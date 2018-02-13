@@ -96,10 +96,13 @@ export class AppConfigService extends AsConfigService{
             },
             'test':function(val, template){
                 var domainsFiltered = template.domains.filter((par)=>{
-                  return par.value == val;
+                  return par.label == val.value;
                 });
                 if(domainsFiltered.length>0){
-                  return domainsFiltered[0]
+                  return domainsFiltered[0].value.id;
+                }
+                if(val.value){
+                    return val.value;
                 }
                 return val;
             }

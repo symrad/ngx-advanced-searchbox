@@ -58,7 +58,7 @@ export class AppComponent {
 
 
     this.model = 
-    { "isEnabled": [ { "label": "Yes", "value": true } ], "city": [ 1, 2, 3, 4 ], "youtube": [ "Marvel Studios' Avengers: Infinity War Official Trailer", "Atalanta vs Juventus 0-1 ● All Goals & Highlights HD ● 30 Jan 2018 - Coppa Italia" ] };
+    { "isEnabled": [ { "label": "Yes", "value": true } ], "city": [ 1, 2, 3, 4 ], "youtube": [ "Marvel Studios' Avengers: Infinity War Official Trailer" ] };
     this.template = [
       {
         'model' : 'isEnabled',
