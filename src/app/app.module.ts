@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -39,7 +40,7 @@ var appRoutes = [
           useHash: true
       }
     ),
-    HighlightModule.forRoot()
+    HighlightModule.forRoot({path: environment.assetsPath+'/lib/hljs'})
   ],
   providers: [
     {provide:AsConfigService, useClass:AppConfigService}

@@ -234,18 +234,19 @@ var AppComponent = /** @class */ (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__("../../../platform-browser/esm5/platform-browser.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common__ = __webpack_require__("../../../common/esm5/common.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_ngx_advanced_searchbox__ = __webpack_require__("../../../../ngx-advanced-searchbox/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__appConfig_service__ = __webpack_require__("../../../../../src/app/appConfig.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__angular_router__ = __webpack_require__("../../../router/esm5/router.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__layout_header_component__ = __webpack_require__("../../../../../src/app/layout/header.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__layout_sidenav_component__ = __webpack_require__("../../../../../src/app/layout/sidenav.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__ = __webpack_require__("../../../../../src/app/routes/appendTo.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__routes_switchRadio_component__ = __webpack_require__("../../../../../src/app/routes/switchRadio.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_ngx_highlightjs__ = __webpack_require__("../../../../ngx-highlightjs/ngx-highlightjs.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__("../../../platform-browser/esm5/platform-browser.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_common__ = __webpack_require__("../../../common/esm5/common.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_ngx_advanced_searchbox__ = __webpack_require__("../../../../ngx-advanced-searchbox/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__appConfig_service__ = __webpack_require__("../../../../../src/app/appConfig.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__angular_router__ = __webpack_require__("../../../router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__layout_header_component__ = __webpack_require__("../../../../../src/app/layout/header.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__layout_sidenav_component__ = __webpack_require__("../../../../../src/app/layout/sidenav.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__routes_appendTo_component__ = __webpack_require__("../../../../../src/app/routes/appendTo.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__routes_switchRadio_component__ = __webpack_require__("../../../../../src/app/routes/switchRadio.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_ngx_highlightjs__ = __webpack_require__("../../../../ngx-highlightjs/ngx-highlightjs.es5.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -264,40 +265,41 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 var appRoutes = [
     {
         path: '',
         redirectTo: '/general',
         pathMatch: 'full'
     },
-    { path: 'general', component: __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__["a" /* AppendToComponent */], data: { title: 'General' } },
-    { path: 'switch-radio', component: __WEBPACK_IMPORTED_MODULE_10__routes_switchRadio_component__["a" /* SwitchRadioComponent */], data: { title: 'Switch - Radio' } }
+    { path: 'general', component: __WEBPACK_IMPORTED_MODULE_10__routes_appendTo_component__["a" /* AppendToComponent */], data: { title: 'General' } },
+    { path: 'switch-radio', component: __WEBPACK_IMPORTED_MODULE_11__routes_switchRadio_component__["a" /* SwitchRadioComponent */], data: { title: 'Switch - Radio' } }
 ];
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["J" /* NgModule */])({
+        Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["J" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_2__app_component__["a" /* AppComponent */],
-                __WEBPACK_IMPORTED_MODULE_7__layout_header_component__["a" /* LayoutHeaderComponent */],
-                __WEBPACK_IMPORTED_MODULE_8__layout_sidenav_component__["a" /* LayoutSidenavComponent */],
-                __WEBPACK_IMPORTED_MODULE_9__routes_appendTo_component__["a" /* AppendToComponent */],
-                __WEBPACK_IMPORTED_MODULE_10__routes_switchRadio_component__["a" /* SwitchRadioComponent */]
+                __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */],
+                __WEBPACK_IMPORTED_MODULE_8__layout_header_component__["a" /* LayoutHeaderComponent */],
+                __WEBPACK_IMPORTED_MODULE_9__layout_sidenav_component__["a" /* LayoutSidenavComponent */],
+                __WEBPACK_IMPORTED_MODULE_10__routes_appendTo_component__["a" /* AppendToComponent */],
+                __WEBPACK_IMPORTED_MODULE_11__routes_switchRadio_component__["a" /* SwitchRadioComponent */]
             ],
             imports: [
-                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
-                __WEBPACK_IMPORTED_MODULE_3__angular_common__["b" /* CommonModule */],
-                __WEBPACK_IMPORTED_MODULE_4_ngx_advanced_searchbox__["a" /* AsBoxModule */].forRoot(),
-                __WEBPACK_IMPORTED_MODULE_6__angular_router__["a" /* RouterModule */].forRoot(appRoutes, {
+                __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_4__angular_common__["b" /* CommonModule */],
+                __WEBPACK_IMPORTED_MODULE_5_ngx_advanced_searchbox__["a" /* AsBoxModule */].forRoot(),
+                __WEBPACK_IMPORTED_MODULE_7__angular_router__["a" /* RouterModule */].forRoot(appRoutes, {
                     useHash: true
                 }),
-                __WEBPACK_IMPORTED_MODULE_11_ngx_highlightjs__["a" /* HighlightModule */].forRoot()
+                __WEBPACK_IMPORTED_MODULE_12_ngx_highlightjs__["a" /* HighlightModule */].forRoot({ path: __WEBPACK_IMPORTED_MODULE_0__environments_environment__["a" /* environment */].assetsPath + '/lib/hljs' })
             ],
             providers: [
-                { provide: __WEBPACK_IMPORTED_MODULE_4_ngx_advanced_searchbox__["b" /* AsConfigService */], useClass: __WEBPACK_IMPORTED_MODULE_5__appConfig_service__["a" /* AppConfigService */] }
+                { provide: __WEBPACK_IMPORTED_MODULE_5_ngx_advanced_searchbox__["b" /* AsConfigService */], useClass: __WEBPACK_IMPORTED_MODULE_6__appConfig_service__["a" /* AppConfigService */] }
             ],
-            bootstrap: [__WEBPACK_IMPORTED_MODULE_2__app_component__["a" /* AppComponent */]]
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */]]
         })
     ], AppModule);
     return AppModule;
@@ -777,7 +779,8 @@ var SwitchRadioComponent = /** @class */ (function () {
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
-    production: false
+    production: false,
+    assetsPath: 'assets'
 };
 
 
