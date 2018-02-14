@@ -180,6 +180,7 @@ export class AsComponent implements OnInit, OnChanges {
             if (this.openOnLoad) {
                 setTimeout(() => {
                     this.focusInput$.next();
+                    this.searchboxInput.nativeElement.focus();
                 });
             }
         }
