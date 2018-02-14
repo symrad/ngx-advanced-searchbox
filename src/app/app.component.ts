@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,27 @@ export class AppComponent {
     
   }
 
-  constructor(){
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private titleService: Title
+  ){
+
+    this.router.events
+        .filter((event) => event instanceof NavigationEnd)
+        .map(() => this.activatedRoute)
+        .map((route) => {
+            while (route.firstChild) {
+                route = route.firstChild;
+            }
+            return route;
+        })
+        .filter((route) => route.outlet === 'primary')
+        .mergeMap((route) => route.data)
+        .subscribe((event) => {
+            this.title = event['title'];
+            this.titleService.setTitle(this.title);
+    });
 //    setTimeout(()=>{
     /*
     switch/radioList
