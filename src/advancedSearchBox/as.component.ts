@@ -18,7 +18,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { NgbTypeaheadConfig, NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { fromEvent } from 'rxjs/observable/fromEvent';
-import { NgModel } from '@angular/forms';
+import { NgModel, FormGroup, FormControl, ControlContainer } from '@angular/forms';
 import { UUID } from 'angular2-uuid';
 import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputComponent } from './input/asSimpleInput.component';
@@ -27,19 +27,21 @@ import { HttpClient } from '@angular/common/http';
 @Component({
     selector: 'advanced-searchbox',
     template: `
-    <ng-template #rt let-r="result" let-t="term">
-        {{ r.label}}
-    </ng-template>
-    <ng-container *ngFor="let filter of viewModel; trackBy: trackByFn" >
-        <ng-container [ngSwitch]="filter.type" >
-            <as-input *ngSwitchCase="'INPUT'" [viewModel]="filter" class="as-filter"></as-input>
-            <as-input-operators *ngSwitchCase="'OPERATORS'" [viewModel]="filter" class="as-filter"></as-input-operators>
-            <ng-container *ngTemplateOutlet="externalTemplate; context: {$implicit: filter}"></ng-container>
+    <div [formGroup]="form">
+        <ng-template #rt let-r="result" let-t="term">
+            {{ r.label}}
+        </ng-template>
+        <ng-container *ngFor="let filter of viewModel; trackBy: trackByFn;" >
+            <ng-container [ngSwitch]="filter.type" >
+                <as-input *ngSwitchCase="'INPUT'" [viewModel]="filter" class="as-filter" [formControl]="form.get([filter.model+'_'+filter.uuid])" ></as-input>
+                <as-input-operators *ngSwitchCase="'OPERATORS'" [viewModel]="filter" class="as-filter" [formControl]="form.get([filter.model+'_'+filter.uuid])" ></as-input-operators>
+                <ng-container *ngTemplateOutlet="externalTemplate; context: {$implicit: filter}"></ng-container>
+            </ng-container>
         </ng-container>
-    </ng-container>
-    <input id="search" type="text" (selectItem)="addFilter($event)" (focus)="focusInput$.next()" 
-    [(ngModel)]="searchBox" (keydown)="keydown($event)" [ngbTypeahead]="searchBoxFunc" 
-    [resultTemplate]="rt" [inputFormatter]="formatter" #searchbox #searchboxModel="ngModel" placeholder="Cerca" autosize/>
+        <input id="search" type="text" (selectItem)="addFilter($event)" (focus)="focusInput$.next()" 
+        [(ngModel)]="searchBox" [ngModelOptions]="{standalone: true}" (keydown)="keydown($event)" [ngbTypeahead]="searchBoxFunc" 
+        [resultTemplate]="rt" [inputFormatter]="formatter" #searchbox #searchboxModel="ngModel" placeholder="Cerca" autosize/>
+    </div>
     `,
     providers: [NgbTypeaheadConfig]
 })
@@ -47,12 +49,16 @@ export class AsComponent implements OnInit, OnChanges {
 
     @Output('editNext') editNext:EventEmitter<any>;
     @Output('editPrev') editPrev:EventEmitter<any>;
+    @Output('onChangeViewModel') onChangeViewModel:EventEmitter<any>;
     @ContentChild(AsTemplateDirective, {read: TemplateRef}) externalTemplate:TemplateRef<any>;
     @ViewChild('searchbox') searchboxInput:ElementRef;
     @ViewChild('searchboxModel') searchboxModel:NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
     @Input('openOnLoad') openOnLoad:Boolean;
+    @Input('validators') validators:{};
+    @Input('form') form:FormGroup;
 
+    
     private _template;
     @Input()
     set template(template){
@@ -61,7 +67,6 @@ export class AsComponent implements OnInit, OnChanges {
             const uuid = UUID.UUID();
             return Object.assign({'_templateUuid': uuid}, response);
         });
-        
         this._template = template;
         
     }
@@ -72,7 +77,7 @@ export class AsComponent implements OnInit, OnChanges {
     @Input()
     set model(model: Object){
          // viene eseguito solo se si riassegna il model (es. model = [])
-        this._model = model;
+         this._model = model;
     }
 
     get model(): Object{
@@ -90,6 +95,7 @@ export class AsComponent implements OnInit, OnChanges {
     public afterViewInitFilters$: Subject<any>;
     public searchBoxFunc;
     public formatter;
+    public formGroupSameModel:{[key:string]:FormGroup};
 
     constructor(
         public element: ElementRef,
@@ -99,6 +105,7 @@ export class AsComponent implements OnInit, OnChanges {
         private _config: AsConfigService) {
             this.editNext = new EventEmitter();
             this.editPrev = new EventEmitter();
+            this.onChangeViewModel = new EventEmitter();
             this.openOnLoad = true;
             this.viewModel = [];
             this.searchBox = '';
@@ -148,6 +155,11 @@ export class AsComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
+
+        if(!this.form){
+            this.form = new FormGroup({});
+        }
+        
         this._renderer.setProperty(this.searchboxInput.nativeElement, 'value', '');
 
         this.searchboxInputClick$ = fromEvent(this.searchboxInput.nativeElement, 'click').map((response: MouseEvent) => {
@@ -157,22 +169,22 @@ export class AsComponent implements OnInit, OnChanges {
         });
 
 
-        this.searchboxModel.valueChanges.subscribe(response => {
-            // console.log(response);
-        });
+        this.searchboxModel.valueChanges.subscribe(response => {});
 
         this.typeaheadController._userInput = '';
         // allo start, per far si che entri nel subscribe dobbiamo fare in modo che abbia almeno sempre 2 elementi nella history
         this._config.navigation.next({controller:null, from:null});
         this._config.navigation.next({controller:this, from:'searchbox'});
 
-    
         this.editPrev
         .filter((response) => !response.viewModel)
         .subscribe((response) => {
-            this.prevFilterControllerFromSearchbox(this.viewModel[this.viewModel.length-1]).onFocus('prev');
+            if(this.viewModel[this.viewModel.length-1]){
+                if(this.prevFilterControllerFromSearchbox(this.viewModel[this.viewModel.length-1])){
+                    this.prevFilterControllerFromSearchbox(this.viewModel[this.viewModel.length-1]).onFocus('prev');
+                }
+            }
         });
-
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -189,6 +201,24 @@ export class AsComponent implements OnInit, OnChanges {
         }
         if(changes.model && changes.model.currentValue){
             this.createViewFilterFromModel(this.model);
+            this.populateForm();
+        }
+    }
+
+    populateForm():void{
+        var formGroup = {};
+        for(let viewModel of this.viewModel){
+            if(this.validators[viewModel.model]){
+                this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : '',this.validators[viewModel.model]));  
+            }else{
+                this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : ''));
+            }
+        }
+    }
+
+    removeFormControls(){
+        for(let controlName in this.form.controls){
+            this.form.removeControl(controlName);
         }
     }
 
@@ -233,8 +263,6 @@ export class AsComponent implements OnInit, OnChanges {
         return this.getterModelTree(parent[firstModel], models);
     }
 
-    // tslint:disable-next-line:no-shadowed-variable
-    // tslint:disable-next-line:no-unnecessary-initializer
     keydown(e, currentViewModel?, options:{id?: any , blackList?: any} = {}) {
         const valueEmitted = {
             viewModel: currentViewModel,
@@ -306,34 +334,34 @@ export class AsComponent implements OnInit, OnChanges {
         if(this._config.formatModelViewValue[singleTemplate.model]){
             viewModel = Object.assign({uuid: uuid}, this.findTemplate('model', singleTemplate.model));
         }
+        if(value){
+            viewModel.value = value;
+            if(this._config.formatModelViewValue[singleTemplate.model]){
+                viewModel.value = this._config.formatModelViewValue[singleTemplate.model](value,singleTemplate);
+            }
+        }
         this.viewModel.push(viewModel);
         this.searchBox = '';
-        this.afterViewInitFilters$.filter((response) => {
-            return response.uuid === viewModel.uuid;
-        }).first().subscribe((response) => {
-            if(value){
-                viewModel.value = value;
-                if(this._config.formatModelViewValue[singleTemplate.model]){
-                    viewModel.value = this._config.formatModelViewValue[singleTemplate.model](value,singleTemplate);
-                }
+        if(this.form){
+            if(this.validators[viewModel.model]){
+                this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : '',this.validators[viewModel.model]));  
+            }else{
+                this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : ''));
             }
-            
-            if(typeof viewModel.domains === 'string'){
-                this.getFilterController(viewModel).inputInstance.itemsDomain = [value];
-            }
-            //this.getFilterController(viewModel).inputInstance.focusInput$.next('');
-        });
+        }
         
+        this.onChangeViewModel.emit(this.viewModel);
+
         return viewModel;
     }
 
     createViewFilterFromModel(model){
+        this.removeFormControls();
         this.viewModel = [];
         for (const singleTemplate of this.template){
             const modelFinded = this.getterModelTree(model, singleTemplate.model.split('.'));
             if (modelFinded) {
                 const typeOfModel: string = typeof modelFinded;
-                // se è un array
                 if (Array.isArray(modelFinded)) {
                     for (const singleModelValue of modelFinded) {
                         this.createViewFilter(singleTemplate, singleModelValue);
@@ -383,11 +411,13 @@ export class AsComponent implements OnInit, OnChanges {
         return this.filtersControllers[viewModel.uuid];
     }
 
-    removeViewModel(object): void {
-        const index = this.viewModel.indexOf(object);
+    removeViewModel(viewModel:ViewModelInterface): void {
+        const index = this.viewModel.indexOf(viewModel);
         if (index !== undefined && index > -1) {
             this.viewModel.splice(index, 1);
+            this.form.removeControl(viewModel.uuid);
         }
+        this.onChangeViewModel.emit(this.viewModel);
     }
 
     removeAll(): void {

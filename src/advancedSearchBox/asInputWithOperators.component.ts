@@ -3,7 +3,7 @@ import { NgbDropdown, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-boots
 import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
-import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges, ViewContainerRef, ComponentFactoryResolver, forwardRef } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeLast';
 import { AsBoxFilterAbstract } from './asFilter.abstract';
@@ -14,6 +14,7 @@ import { AsSimpleInputWithOperatorsComponent } from './input/asSimpleInputWithOp
 import { AsSuggestionsInputWithOperatorsComponent } from './input/asSuggestionsInputWithOperators.component';
 import { AsDomainsInputWithOperatorsComponent } from './input/asDomainsInputWithOperators.component';
 import { AsSimpleInputWithOperatorsMaskComponent } from './input/asSimpleInputWithOperatorsMask.component';
+import { FormGroup, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 export enum OperatorsEnum {
     eq = '=',
@@ -25,6 +26,13 @@ export enum OperatorsEnum {
     startsWith = '[...',
     endsWith = '...]',
     contains = '[...]'
+}
+
+export enum TypesInputWithOperatorsEnum {
+    SIMPLE = 'SIMPLE',
+    SIMPLE_MASK = 'SIMPLE_MASK',
+    SUGGESTIONS = 'SUGGESTIONS',
+    DOMAINS = 'DOMAINS'
 }
 
 @Component({
@@ -46,21 +54,33 @@ export enum OperatorsEnum {
                 </div>
             </div>
         </span>
-        <ng-container #inputView></ng-container>
+        <ng-container [ngSwitch]="inputType">
+            <as-simple-input-with-operators *ngSwitchCase="'SIMPLE'" #inputComponent ></as-simple-input-with-operators>
+            <as-simple-input-with-operators-mask *ngSwitchCase="'SIMPLE_MASK'" #inputComponent ></as-simple-input-with-operators-mask>
+            <as-suggestions-input-with-operators *ngSwitchCase="'SUGGESTIONS'" #inputComponent ></as-suggestions-input-with-operators>
+            <as-domains-input-with-operators *ngSwitchCase="'DOMAINS'" #inputComponent (change)="onChange()"></as-domains-input-with-operators>
+        </ng-container>
         <span class="input-group-append">
             <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
         </span>
     </div>
-    `
+    `,
+    providers:[
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AsInputWithOperatorsComponent),
+            multi: true
+        }
+    ]
 })
 export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implements OnInit, OnChanges {
 
    @ViewChild(NgbDropdown) operatorsDropDownDir: NgbDropdown;
    @ViewChild('buttonToggle') buttonToggleEr: ElementRef;
-   @ViewChild('inputView', { read: ViewContainerRef }) inputView;
+   @ViewChild('inputComponent') inputComponent;
    public operatorsList;
    public operatorsEnum;
-   public inputInstance;
+   public inputType:TypesInputWithOperatorsEnum;
 
    constructor(
         public advancedSearchBox: AsComponent,
@@ -95,15 +115,14 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
                 this.operatorsDropDownDir.close();
-                if(this.inputInstance.inputRef.nativeElement){
-                    this.inputInstance.inputRef.nativeElement.focus();
+                if(this.inputComponent.inputRef.nativeElement){
+                    this.inputComponent.inputRef.nativeElement.focus();
                 }else{
                     setTimeout(() => {
-                        this.inputInstance.inputRef.open();
-                        this.inputInstance.focusInput$.next(undefined);
+                        this.inputComponent.inputRef.open();
+                        this.inputComponent.focusInput$.next(undefined);
                     },0);
                 }
-                //this.inputInstance.inputElementRef.nativeElement.focus();
                 this.focusInput$.next();
             }else {
                 this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
@@ -120,6 +139,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
                 this.buttonToggleEr.nativeElement.blur();
                 this.onBlur();
             }else {
+                this.onBlur();
                 this.operatorsDropDownDir.open();
                 this.buttonToggleEr.nativeElement.focus();
             }
@@ -131,40 +151,44 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
 
         if(!this.viewModel.suggestions && !this.viewModel.domains){
             if(this.viewModel.mask){
-                const asSimpleInputMaskComponent = this.resolver.resolveComponentFactory(AsSimpleInputWithOperatorsMaskComponent);
-                this.inputInstance = this.inputView.createComponent(asSimpleInputMaskComponent).instance;
+                this.inputType = TypesInputWithOperatorsEnum.SIMPLE_MASK;
             }else{
-                const asSimpleInputComponent = this.resolver.resolveComponentFactory(AsSimpleInputWithOperatorsComponent);
-                this.inputInstance = this.inputView.createComponent(asSimpleInputComponent).instance;
+                this.inputType = TypesInputWithOperatorsEnum.SIMPLE;
             }
         }
         if(this.viewModel.suggestions){
-            const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsSuggestionsInputWithOperatorsComponent);
-            this.inputInstance = this.inputView.createComponent(asDomainsInputComponent).instance;
+            this.inputType = TypesInputWithOperatorsEnum.SUGGESTIONS;
         }
         if(this.viewModel.domains){
-            const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsDomainsInputWithOperatorsComponent);
-            this.inputInstance = this.inputView.createComponent(asDomainsInputComponent).instance;
+            this.inputType = TypesInputWithOperatorsEnum.DOMAINS;
         }
-
-        this.inputInstance._filter = this;
     }
     
     onBlur() {
         super.onBlur();
         this.operatorsDropDownDir.close();
-        //setTimeout(()=>{
-            this.removeEmpty([this.viewModel.value.value]);
-        //},200);
+        this._onChange(this.viewModel.value);
+        this.removeEmpty([this.viewModel.value.value]);
+        if(this.inputComponent.inputRef.dismissPopup){
+            this.inputComponent.inputRef.dismissPopup();
+        }
+        if(this.inputComponent.inputRef.close){
+            this.inputComponent.inputRef.close();
+        }
+        this.operatorsDropDownDir.close();
     }
 
     onFocus(prevNext) {
         if (prevNext === 'prev') {
-            if(this.inputInstance.inputRef.nativeElement){
-                this.inputInstance.inputRef.nativeElement.focus();
-            }else{
-                this.inputInstance.inputRef.open();
-                this.inputInstance.focusInput$.next(undefined);
+            if(this.inputComponent.inputRef.nativeElement){
+                this.inputComponent.inputRef.nativeElement.focus();
+            }
+            if(this.inputComponent.inputRef.dismissPopup){
+                this.inputComponent.inputRef._elementRef.nativeElement.focus();
+            }
+            if(this.inputComponent.inputRef.open){
+                this.inputComponent.inputRef.open();
+                this.inputComponent.focusInput$.next(undefined);
             }
         }else {
             setTimeout(()=>{
@@ -176,6 +200,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
 
     public onChange() {
         setTimeout(()=>{
+            this._onChange(this.viewModel.value.value);
             this.viewToModel();
         },0);
     }
@@ -185,6 +210,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             viewModel: this.viewModel,
             options: {id:'buttonDropDown'}
         };
+        this._onChange(this.viewModel.value.value);
         if ($event instanceof KeyboardEvent) {
             switch ($event.which) {
                 case KeyBoard.Enter:
@@ -216,8 +242,10 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             viewModel: this.viewModel,
             options: {}
         };
+
         this.advancedSearchBox.editNext.next(valueEmitted);
         
+        this._onChange(this.viewModel.value.value);
         this.viewToModel();
     }
 

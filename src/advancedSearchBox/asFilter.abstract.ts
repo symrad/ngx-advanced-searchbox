@@ -9,7 +9,7 @@ import { fromEvent } from 'rxjs/observable/fromEvent';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/switchMap';
-import { FormControl } from '@angular/forms';
+import { FormControl, ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { AsConfigService } from './asConfig.service';
 import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -19,11 +19,11 @@ import { Subscriber } from 'rxjs/Subscriber';
 import { Subscription } from 'rxjs/Subscription';
 import { AsInputAbstract } from './../advancedSearchBox/input/asInput.abstract';
 
-export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface, AfterViewInit {
+export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface, AfterViewInit, ControlValueAccessor {
 
     @Input() viewModel: ViewModelInterface;
 
-    public abstract inputInstance:AsInputAbstract;
+    public abstract inputComponent;
     private _isFirstDocClick:boolean;
     public inputClickUnsubscribe$_:Subscription;
     public focusInput$: Subject<any>;
@@ -37,6 +37,22 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
     ) {
         this._isFirstDocClick = true;
         this.focusInput$ = new Subject();
+    }
+
+    protected _onChange = (val: any) => {};
+
+    writeValue(val): void {
+        this._onChange(val);
+    }
+
+    registerOnChange(fn: (val: any) => void): void {
+        this._onChange = fn;
+    }
+
+    registerOnTouched(fn: () => void): void {
+    }
+
+    setDisabledState(isDisabled: boolean): void {
     }
 
     ngAfterViewInit(){
@@ -59,11 +75,15 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
 
     onFocus(prevNext): void {
         setTimeout(()=>{
-            if(this.inputInstance.inputRef.nativeElement){
-                this.inputInstance.inputRef.nativeElement.focus();
-            }else{
-                this.inputInstance.inputRef.open();
-                this.inputInstance.focusInput$.next(undefined);
+            if(this.inputComponent.inputRef.nativeElement){
+                this.inputComponent.inputRef.nativeElement.focus();
+            }
+            if(this.inputComponent.inputRef.dismissPopup){
+                this.inputComponent.inputRef._elementRef.nativeElement.focus();
+            }
+            if(this.inputComponent.inputRef.open){
+                this.inputComponent.inputRef.open();
+                this.inputComponent.focusInput$.next(undefined);
             }
         },0);
     }
@@ -84,6 +104,9 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
                 isToRemove = false;
                 break;
             }
+        }
+        if(this.advancedSearchBox.form.controls[this.viewModel.model+'_'+this.viewModel.uuid].status === 'INVALID'){
+            this.remove();
         }
         if (isToRemove) {
             this.remove();
@@ -158,6 +181,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
             this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
         }
         this.viewToModel();
+        this._onChange(this.viewModel.value);
     }
 
     public onSelectSuggestions($event:NgbTypeaheadSelectItemEvent){
@@ -174,6 +198,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
             this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
         }
         this.viewToModel();
-        this.inputInstance.typeaheadController._userInput = this.inputInstance.suggestionsFormatter($event.item);
+        this.inputComponent.typeaheadController._userInput = this.inputComponent.suggestionsFormatter($event.item);
+        this._onChange(this.viewModel.value);
     }
 }

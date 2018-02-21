@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -8,14 +9,19 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'app';
   model = {};
+  
   //model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
   public template: Array<{}> = [];
+  public validators:{[key:string]:Validators};
+  public form:FormGroup;
+  public viewModel;
 
   onEditNext(data) {
-    
+    console.log(data);
   }
 
   constructor(){
+    
 //    setTimeout(()=>{
     /*
     switch/radioList
@@ -167,5 +173,25 @@ export class AppComponent {
     },
     ];
 //    },10000);
+
+    this.validators = {
+      isEnabled:[Validators.required],
+      email:[Validators.email]
+    }
+    this.form = new FormGroup({});
+
+    this.form.valueChanges.subscribe((res)=>{
+      console.log(res);
+    });
+    this.form.statusChanges.subscribe((res)=>{
+      console.log(res);
+    });
+  }
+
+  onAddFilter(filter){
+    
+  }
+  onChangeViewModel(viewModel){
+    this.viewModel = viewModel;
   }
 }

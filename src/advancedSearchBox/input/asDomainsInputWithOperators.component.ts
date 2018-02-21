@@ -1,5 +1,5 @@
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { Component, OnDestroy, ViewChild, AfterViewChecked, DoCheck } from "@angular/core";
+import { Component, OnDestroy, ViewChild, AfterViewChecked, DoCheck, forwardRef } from "@angular/core";
 import { AsComponent } from "../as.component";
 import { Renderer2, ElementRef } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
@@ -11,25 +11,26 @@ import { AsInputComponent } from "../asInput.component";
 import { Subscription } from "rxjs/Subscription";
 import 'rxjs/add/operator/first';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { NgControl } from '@angular/forms';
+import { NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AsInputWithOperatorsComponent } from '../asInputWithOperators.component';
 
 @Component({
-    selector:'div[as-domains-input-with-operators]',
+    selector:'as-domains-input-with-operators',
     template: `
     <ng-select 
         appendTo="body"
-        [bindLabel]="_filter.viewModel.bindLabel"
-        [bindValue]="_filter.viewModel.bindValue"
-        (focus)="_filter.focusInput$.next()"
-        (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)"
+        [bindLabel]="filter.viewModel.bindLabel"
+        [bindValue]="filter.viewModel.bindValue"
+        (focus)="filter.focusInput$.next()"
+        (keydown)="advancedSearchBox.keydown($event, filter.viewModel)"
         #inputRef
-        [placeholder]="_filter.viewModel.label"
+        [placeholder]="filter.viewModel.label"
         [typeahead]="domainTypeahead"
         [items]="itemsDomain"
         (change)="onChange($event)"
         (clear)="onClear()"
         (remove)="onRemove($event)"
-        [(ngModel)]="_filter.viewModel.value.value">
+        [(ngModel)]="filter.viewModel.value.value">
     </ng-select>
     <input autosize #inputAutosize type="text" [(ngModel)]="filterValue" [hidden]="true" />`,
     styles:[`
@@ -37,7 +38,14 @@ import { NgControl } from '@angular/forms';
             height:100%;
             min-width:200px;
         }
-    `]
+    `],
+    providers:[
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AsDomainsInputWithOperatorsComponent),
+            multi: true
+        }
+    ]
     
 })
 export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implements AfterViewChecked, DoCheck{
@@ -58,18 +66,20 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
         public advancedSearchBox: AsComponent,
         protected _http: HttpClient,
         protected _config: AsConfigService,
-        public _element: ElementRef
+        public _element: ElementRef,
+        public filter:AsInputWithOperatorsComponent
     ) {
         super(advancedSearchBox, _http, _config, _element);
     }
 
     ngOnInit(){
         super.ngOnInit();
+       
         this.ngControl.valueChanges.subscribe((res)=>{
             if(res === '' || res === undefined || res === null){
             }else{
-                if(this._filter.viewModel.bindLabel){
-                    this.filterValue = res[this._filter.viewModel.bindLabel];
+                if(this.filter.viewModel.bindLabel){
+                    this.filterValue = res[this.filter.viewModel.bindLabel];
                 }else{
                     this.filterValue = res;
                 }
@@ -90,13 +100,13 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
     onClear(){
         this._filterValue = null;
         this.focusInput$.next(undefined);
-        this._filter.remove();
+        this.filter.remove();
     }
 
     onRemove(data){
         this.focusInput$.next(undefined);
         this.inputRef.open();
-        this._filter.removeEmpty([this._filter.viewModel.value]);
+        this.filter.removeEmpty([this.filter.viewModel.value]);
     }
 
     onChange(data){
@@ -105,20 +115,22 @@ export class AsDomainsInputWithOperatorsComponent extends AsInputAbstract implem
             if(data === '' || data === undefined || data === null){
                 this.focusInput$.next(undefined);
                 this.inputRef.open();
-                this._filter.removeEmpty([this._filter.viewModel.value]);
+                this.filter.removeEmpty([this.filter.viewModel.value]);
             }else{
-                if(this._filter.viewModel.bindLabel){
-                    this._filterValue = data[this._filter.viewModel.bindLabel];
+                if(this.filter.viewModel.bindLabel){
+                    this._filterValue = data[this.filter.viewModel.bindLabel];
                 }else{
                     this._filterValue = data;
                 }
 
-                if(this._filter.viewModel.bindValue){
-                    this._filter.onSelectDomains(data[this._filter.viewModel.bindValue]);
+                if(this.filter.viewModel.bindValue){
+                    this.filter.onSelectDomains(data[this.filter.viewModel.bindValue]);
                 }else{
-                    this._filter.onSelectDomains(data);
+                    this.filter.onSelectDomains(data);
                 }
             }
+            this._onChange(data);
+            this.change.emit(data);
         },0);
     }
 }

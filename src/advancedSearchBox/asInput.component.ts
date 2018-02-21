@@ -1,7 +1,8 @@
+import { FormGroup, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
-import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, ComponentFactoryResolver, ResolvedReflectiveFactory, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, ComponentFactoryResolver, ResolvedReflectiveFactory, ViewContainerRef, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
@@ -16,6 +17,13 @@ import { AsSuggestionsInputComponent } from './input/asSuggestionsInput.componen
 import { AfterViewInit } from '@angular/core';
 import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component';
 
+export enum TypesInputEnum {
+    SIMPLE = 'SIMPLE',
+    SIMPLE_MASK = 'SIMPLE_MASK',
+    SUGGESTIONS = 'SUGGESTIONS',
+    DOMAINS = 'DOMAINS'
+}
+
 @Component({
     selector: 'as-input',
     template: `
@@ -23,18 +31,30 @@ import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component'
         <span class="input-group-prepend">
             <span class="btn btn-outline-primary notClickable">{{viewModel.label}}</span>
         </span>
-        <ng-container #inputView></ng-container>
+        <ng-container [ngSwitch]="inputType">
+            <as-simple-input *ngSwitchCase="'SIMPLE'" #inputComponent ></as-simple-input>
+            <as-simple-input-mask *ngSwitchCase="'SIMPLE_MASK'" #inputComponent ></as-simple-input-mask>
+            <as-suggestions-input *ngSwitchCase="'SUGGESTIONS'" #inputComponent ></as-suggestions-input>
+            <as-domains-input *ngSwitchCase="'DOMAINS'" #inputComponent (change)="onChange()"></as-domains-input>
+        </ng-container>
         <span class="input-group-append">
             <button class="btn btn-outline-primary" type="button" (click)="remove()">X</button>
         </span>
     </div>
     `,
-    providers: [NgbTypeaheadConfig]
+    providers:[
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AsInputComponent),
+            multi: true
+        },
+        NgbTypeaheadConfig
+    ]
 })
 export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
 
-   public inputInstance;
-   @ViewChild('inputView', { read: ViewContainerRef }) inputView;
+   @ViewChild('inputComponent') inputComponent;
+   public inputType:TypesInputEnum;
 
    constructor(
         public advancedSearchBox: AsComponent,
@@ -45,12 +65,11 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
         protected resolver: ComponentFactoryResolver
     ) {
         super(advancedSearchBox, _renderer, _el, _http, _config);
-        console.log(this.inputView);
     }
 
     ngOnInit() {
         super.ngOnInit();
-
+        
         if(this.viewModel.mask){
             this.viewModel.mask.mask = this.viewModel.mask || false;
             this.viewModel.mask.clearIfNotMatch = this.viewModel.mask.clearIfNotMatch !== undefined ? this.viewModel.mask.clearIfNotMatch : false;
@@ -75,35 +94,34 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
 
         if(!this.viewModel.suggestions && !this.viewModel.domains){
             if(this.viewModel.mask){
-                const asSimpleInputMaskComponent = this.resolver.resolveComponentFactory(AsSimpleInputMaskComponent);
-                this.inputInstance = this.inputView.createComponent(asSimpleInputMaskComponent).instance;
+                this.inputType = TypesInputEnum.SIMPLE_MASK;
             }else{
-                const asSimpleInputComponent = this.resolver.resolveComponentFactory(AsSimpleInputComponent);
-                this.inputInstance = this.inputView.createComponent(asSimpleInputComponent).instance;
+                this.inputType = TypesInputEnum.SIMPLE;
             }
         }
         if(this.viewModel.suggestions){
-            const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsSuggestionsInputComponent);
-            this.inputInstance = this.inputView.createComponent(asDomainsInputComponent).instance;
+            this.inputType = TypesInputEnum.SUGGESTIONS;
         }
         if(this.viewModel.domains){
-            const asDomainsInputComponent = this.resolver.resolveComponentFactory(AsDomainsInputComponent);
-            this.inputInstance = this.inputView.createComponent(asDomainsInputComponent).instance;
+            this.inputType = TypesInputEnum.DOMAINS;
         }
-
-        this.inputInstance._filter = this;
-
     }
 
     onBlur() {
         super.onBlur();
-        //setTimeout(()=>{
-            this.removeEmpty([this.viewModel.value]);
-        //},200);
+        this._onChange(this.viewModel.value);
+        this.removeEmpty([this.viewModel.value]);
+        if(this.inputComponent.inputRef.dismissPopup){
+            this.inputComponent.inputRef.dismissPopup();
+        }
+        if(this.inputComponent.inputRef.close){
+            this.inputComponent.inputRef.close();
+        }
     }
 
     public onChange() {
         setTimeout(()=>{
+            this._onChange(this.viewModel.value);
             this.viewToModel();
         },0);
     }

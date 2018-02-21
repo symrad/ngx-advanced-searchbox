@@ -11,8 +11,8 @@ import { AsTemplateDirective } from './asTemplate.directive';
 import { AsInputComponent } from './asInput.component';
 import { NgbDropdownModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { AsComponent } from './as.component';
-import { NgModule, ModuleWithProviders } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NgModule, ModuleWithProviders, forwardRef } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AutosizeInputModule } from 'ngx-input-autosize';
 import { HttpClientModule } from '@angular/common/http';
 import { AsConfigService } from './asConfig.service';
@@ -46,7 +46,8 @@ import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component'
         FormsModule,
         DropdownNavigationModule,
         AutosizeInputModule,
-        HttpClientModule
+        HttpClientModule,
+        ReactiveFormsModule
     ],
     exports: [
         AsComponent,

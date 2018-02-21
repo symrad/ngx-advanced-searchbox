@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, forwardRef } from "@angular/core";
 import { AsComponent } from "../as.component";
 import { Renderer2, ElementRef } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
@@ -7,23 +7,31 @@ import { AsInputAbstract } from "./asInput.abstract";
 import { AsBoxFilterAbstract } from "../asFilter.abstract";
 import { Subject } from "rxjs/Subject";
 import { AsInputComponent } from "../asInput.component";
+import { NG_VALUE_ACCESSOR } from "@angular/forms";
 
 @Component({
-    selector:'div[as-simple-input]',
+    selector:'as-simple-input',
     template: `<input type="text"
-            [(ngModel)]="_filter.viewModel.value"
-            (change)="_filter.onChange()"
-            (focus)="_filter.focusInput$.next()"
-            (keydown)="advancedSearchBox.keydown($event,_filter.viewModel)" 
+            
+            (change)="filter.onChange()"
+            (focus)="filter.focusInput$.next()"
+            (keydown)="advancedSearchBox.keydown($event, filter.viewModel)" 
             autosize 
-            [placeholder]="_filter.viewModel.label"
+            [placeholder]="filter.viewModel.label"
             #inputRef
             />`,
     styles:[`
         input{
             height:100%;
         }
-    `]
+    `],
+    providers:[
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AsSimpleInputComponent),
+            multi: true
+        }
+    ]
     
 })
 export class AsSimpleInputComponent extends AsInputAbstract{
@@ -32,7 +40,8 @@ export class AsSimpleInputComponent extends AsInputAbstract{
         public advancedSearchBox: AsComponent,
         protected _http: HttpClient,
         protected _config: AsConfigService,
-        public _element: ElementRef
+        public _element: ElementRef,
+        public filter:AsInputComponent
     ) {
         super(advancedSearchBox, _http, _config, _element);
     }
