@@ -130,6 +130,9 @@ export class AsComponent implements OnInit, OnChanges {
                         return test;
             });
             this.formatter = (x: {label: string}) => x.label;
+            if(!this.validators){
+                this.validators = {};
+            }
     }
 
     filterSearchBox(): Array<any> {
