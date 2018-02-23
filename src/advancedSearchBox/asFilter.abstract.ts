@@ -88,7 +88,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
        this.viewToModel();
     }
 
-    removeEmpty(models: Array<any>): void {
+    removeEmpty(models: Array<any>): boolean {
         let isToRemove = true;
         for (const model of models){
             if (model || model === false) {
@@ -96,12 +96,16 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
                 break;
             }
         }
-        if(this.advancedSearchBox.form.controls[this.viewModel.model+'_'+this.viewModel.uuid].status === 'INVALID'){
+        if(this.advancedSearchBox.form.controls[this.viewModel.model+'_'+this.viewModel.uuid] &&
+           this.advancedSearchBox.form.controls[this.viewModel.model+'_'+this.viewModel.uuid].status === 'INVALID'){
             this.remove();
+            return true;
         }
         if (isToRemove) {
             this.remove();
+            return true;
         }
+        return false;
     }
 
     getKeys(object): Array<any> {

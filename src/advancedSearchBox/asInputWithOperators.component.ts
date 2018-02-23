@@ -156,7 +156,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
     
     onBlur() {
         this.operatorsDropDownDir.close();
-        this._onChange(this.viewModel.value);
+        this._onChange(this.viewModel.value.value);
         this.removeEmpty([this.viewModel.value.value]);
         this.blurInput();
     }
