@@ -20,13 +20,13 @@
     "@angular/router": "5.2.6",
     "ngx-advanced-searchbox": "0.1.2",
     "ngx-highlightjs": "^1.4.1",
-    "zone.js": "0.8.20"
+    "zone.js": "^0.8.19"
   },
   "devDependencies": {
-    "@angular/cli": "1.7.1",
+    "@angular/cli": "^1.7.1",
     "@angular/compiler-cli": "^5.2.6",
     "@angular/language-service": "^5.2.6",
     "codelyzer": "~3.2.0",
-    "typescript": "~2.6.0"
+    "typescript": "~2.6.1"
   }
 }

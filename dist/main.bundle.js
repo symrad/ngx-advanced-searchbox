@@ -565,7 +565,8 @@ var LayoutSidenavComponent = /** @class */ (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppendToComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -575,6 +576,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 var AppendToComponent = /** @class */ (function () {
     function AppendToComponent() {
@@ -621,6 +623,10 @@ var AppendToComponent = /** @class */ (function () {
         this.model = {};
         //model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
         this.template = [];
+        this.form = new __WEBPACK_IMPORTED_MODULE_0__angular_forms__["b" /* FormGroup */]({});
+        this.form.statusChanges.subscribe(function (resp) {
+            console.log(resp);
+        });
         this.model =
             { "isEnabled": [{ "label": "Yes", "value": true }], "city": [1, 2, 3, 4], "youtube": ["Marvel Studios' Avengers: Infinity War Official Trailer"] };
         this.template = [
@@ -733,9 +739,9 @@ var AppendToComponent = /** @class */ (function () {
     AppendToComponent.prototype.onEditNext = function (data) {
     };
     AppendToComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["n" /* Component */])({
             selector: 'append-to',
-            template: "\n    <advanced-searchbox [template]=\"template\" [model]=\"model\" (editNext)=\"onEditNext($event)\" [openOnLoad]=\"true\">\n    <ng-container *asTemplate=\"let filter\">\n      <ng-container [ngSwitch]=\"filter.type\">\n        <!--<app-as-operators *ngSwitchCase=\"'RANGE'\" [viewModel]=\"filter\" class=\"as-filter\"></app-as-operators>-->\n      </ng-container>\n    </ng-container>\n  </advanced-searchbox>\n  <br/>\n  <div>\n    <code>\n      {{model | json}}\n    </code>\n  </div>\n    ",
+            template: "\n    <advanced-searchbox [form]=\"form\" [template]=\"template\" [model]=\"model\" (editNext)=\"onEditNext($event)\" [openOnLoad]=\"true\">\n    <ng-container *asTemplate=\"let filter\">\n      <ng-container [ngSwitch]=\"filter.type\">\n        <!--<app-as-operators *ngSwitchCase=\"'RANGE'\" [viewModel]=\"filter\" class=\"as-filter\"></app-as-operators>-->\n      </ng-container>\n    </ng-container>\n  </advanced-searchbox>\n  <br/>\n  <div>\n    <code>\n      {{model | json}}\n    </code>\n  </div>\n    ",
             styles: [
                 "\n           .overflow-box {\n               widht: 300px;\n               padding: 5px;\n               height: 100px;\n               border: 1px solid #999;\n               overflow: hidden;\n           }\n        "
             ]

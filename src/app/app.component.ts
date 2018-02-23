@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -12,6 +13,7 @@ export class AppComponent {
   model = {};
   //model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
   public template: Array<{}> = [];
+  public form:FormGroup;
 
   onEditNext(data) {
     
@@ -23,6 +25,7 @@ export class AppComponent {
     private titleService: Title
   ){
 
+    
     this.router.events
         .filter((event) => event instanceof NavigationEnd)
         .map(() => this.activatedRoute)
