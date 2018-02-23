@@ -178,6 +178,7 @@ export class AppComponent {
       isEnabled:[Validators.required],
       email:[Validators.email]
     }
+    
     this.form = new FormGroup({});
 
     this.form.valueChanges.subscribe((res)=>{
@@ -186,6 +187,8 @@ export class AppComponent {
     this.form.statusChanges.subscribe((res)=>{
       console.log(res);
     });
+    
+    
   }
 
   onAddFilter(filter){

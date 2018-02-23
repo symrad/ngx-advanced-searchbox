@@ -155,10 +155,6 @@ export class AsComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-
-        if(!this.form){
-            this.form = new FormGroup({});
-        }
         
         this._renderer.setProperty(this.searchboxInput.nativeElement, 'value', '');
 
@@ -206,6 +202,9 @@ export class AsComponent implements OnInit, OnChanges {
     }
 
     populateForm():void{
+        if(!this.form){
+            this.form = new FormGroup({});
+        }
         var formGroup = {};
         for(let viewModel of this.viewModel){
             if(this.validators[viewModel.model]){
@@ -217,6 +216,9 @@ export class AsComponent implements OnInit, OnChanges {
     }
 
     removeFormControls(){
+        if(!this.form){
+            return false;
+        }
         for(let controlName in this.form.controls){
             this.form.removeControl(controlName);
         }
