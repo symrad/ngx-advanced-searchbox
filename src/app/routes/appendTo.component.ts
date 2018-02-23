@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
     selector: 'append-to',
     template: `
-    <advanced-searchbox [form]="form" [template]="template" [model]="model" (editNext)="onEditNext($event)" [openOnLoad]="true">
+    <advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)" [openOnLoad]="true">
     <ng-container *asTemplate="let filter">
       <ng-container [ngSwitch]="filter.type">
         <!--<app-as-operators *ngSwitchCase="'RANGE'" [viewModel]="filter" class="as-filter"></app-as-operators>-->
@@ -37,7 +37,6 @@ export class AppendToComponent {
   model = {};
   //model = { "completeName2": "kjhjkhjk", "email2": [ "ewrerw" ], "username2": { "username": { "test": { "test": [ "fdsfdsfsd", "fdsfdfds" ], "username3": [ { "op": "contains", "value": "fdsfsdfsd" }, { "op": "contains", "value": "fdsfsdffdsfsfs" }, { "op": "endsWith", "value": "fdsfssd" }, { "op": "startsWith", "value": "fdsfdsfs" }, { "op": "startsWith", "value": "fdsfsdfsdfsdfsd" }, { "op": "contains", "value": "fdsfdfdsfdsfsdfsd" }, { "op": "contains", "value": "fdsfdsfdsdsfsdfsd" } ] } } } };
   public template: Array<{}> = [];
-  public form:FormGroup;
 
   onEditNext(data) {
     
@@ -83,12 +82,6 @@ export class AppendToComponent {
       autocomplete
       con formatModelViewValue e formatModelValue non si può mettere bindValue (solo bindLabel)
     */
-
-   this.form = new FormGroup({});
-
-   this.form.statusChanges.subscribe((resp)=>{
-     console.log(resp);
-   });
 
     this.model = 
     { "isEnabled": [ { "label": "Yes", "value": true } ], "city": [ 1, 2, 3, 4 ], "youtube": [ "Marvel Studios' Avengers: Infinity War Official Trailer"] };
