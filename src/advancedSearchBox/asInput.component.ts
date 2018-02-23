@@ -53,7 +53,6 @@ export enum TypesInputEnum {
 })
 export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
 
-   @ViewChild('inputComponent') inputComponent;
    public inputType:TypesInputEnum;
 
    constructor(
@@ -108,22 +107,14 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
     }
 
     onBlur() {
-        super.onBlur();
         this._onChange(this.viewModel.value);
         this.removeEmpty([this.viewModel.value]);
-        if(this.inputComponent.inputRef.dismissPopup){
-            this.inputComponent.inputRef.dismissPopup();
-        }
-        if(this.inputComponent.inputRef.close){
-            this.inputComponent.inputRef.close();
-        }
+        this.blurInput();
     }
 
     public onChange() {
-        setTimeout(()=>{
-            this._onChange(this.viewModel.value);
-            this.viewToModel();
-        },0);
+        this._onChange(this.viewModel.value);
+        this.viewToModel();
     }
 
 }

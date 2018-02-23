@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { NgbDropdown, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdown, NgbTypeaheadSelectItemEvent, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
@@ -15,6 +15,7 @@ import { AsSuggestionsInputWithOperatorsComponent } from './input/asSuggestionsI
 import { AsDomainsInputWithOperatorsComponent } from './input/asDomainsInputWithOperators.component';
 import { AsSimpleInputWithOperatorsMaskComponent } from './input/asSimpleInputWithOperatorsMask.component';
 import { FormGroup, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 export enum OperatorsEnum {
     eq = '=',
@@ -75,9 +76,6 @@ export enum TypesInputWithOperatorsEnum {
 })
 export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implements OnInit, OnChanges {
 
-   @ViewChild(NgbDropdown) operatorsDropDownDir: NgbDropdown;
-   @ViewChild('buttonToggle') buttonToggleEr: ElementRef;
-   @ViewChild('inputComponent') inputComponent;
    public operatorsList;
    public operatorsEnum;
    public inputType:TypesInputWithOperatorsEnum;
@@ -109,20 +107,12 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             this.viewModel.value = {op:this.operatorsList[0]};
         }
 
-
         this.advancedSearchBox.editNext
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
                 this.operatorsDropDownDir.close();
-                if(this.inputComponent.inputRef.nativeElement){
-                    this.inputComponent.inputRef.nativeElement.focus();
-                }else{
-                    setTimeout(() => {
-                        this.inputComponent.inputRef.open();
-                        this.inputComponent.focusInput$.next(undefined);
-                    },0);
-                }
+                this.focusInput();
                 this.focusInput$.next();
             }else {
                 this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
@@ -165,31 +155,15 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
     }
     
     onBlur() {
-        super.onBlur();
         this.operatorsDropDownDir.close();
         this._onChange(this.viewModel.value);
         this.removeEmpty([this.viewModel.value.value]);
-        if(this.inputComponent.inputRef.dismissPopup){
-            this.inputComponent.inputRef.dismissPopup();
-        }
-        if(this.inputComponent.inputRef.close){
-            this.inputComponent.inputRef.close();
-        }
-        this.operatorsDropDownDir.close();
+        this.blurInput();
     }
 
     onFocus(prevNext) {
         if (prevNext === 'prev') {
-            if(this.inputComponent.inputRef.nativeElement){
-                this.inputComponent.inputRef.nativeElement.focus();
-            }
-            if(this.inputComponent.inputRef.dismissPopup){
-                this.inputComponent.inputRef._elementRef.nativeElement.focus();
-            }
-            if(this.inputComponent.inputRef.open){
-                this.inputComponent.inputRef.open();
-                this.inputComponent.focusInput$.next(undefined);
-            }
+            this.focusInput();
         }else {
             setTimeout(()=>{
                 this.buttonToggleEr.nativeElement.focus();
@@ -199,10 +173,8 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
     }
 
     public onChange() {
-        setTimeout(()=>{
-            this._onChange(this.viewModel.value.value);
-            this.viewToModel();
-        },0);
+        this._onChange(this.viewModel.value.value);
+        this.viewToModel();
     }
 
     onChangeOperators($event: MouseEvent | KeyboardEvent, operator: string) {

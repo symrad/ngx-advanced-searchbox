@@ -415,7 +415,7 @@ export class AsComponent implements OnInit, OnChanges {
         const index = this.viewModel.indexOf(viewModel);
         if (index !== undefined && index > -1) {
             this.viewModel.splice(index, 1);
-            this.form.removeControl(viewModel.uuid);
+            this.form.removeControl(viewModel.model+'_'+viewModel.uuid);
         }
         this.onChangeViewModel.emit(this.viewModel);
     }

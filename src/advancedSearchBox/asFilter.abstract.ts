@@ -12,18 +12,22 @@ import 'rxjs/add/operator/switchMap';
 import { FormControl, ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { AsConfigService } from './asConfig.service';
-import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTypeahead, NgbTypeaheadSelectItemEvent, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { AsInputInterface } from './input/asInput.interface';
 import { AfterViewInit } from '@angular/core';
 import { Subscriber } from 'rxjs/Subscriber';
 import { Subscription } from 'rxjs/Subscription';
 import { AsInputAbstract } from './../advancedSearchBox/input/asInput.abstract';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterInterface, AfterViewInit, ControlValueAccessor {
 
     @Input() viewModel: ViewModelInterface;
 
-    public abstract inputComponent;
+    @ViewChild(NgbDropdown) operatorsDropDownDir: NgbDropdown;
+    @ViewChild('buttonToggle') buttonToggleEr: ElementRef;
+    @ViewChild('inputComponent') inputComponent;
+
     private _isFirstDocClick:boolean;
     public inputClickUnsubscribe$_:Subscription;
     public focusInput$: Subject<any>;
@@ -49,11 +53,9 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
         this._onChange = fn;
     }
 
-    registerOnTouched(fn: () => void): void {
-    }
+    registerOnTouched(fn: () => void): void {}
 
-    setDisabledState(isDisabled: boolean): void {
-    }
+    setDisabledState(isDisabled: boolean): void {}
 
     ngAfterViewInit(){
         this.advancedSearchBox.afterViewInitFilters$.next(this.viewModel);
@@ -75,22 +77,11 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
 
     onFocus(prevNext): void {
         setTimeout(()=>{
-            if(this.inputComponent.inputRef.nativeElement){
-                this.inputComponent.inputRef.nativeElement.focus();
-            }
-            if(this.inputComponent.inputRef.dismissPopup){
-                this.inputComponent.inputRef._elementRef.nativeElement.focus();
-            }
-            if(this.inputComponent.inputRef.open){
-                this.inputComponent.inputRef.open();
-                this.inputComponent.focusInput$.next(undefined);
-            }
+            this.focusInput();
         },0);
     }
 
-    onBlur(): void {
-       
-    }
+    onBlur(): void {}
 
     remove(): void {
        this.advancedSearchBox.removeViewModel(this.viewModel);
@@ -200,5 +191,30 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
         this.viewToModel();
         this.inputComponent.typeaheadController._userInput = this.inputComponent.suggestionsFormatter($event.item);
         this._onChange(this.viewModel.value);
+    }
+
+    public focusInput(){
+        if(this.inputComponent.inputRef.nativeElement){
+            this.inputComponent.inputRef.nativeElement.focus();
+        }
+        if(this.inputComponent.inputRef instanceof NgbTypeahead){
+            this.inputComponent.inputRef._elementRef.nativeElement.focus();
+        }
+        if(this.inputComponent.inputRef instanceof NgSelectComponent){
+            this.inputComponent.inputRef.open();
+            this.inputComponent.focusInput$.next(undefined);
+        }
+    }
+
+    public blurInput(){
+        if(this.inputComponent.inputRef instanceof NgbTypeahead){
+            this.inputComponent.inputRef.dismissPopup();
+        }
+        if(this.inputComponent.inputRef instanceof NgSelectComponent){
+            this.inputComponent.inputRef.close();
+        }
+        if(this.operatorsDropDownDir instanceof NgbDropdown){
+            this.operatorsDropDownDir.close();
+        }
     }
 }
