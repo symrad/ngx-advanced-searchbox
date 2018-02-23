@@ -55,11 +55,11 @@ export class AsComponent implements OnInit, OnChanges {
     @ViewChild('searchboxModel') searchboxModel:NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
     @Input('openOnLoad') openOnLoad:Boolean;
-    @Input('validators') validators:{};
-    @Input('form') form:FormGroup;
 
-    
+    private _form;
     private _template;
+    private _validators;
+
     @Input()
     set template(template){
         // viene eseguito solo se si riassegna il template (es. template = [])
@@ -76,12 +76,32 @@ export class AsComponent implements OnInit, OnChanges {
 
     @Input()
     set model(model: Object){
-         // viene eseguito solo se si riassegna il model (es. model = [])
          this._model = model;
     }
-
     get model(): Object{
         return this._model;
+    }
+
+    @Input()
+    set form(form: FormGroup){
+         this._form = form;
+    }
+    get form(): FormGroup{
+        if(!this._form){
+            this._form = new FormGroup({});
+        }
+        return this._form;
+    }
+
+    @Input()
+    set validators(validators){
+         this._validators = validators;
+    }
+    get validators(){
+        if(!this._validators){
+            this._validators = {};
+        }
+        return this._validators;
     }
 
     private _model: Object;
@@ -130,9 +150,6 @@ export class AsComponent implements OnInit, OnChanges {
                         return test;
             });
             this.formatter = (x: {label: string}) => x.label;
-            if(!this.validators){
-                this.validators = {};
-            }
     }
 
     filterSearchBox(): Array<any> {
@@ -205,9 +222,6 @@ export class AsComponent implements OnInit, OnChanges {
     }
 
     populateForm():void{
-        if(!this.form){
-            this.form = new FormGroup({});
-        }
         var formGroup = {};
         for(let viewModel of this.viewModel){
             if(this.validators[viewModel.model]){
@@ -219,9 +233,6 @@ export class AsComponent implements OnInit, OnChanges {
     }
 
     removeFormControls(){
-        if(!this.form){
-            return false;
-        }
         for(let controlName in this.form.controls){
             this.form.removeControl(controlName);
         }
@@ -347,12 +358,11 @@ export class AsComponent implements OnInit, OnChanges {
         }
         this.viewModel.push(viewModel);
         this.searchBox = '';
-        if(this.form){
-            if(this.validators[viewModel.model]){
-                this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : '',this.validators[viewModel.model]));  
-            }else{
-                this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : ''));
-            }
+        
+        if(this.validators[viewModel.model]){
+            this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : '',this.validators[viewModel.model]));  
+        }else{
+            this.form.addControl(viewModel.model+'_'+viewModel.uuid, new FormControl(viewModel.value ? viewModel.value : ''));
         }
         
         this.onChangeViewModel.emit(this.viewModel);

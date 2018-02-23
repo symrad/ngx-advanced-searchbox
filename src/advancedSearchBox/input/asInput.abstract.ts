@@ -99,7 +99,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
         
     }
 
-    protected _onChange = (val: any) => {};
+    public _onChange = (val: any) => {};
 
     writeValue(val): void {
         this._onChange(val);

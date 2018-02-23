@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -35,10 +35,11 @@
     "ngx-mask": "2.2.2",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.5.5",
-    "ts-keycode-enum": "^1.0.4"
+    "ts-keycode-enum": "^1.0.4",
+    "zone.js": "0.8.20"
   },
   "devDependencies": {
-    "@angular/cli": "^1.6.3",
+    "@angular/cli": "^1.7.1",
     "@angular/compiler-cli": "^5.2.0",
     "@angular/language-service": "^5.2.0",
     "@types/jasmine": "~2.5.53",
@@ -59,6 +60,6 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
-    "typescript": "~2.5.0"
+    "typescript": "~2.6.1"
   }
 }
