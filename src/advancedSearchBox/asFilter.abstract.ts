@@ -1,3 +1,4 @@
+import { AsUtils } from './asUtils';
 import { HttpClient } from '@angular/common/http';
 import { ViewModelInterface, TypesFilterEnum } from './asViewModel.interface';
 import { FilterInterface } from './asFilter.interface';
@@ -112,22 +113,6 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
         return Object.keys(object);
     }
 
-    getterSetterModelTree(parent, models, typeLastModel) {
-        if (models.length === 0) {
-            return parent;
-        }
-        const firstModel = models[0];
-        if (!parent[firstModel]) {
-            if (models.length === 1) {
-                parent[firstModel] = typeLastModel;
-                return parent[firstModel];
-            }
-            parent[firstModel] = {};
-        }
-        models.shift();
-        return this.getterSetterModelTree(parent[firstModel], models, typeLastModel);
-    }
-
     viewToModel() {
         const newModel = {};
         for (const singleViewModel of this.advancedSearchBox.viewModel){
@@ -136,9 +121,9 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
                 formattedValue = this._config.formatModelValue[singleViewModel.model](singleViewModel.value);
             }
             if (singleViewModel.multiple) {
-                this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), []).push(formattedValue);
+                AsUtils.getterSetterModelTree(newModel, singleViewModel.model.split('.'), []).push(formattedValue);
             }else {
-                this.getterSetterModelTree(newModel, singleViewModel.model.split('.'), formattedValue);
+                AsUtils.getterSetterModelTree(newModel, singleViewModel.model.split('.'), formattedValue);
             }
         }
         for (const key in this.advancedSearchBox.model) {

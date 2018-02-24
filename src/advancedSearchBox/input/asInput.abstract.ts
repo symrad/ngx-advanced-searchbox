@@ -1,3 +1,4 @@
+import { AsUtils } from './../asUtils';
 import { ViewModelInterface } from './../asViewModel.interface';
 import { AsInputComponent } from './../asInput.component';
 import { Subject } from 'rxjs/Subject';
@@ -174,7 +175,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
         return map((response:any) => { 
             let viewModel = response.response;
             let term = response.term;
-            let isModel = this.getterModelTree(this.advancedSearchBox.model, this.filter.viewModel.model.split('.')) || [];
+            let isModel = AsUtils.getterSetterModelTree(this.advancedSearchBox.model, this.filter.viewModel.model.split('.')) || [];
             let viewModelFiltered = viewModel
             .filter((v) => {
                 return isModel.filter((valModel) => {
@@ -204,17 +205,4 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
     filterNotDuplicateSuggestions(){
         return this._filterNotDuplicate(notDuplicate.Suggestions);
     }
-
-    getterModelTree(parent, models) {
-        if (models.length === 0) {
-            return parent;
-        }
-        const firstModel = models[0];
-        if (!parent[firstModel]) {
-            return false;
-        }
-        models.shift();
-        return this.getterModelTree(parent[firstModel], models);
-    }
-
 }

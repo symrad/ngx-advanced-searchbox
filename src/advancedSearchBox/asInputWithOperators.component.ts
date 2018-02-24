@@ -129,7 +129,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
                 this.buttonToggleEr.nativeElement.blur();
                 this.onBlur();
             }else {
-                this.onBlur();
+                this.blurInput();
                 this.operatorsDropDownDir.open();
                 this.buttonToggleEr.nativeElement.focus();
             }

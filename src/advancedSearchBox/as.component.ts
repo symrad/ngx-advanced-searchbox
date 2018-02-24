@@ -23,6 +23,7 @@ import { UUID } from 'angular2-uuid';
 import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputComponent } from './input/asSimpleInput.component';
 import { HttpClient } from '@angular/common/http';
+import { AsUtils } from './asUtils';
 
 @Component({
     selector: 'advanced-searchbox',
@@ -161,7 +162,7 @@ export class AsComponent implements OnInit, OnChanges {
                   }
                   const maxOccurrence = param['multiple'];
                   if (maxOccurrence && maxOccurrence !== '*') {
-                      const modelFinded = this.getterModelTree(this.model, param.model.split('.'));
+                      const modelFinded = AsUtils.getterSetterModelTree(this.model, param.model.split('.'));
                       return param['model'] === value['model'] && (modelFinded && param['multiple'] <= modelFinded.length);
                   }else {
                       return param['model'] === value['model'] && !param['multiple'];
@@ -244,41 +245,6 @@ export class AsComponent implements OnInit, OnChanges {
         })[0];
     }
 
-    getCurrentCaretPosition(input):number {
-        if (!input) {
-            return 0;
-        }
-
-        try {
-            // Firefox & co
-            if (typeof input.selectionStart === 'number') {
-                return input.selectionDirection === 'backward' ? input.selectionStart : input.selectionEnd;
-
-            } else if ((<any>document).selection) { // IE
-                input.focus();
-                const selection = (<any>document).selection.createRange();
-                const selectionLength = (<any>document).selection.createRange().text.length;
-                selection.moveStart('character', -input.value.length);
-                return selection.text.length - selectionLength;
-            }
-        }catch (err) {
-            // selectionStart is not supported by HTML 5 input type, so jut ignore it
-        }
-        return 0;
-    };
-
-    getterModelTree(parent, models) {
-        if (models.length === 0) {
-            return parent;
-        }
-        const firstModel = models[0];
-        if (!parent[firstModel]) {
-            return false;
-        }
-        models.shift();
-        return this.getterModelTree(parent[firstModel], models);
-    }
-
     keydown(e, currentViewModel?, options:{id?: any , blackList?: any} = {}) {
         const valueEmitted = {
             viewModel: currentViewModel,
@@ -301,7 +267,7 @@ export class AsComponent implements OnInit, OnChanges {
             return;
         }
 
-        const cursorPosition = this.getCurrentCaretPosition(e.target);
+        const cursorPosition = AsUtils.getCurrentCaretPosition(e.target);
 
         if (e.which === KeyBoard.Backspace && options.blackList.indexOf('Backspace') < 0) {
             if (cursorPosition === 0) {
@@ -312,13 +278,16 @@ export class AsComponent implements OnInit, OnChanges {
         } else if (e.which === KeyBoard.Tab && options.blackList.indexOf('Tab') < 0) {
             if (e.shiftKey) {
                 e.preventDefault();
+                AsUtils.setCaretPosition(e.target,0);
                 this.editPrev.emit(valueEmitted);
             } else {
                 e.preventDefault();
+                AsUtils.setCaretPosition(e.target,e.target.value.length);
                 this.editNext.emit(valueEmitted);
             }
 
         } else if (e.which === KeyBoard.Enter && options.blackList.indexOf('Enter') < 0) {
+            AsUtils.setCaretPosition(e.target,e.target.value.length);
             this.editNext.emit(valueEmitted);
 
         } else if (e.which === KeyBoard.LeftArrow && options.blackList.indexOf('LeftArrow') < 0) {
@@ -374,7 +343,7 @@ export class AsComponent implements OnInit, OnChanges {
         this.removeFormControls();
         this.viewModel = [];
         for (const singleTemplate of this.template){
-            const modelFinded = this.getterModelTree(model, singleTemplate.model.split('.'));
+            const modelFinded = AsUtils.getterSetterModelTree(model, singleTemplate.model.split('.'));
             if (modelFinded) {
                 const typeOfModel: string = typeof modelFinded;
                 if (Array.isArray(modelFinded)) {
