@@ -39,7 +39,7 @@ import { AsUtils } from './asUtils';
                 <ng-container *ngTemplateOutlet="externalTemplate; context: {$implicit: filter}"></ng-container>
             </ng-container>
         </ng-container>
-        <input id="search" type="text" (selectItem)="addFilter($event)" (focus)="focusInput$.next()" 
+        <input id="search" class="form-control" type="text" (selectItem)="addFilter($event)" (focus)="focusInput$.next()" 
         [(ngModel)]="searchBox" [ngModelOptions]="{standalone: true}" (keydown)="keydown($event)" [ngbTypeahead]="searchBoxFunc" 
         [resultTemplate]="rt" [inputFormatter]="formatter" #searchbox #searchboxModel="ngModel" placeholder="Cerca" autosize/>
     </div>
@@ -292,11 +292,13 @@ export class AsComponent implements OnInit, OnChanges {
 
         } else if (e.which === KeyBoard.LeftArrow && options.blackList.indexOf('LeftArrow') < 0) {
             if (cursorPosition === 0) {
+                AsUtils.setCaretPosition(e.target,e.target.value.length);
                 this.editPrev.emit(valueEmitted);
             }
 
         } else if (e.which === KeyBoard.RightArrow && options.blackList.indexOf('RightArrow') < 0) {
             if (cursorPosition === e.target.value.length) {
+                AsUtils.setCaretPosition(e.target,e.target.value.length);
                 this.editNext.emit(valueEmitted);
             }
         }

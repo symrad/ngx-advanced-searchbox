@@ -27,7 +27,7 @@ export enum TypesInputEnum {
 @Component({
     selector: 'as-input',
     template: `
-    <div class="input-group">
+    <div class="input-group input-group-sm">
         <span class="input-group-prepend">
             <span class="btn btn-outline-primary notClickable">{{viewModel.label}}</span>
         </span>

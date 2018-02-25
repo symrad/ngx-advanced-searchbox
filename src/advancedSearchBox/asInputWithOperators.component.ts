@@ -39,12 +39,12 @@ export enum TypesInputWithOperatorsEnum {
 @Component({
     selector: 'as-input-operators',
     template: `
-    <div class="input-group">
+    <div class="input-group input-group-sm">
         <span class="input-group-prepend">
             <div class="btn-group">
-                <span class="btn btn-outline-primary notClickable">{{viewModel.label}}</span>
+                <span class="btn btn-sm btn-outline-primary notClickable">{{viewModel.label}}</span>
                 <div ngbDropdown class="btn-group" appDropdownNavigation>
-                    <button class="btn btn-outline-primary noRadius" type="button" ngbDropdownToggle #buttonToggle 
+                    <button class="btn btn-sm btn-outline-primary noRadius" type="button" ngbDropdownToggle #buttonToggle 
                     (keydown)="advancedSearchBox.keydown($event, viewModel, {id:'buttonDropDown'})">{{viewModel.value.op ? operatorsEnum[viewModel.value.op] : '..'}}</button>
                     <div class="dropdown-menu" ngbDropdownMenu>
                         <a class="dropdown-item" (focus)="viewModel.value.op = operator" *ngFor="let operator of operatorsList" 

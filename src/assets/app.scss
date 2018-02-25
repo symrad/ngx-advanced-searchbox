@@ -5,11 +5,13 @@
 advanced-searchbox{
     width: 100%;
     border: 1px solid #ccc;
+    > div{
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
     padding: 15px 15px 0 15px;
     display: block;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
     .as-filter{
         display: inline-block;
         margin-right: 15px;
@@ -48,6 +50,9 @@ advanced-searchbox{
             height:100%;
             border-radius:0;
         }
+    }
+    .ng-select, .ng-control{
+        min-height: auto!important;
     }
 }
 
