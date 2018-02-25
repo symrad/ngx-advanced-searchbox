@@ -1,3 +1,5 @@
+import { Component } from '@angular/core';
+import { ComponentsComponent } from './layout/components.page';
 import { environment } from './../environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -8,27 +10,46 @@ import { AppConfigService } from './appConfig.service';
 import { RouterModule } from '@angular/router'
 import { LayoutHeaderComponent } from './layout/header.component';
 import { LayoutSidenavComponent } from './layout/sidenav.component';
-import { AppendToComponent } from './routes/appendTo.component';
-import { SwitchRadioComponent } from './routes/switchRadio.component';
+import { ComponentsSimpleComponent } from './routes/components/simple.component';
+import { ComponentsSwitchRadioComponent } from './routes/components/switchRadio.component';
 import { HighlightModule } from 'ngx-highlightjs';
-import { CheckboxListComponent } from './routes/checkboxList.component';
-import { InputWithSuggestionsComponent } from './routes/inputWithSuggestions.component';
-import { RangeComponent } from './routes/range.component';
+import { ComponentsCheckboxListComponent } from './routes/components/checkboxList.component';
+import { ComponentsInputWithSuggestionsComponent } from './routes/components/inputWithSuggestions.component';
+import { ComponentsRangeComponent } from './routes/components/range.component';
+import { GettingStartedComponent } from './layout/gettingStarted.page';
+import { GettingStartedMainComponent } from './routes/getting-started/main.component';
  
 var appRoutes = [
   {
       path: '',
-      redirectTo: '/simple-input',
+      redirectTo: '/getting-started',
       pathMatch: 'full'
   },
-  { path: 'simple-input', children:[
-    { path: '', component: AppendToComponent, data: { title: 'Simple input' } },
-    { path: 'switch-radio', component: SwitchRadioComponent, data: { title: 'Switch - Radio' } },
-    { path: 'checkboxlist', component: CheckboxListComponent, data: { title: 'Checkbox List' } },
-    { path: 'input-with-suggestions', component: InputWithSuggestionsComponent, data: { title: 'Input with suggestions' } },
-  ]},
-  { path: 'general', component: AppendToComponent, data: { title: 'General' } },
-  { path: 'range', component: RangeComponent, data: { title: 'Range' } }
+  {
+    path:'getting-started',
+    component:GettingStartedComponent,
+    children:[
+      {path:'', component:GettingStartedMainComponent, data:{title: 'Getting started'}}
+    ]
+  },
+  {
+    path:'components',
+    component:ComponentsComponent,
+    children:[
+      { path:'',
+        redirectTo:'/components/simple-input',
+        pathMatch: 'full',
+      },
+      { path: 'simple-input', children:[
+        { path: '', component: ComponentsSimpleComponent, data: { title: 'Simple input' } },
+        { path: 'switch-radio', component: ComponentsSwitchRadioComponent, data: { title: 'Switch - Radio' } },
+        { path: 'checkboxlist', component: ComponentsCheckboxListComponent, data: { title: 'Checkbox List' } },
+        { path: 'input-with-suggestions', component: ComponentsInputWithSuggestionsComponent, data: { title: 'Input with suggestions' } },
+      ]},
+      { path: 'general', component: ComponentsSimpleComponent, data: { title: 'General' } },
+      { path: 'range', component: ComponentsRangeComponent, data: { title: 'Range' } }
+    ]
+  }
 ];
 
 @NgModule({
@@ -36,11 +57,14 @@ var appRoutes = [
     AppComponent,
     LayoutHeaderComponent,
     LayoutSidenavComponent,
-    AppendToComponent,
-    SwitchRadioComponent,
-    CheckboxListComponent,
-    InputWithSuggestionsComponent,
-    RangeComponent
+    ComponentsSimpleComponent,
+    ComponentsSwitchRadioComponent,
+    ComponentsCheckboxListComponent,
+    ComponentsInputWithSuggestionsComponent,
+    ComponentsRangeComponent,
+    GettingStartedComponent,
+    ComponentsComponent,
+    GettingStartedMainComponent
   ],
   imports: [
     BrowserModule,

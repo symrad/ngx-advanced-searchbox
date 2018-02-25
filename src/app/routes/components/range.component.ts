@@ -30,7 +30,7 @@ import { Component, OnInit } from '@angular/core';
     ]
 })
 
-export class RangeComponent {
+export class ComponentsRangeComponent {
   
   public model = {};
   public template = {};

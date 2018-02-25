@@ -30,7 +30,7 @@ import { Component, OnInit } from '@angular/core';
     ]
 })
 
-export class CheckboxListComponent {
+export class ComponentsCheckboxListComponent {
   
   public model = {};
   public template = {};

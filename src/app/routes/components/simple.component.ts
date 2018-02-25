@@ -2,7 +2,7 @@ import { FormGroup } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'append-to',
+    selector: 'components-simple',
     template: `
     <advanced-searchbox [template]="template" [model]="model" (editNext)="onEditNext($event)" [openOnLoad]="true">
     <ng-container *asTemplate="let filter">
@@ -31,7 +31,7 @@ import { Component, OnInit } from '@angular/core';
     ]
 })
 
-export class AppendToComponent {
+export class ComponentsSimpleComponent {
 
   title = 'app';
   model = {};

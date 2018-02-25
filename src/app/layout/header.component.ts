@@ -20,10 +20,16 @@ import { Component, Input, OnInit } from '@angular/core';
 
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/getting-started" routerLinkActive="active">Getting started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/components" routerLinkActive="active">Component</a>
+                    </li>
                 </ul>
 
                 <form class="form-inline my-2 my-lg-0">
-                <iframe src="https://ghbtns.com/github-btn.html?user=symrad&repo=ngx-advanced-searchbox&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+                    <iframe src="https://ghbtns.com/github-btn.html?user=symrad&repo=ngx-advanced-searchbox&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
                 </form>
             </div>
         </nav>

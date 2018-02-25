@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'input-with-suggestions',
+    selector: 'switch-radio',
     template: `
     <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
     </advanced-searchbox>
@@ -30,7 +30,7 @@ import { Component, OnInit } from '@angular/core';
     ]
 })
 
-export class InputWithSuggestionsComponent {
+export class ComponentsSwitchRadioComponent {
   
   public model = {};
   public template = {};
@@ -38,29 +38,34 @@ export class InputWithSuggestionsComponent {
   public codeJs;
 
   constructor(){
-    this.model = {"name": [ "pippo" ]};
+    this.model = { "isEnabled": [ { "label": "Yes", "value": true } ]};
     this.template = [
       {
-        'model': 'name',
+        'model' : 'isEnabled',
         'type' : 'INPUT',
-        'suggestions': ['pippo', 'pluto', 'paperino'],
-        'multiple' : '*',
-        'label': 'Name'
+        'inputType' : 'TEXT',
+        'position' : 1,
+        'label' : 'Enabled',
+        'domains': [{label:'Yes', value:true}, {label:'No', value:false}],
+        'multiple' : '1',
+        'bindLabel': 'label'
       }
     ];
     this.codeJs = `
       public model = {};
       public template = {};
 
-      constructor(_config:AsConfigService){
-        this.model = {"name": [ "pippo" ]};
+      constructor(){
+        this.model = { "isEnabled": [ { "label": "Yes", "value": true } ]};
         this.template = [
           {
-            'model': 'name',
+            'model' : 'isEnabled',
             'type' : 'INPUT',
-            'suggestions': ['pippo', 'pluto', 'paperino'],
-            'multiple' : '*',
-            'label': 'Name'
+            'position' : 1,
+            'label' : 'Enabled',
+            'domains': [{label:'Yes', value:true}, {label:'No', value:false}],
+            'multiple' : '1',
+            'bindLabel': 'label'
           }
         ];
       }`;
