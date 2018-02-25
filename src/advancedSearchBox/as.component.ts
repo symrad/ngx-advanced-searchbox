@@ -278,7 +278,7 @@ export class AsComponent implements OnInit, OnChanges {
         } else if (e.which === KeyBoard.Tab && options.blackList.indexOf('Tab') < 0) {
             if (e.shiftKey) {
                 e.preventDefault();
-                AsUtils.setCaretPosition(e.target,0);
+                AsUtils.setCaretPosition(e.target,e.target.value.length);
                 this.editPrev.emit(valueEmitted);
             } else {
                 e.preventDefault();
