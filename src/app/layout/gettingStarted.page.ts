@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
     <layout-header></layout-header>
     <div class="container fill">
         <div class="row">
-            <main class="col-12 py-md-4 pl-md-4 bd-content">
+            <main class="col-12 py-md-4 pl-md-4">
                 <h2 class="bd-title">
                     
                 </h2>
