@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "npm run clean:index && ng build --prod",
+    "build": "npm run clean:index && ng build --prod --app remote",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -18,7 +18,7 @@
   "private": true,
   "dependencies": {
     "@angular/router": "5.2.6",
-    "ngx-advanced-searchbox": "0.1.4",
+    "ngx-advanced-searchbox": "0.1.5",
     "ngx-highlightjs": "^1.4.1",
     "zone.js": "^0.8.19"
   },
