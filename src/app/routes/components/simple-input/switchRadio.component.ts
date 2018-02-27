@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'switch-radio',
+    selector: 'switch-radio-select',
     template: `
     <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
     </advanced-searchbox>
@@ -30,7 +30,7 @@ import { Component, OnInit } from '@angular/core';
     ]
 })
 
-export class ComponentsSwitchRadioComponent {
+export class ComponentsSwitchRadioSelectComponent {
   
   public model = {};
   public template = {};

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'switch-radio',
+    selector: 'range',
     template: `
     <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
     </advanced-searchbox>
@@ -93,13 +93,21 @@ export class ComponentsRangeComponent {
             'birth.to':function(val){
                 const newVal = Object.assign({},val);
                 const daySplitted = val.value.split('-');
-                newVal.value = new Date(parseInt(daySplitted[2]),parseInt(daySplitted[1])-1,parseInt(daySplitted[0]),12);
+                newVal.value = new Date(
+                  parseInt(daySplitted[2]),
+                  parseInt(daySplitted[1])-1,
+                  parseInt(daySplitted[0])
+                  ,12);
                 return newVal;
             },
             'birth.from':function(val){
                 const newVal = Object.assign({},val);
                 const daySplitted = val.value.split('-');
-                newVal.value = new Date(parseInt(daySplitted[2]),parseInt(daySplitted[1])-1,parseInt(daySplitted[0]),12);
+                newVal.value = new Date(
+                  parseInt(daySplitted[2]),
+                  parseInt(daySplitted[1])-1,
+                  parseInt(daySplitted[0]),
+                  12);
                 return newVal;
             }
         };
@@ -108,13 +116,21 @@ export class ComponentsRangeComponent {
             'birth.to':function(val){
                 const newVal = Object.assign({},val);
                 newVal.value = new Date(val.value);
-                newVal.value = newVal.value.getDate()  + "-" + (newVal.value.getMonth()+1) + "-" + newVal.value.getFullYear();
+                newVal.value = newVal.value.getDate()  
+                               + "-" 
+                               + (newVal.value.getMonth()+1) 
+                               + "-" 
+                               + newVal.value.getFullYear();
                 return newVal;
             },
             'birth.from':function(val){
                 const newVal = Object.assign({},val);
                 newVal.value = new Date(val.value);
-                newVal.value = newVal.value.getDate()  + "-" + (newVal.value.getMonth()+1) + "-" + newVal.value.getFullYear();
+                newVal.value = newVal.value.getDate()  
+                               + "-" 
+                               + (newVal.value.getMonth()+1) 
+                               + "-" 
+                               + newVal.value.getFullYear();
                 return newVal;
             }
         };

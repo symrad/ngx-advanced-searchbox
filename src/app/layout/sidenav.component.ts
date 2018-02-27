@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
         </h6>
         <ul class="nav nav-pills flex-column">
             <li class="nav-item" routerLinkActive="active">
-                <a class="nav-link" routerLink="/components/simple-input/switch-radio" routerLinkActive="active">Switch/Radio</a>
+                <a class="nav-link" routerLink="/components/simple-input/switch-radio-select" routerLinkActive="active">Switch/Radio/Select</a>
             </li>
             <li class="nav-item" routerLinkActive="active">
                 <a class="nav-link" routerLink="/components/simple-input/checkboxlist" routerLinkActive="active">Checkbox List</a>
@@ -19,7 +19,7 @@ import { Component } from '@angular/core';
         </ul>
         <br/>
         <h6>
-            <a class="nav-link" routerLink="/range" routerLinkActive="active">Range</a>
+            <a class="nav-link" routerLink="/components/range" routerLinkActive="active">Range</a>
         </h6>
         <ul class="nav nav-pills flex-column">
             

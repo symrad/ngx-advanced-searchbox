@@ -10,11 +10,11 @@ import { AppConfigService } from './appConfig.service';
 import { RouterModule } from '@angular/router'
 import { LayoutHeaderComponent } from './layout/header.component';
 import { LayoutSidenavComponent } from './layout/sidenav.component';
-import { ComponentsSimpleComponent } from './routes/components/simple.component';
-import { ComponentsSwitchRadioComponent } from './routes/components/switchRadio.component';
+import { ComponentsSimpleComponent } from './routes/components/simple-input/simple.component';
+import { ComponentsSwitchRadioSelectComponent } from './routes/components/simple-input/switchRadio.component';
 import { HighlightModule } from 'ngx-highlightjs';
-import { ComponentsCheckboxListComponent } from './routes/components/checkboxList.component';
-import { ComponentsInputWithSuggestionsComponent } from './routes/components/inputWithSuggestions.component';
+import { ComponentsCheckboxListComponent } from './routes/components/simple-input/checkboxList.component';
+import { ComponentsInputWithSuggestionsComponent } from './routes/components/simple-input/inputWithSuggestions.component';
 import { ComponentsRangeComponent } from './routes/components/range.component';
 import { GettingStartedComponent } from './layout/gettingStarted.page';
 import { GettingStartedMainComponent } from './routes/getting-started/main.component';
@@ -43,7 +43,7 @@ var appRoutes = [
       },
       { path: 'simple-input', children:[
         { path: '', component: ComponentsSimpleComponent, data: { title: 'Simple input' } },
-        { path: 'switch-radio', component: ComponentsSwitchRadioComponent, data: { title: 'Switch - Radio' } },
+        { path: 'switch-radio-select', component: ComponentsSwitchRadioSelectComponent, data: { title: 'Switch - Radio - Select' } },
         { path: 'checkboxlist', component: ComponentsCheckboxListComponent, data: { title: 'Checkbox List' } },
         { path: 'input-with-suggestions', component: ComponentsInputWithSuggestionsComponent, data: { title: 'Input with suggestions' } },
       ]},
@@ -59,7 +59,7 @@ var appRoutes = [
     LayoutHeaderComponent,
     LayoutSidenavComponent,
     ComponentsSimpleComponent,
-    ComponentsSwitchRadioComponent,
+    ComponentsSwitchRadioSelectComponent,
     ComponentsCheckboxListComponent,
     ComponentsInputWithSuggestionsComponent,
     ComponentsRangeComponent,
