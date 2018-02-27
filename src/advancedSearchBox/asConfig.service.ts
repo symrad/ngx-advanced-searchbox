@@ -86,7 +86,7 @@ export class AsConfigService{
                 return response;
             }
             response.response = suggestions.filter(v => {
-                return v.indexOf(term.toLowerCase()) > -1
+                return v.toString().indexOf(term.toLowerCase()) > -1
             }).slice(0, 10);
             return response;
         });
@@ -123,9 +123,9 @@ export class AsConfigService{
             }
             response.response = viewModel.domains.filter(v => {
                 if(v[viewModel.bindLabel]){
-                    return v[viewModel.bindLabel].toLowerCase().indexOf(term.toLowerCase()) > -1
+                    return v[viewModel.bindLabel].toString().toLowerCase().indexOf(term.toLowerCase()) > -1
                 }
-                return v.indexOf(term.toLowerCase()) > -1
+                return v.toString().indexOf(term.toLowerCase()) > -1
             }).slice(0, 10);
             return response;
         });
