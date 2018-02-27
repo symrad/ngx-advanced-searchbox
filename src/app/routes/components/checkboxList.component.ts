@@ -27,6 +27,9 @@ import { Component, OnInit } from '@angular/core';
         </ngb-tab>
       </ngb-tabset>
     </div>
+
+    <advanced-searchbox [template]="template2" [model]="model2" [openOnLoad]="true">
+    </advanced-searchbox>
     `,
     styles: [
         `
@@ -44,12 +47,15 @@ import { Component, OnInit } from '@angular/core';
 export class ComponentsCheckboxListComponent {
   
   public model = {};
+  public model2 = {};
   public template = {};
+  public template2 = {};
   public codeHtml;
   public codeJs;
 
   constructor(){
-    this.model = {"city": [ 1, 2, 3 ]};
+    this.model = {"city": ['aaa','bbb','ccc','ddd']};
+    this.model2 = {"city2": [1,2,3,4]};
     this.template = [
       {
         'model': 'city',
@@ -57,6 +63,15 @@ export class ComponentsCheckboxListComponent {
         'domains': [{label:'Berlin', value:1}, {label:'London', value:2}, {label:'Milan', value:3}, {label:'Paris', value:4}],
         'multiple' : '4',
         'bindLabel': 'label',
+        'label': 'City'
+      }
+    ];
+    this.template2 = [
+      {
+        'model': 'city2',
+        'type' : 'INPUT',
+        'domains': [1,2,3,4],
+        'multiple' : '4',
         'label': 'City'
       }
     ];
