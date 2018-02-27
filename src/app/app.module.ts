@@ -18,6 +18,7 @@ import { ComponentsInputWithSuggestionsComponent } from './routes/components/inp
 import { ComponentsRangeComponent } from './routes/components/range.component';
 import { GettingStartedComponent } from './layout/gettingStarted.page';
 import { GettingStartedMainComponent } from './routes/getting-started/main.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
  
 var appRoutes = [
   {
@@ -70,6 +71,7 @@ var appRoutes = [
     BrowserModule,
     CommonModule,
     AsBoxModule.forRoot(),
+    NgbModule.forRoot(),
     RouterModule.forRoot(
       appRoutes,
       {

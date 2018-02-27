@@ -14,7 +14,18 @@ import { Component, OnInit } from '@angular/core';
       <br/>
       <br/>
       <h5>Code</h5>
-      <pre><code highlight [code]="codeJs"></code></pre>
+      <ngb-tabset>
+        <ngb-tab title="Ts">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeJs"></code></pre>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Html">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeHtml"></code></pre>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
     </div>
     `,
     styles: [
@@ -58,7 +69,11 @@ export class ComponentsCheckboxListComponent {
         this.template = [
           {
             'type' : 'INPUT',
-            'domains': [{label:'Berlin', value:1}, {label:'London', value:2}, {label:'Milan', value:3}, {label:'Paris', value:4}],
+            'domains': [
+              {label:'Berlin', value:1}, 
+              {label:'London', value:2}, 
+              {label:'Milan', value:3}, 
+              {label:'Paris', value:4}],
             'multiple' : '4',
             'bindLabel': 'label',
             'label': 'City'
@@ -87,5 +102,10 @@ export class ComponentsCheckboxListComponent {
         };
 
       }`;
+
+      this.codeHtml = `
+      <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+      </advanced-searchbox>
+      `;
   }
 }
