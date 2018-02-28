@@ -84,6 +84,7 @@ export class ComponentsInputWithSuggestionsComponent {
         'type' : 'INPUT',
         'suggestions': 'https://www.googleapis.com/youtube/v3/search',
         'multiple' : '*',
+        'bindLabel':'label',
         'label': 'Name'
       }
     ];
