@@ -19,6 +19,9 @@ advanced-searchbox{
         input{
             padding: 0 15px;
         }
+        .input-group{
+            flex-wrap: nowrap;
+        }
         ng-select{
             input{
                 padding:0;

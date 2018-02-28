@@ -60,6 +60,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
 
     ngAfterViewInit(){
         this.advancedSearchBox.afterViewInitFilters$.next(this.viewModel);
+        this.maxWidthInput();
     }
 
     ngOnInit(): void {
@@ -132,6 +133,7 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
             }
         }
         Object.assign(this.advancedSearchBox.model, newModel);
+        this.maxWidthInput();
     }
 
     @HostListener('document:click', ['$event'])
@@ -145,6 +147,11 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
             }
         }
         this._isFirstDocClick = false;
+    }
+
+    @HostListener('window:resize', ['$event'])
+    resize(event) {
+        this.maxWidthInput();
     }
     
     public onSelectDomains($event){
@@ -205,5 +212,22 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
         if(this.operatorsDropDownDir instanceof NgbDropdown){
             this.operatorsDropDownDir.close();
         }
+    }
+
+    public maxWidthInput(){
+        var advancedSearchboxWidth = this.advancedSearchBox.element.nativeElement.clientWidth-30;
+        var filterWidth = this._el.nativeElement.clientWidth;
+        var inputWidth = this.inputComponent._element.nativeElement.clientWidth;
+        var maxWidth = advancedSearchboxWidth - (filterWidth - inputWidth);
+        if(this.inputComponent.inputRef.nativeElement){
+            this.inputComponent.inputRef.nativeElement.style.maxWidth = maxWidth+'px';
+        }
+        if(this.inputComponent.inputRef instanceof NgbTypeahead){
+            this.inputComponent.inputRef._elementRef.nativeElement.style.maxWidth = maxWidth+'px';
+        }
+        if(this.inputComponent.inputRef instanceof NgSelectComponent){
+            this.inputComponent.inputRef.elementRef.nativeElement.style.maxWidth = maxWidth+'px';
+        }
+        
     }
 }
