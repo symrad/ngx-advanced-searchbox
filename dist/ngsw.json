@@ -7,6 +7,7 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "urls": [
+        "/favicon.ico",
         "/inline.3de8b628d63dde9d0fc5.bundle.js",
         "/main.4300f16509b32a657402.bundle.js",
         "/polyfills.4b808ce4b229f83caca7.bundle.js",
@@ -117,6 +118,7 @@
     "/assets/lib/hljs/styles/agate.css": "8e122b0f00f5a7ec4e6dc492bf1560441eeef7f0",
     "/styles.c4a12f6569ee091bb44a.bundle.css": "21371ccd572e889cf2be5ccc582704463069e0df",
     "/assets/lib/hljs/styles/androidstudio.css": "958baa24814c06a625612a3b2b478d54bc1bf1b1",
+    "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
     "/assets/lib/hljs/styles/arduino-light.css": "c6e05580b51b755e229e99eb156940ad2cab192b",
     "/assets/lib/hljs/styles/arta.css": "17b23b9fa57ef7a05a6aaeea9b5feb5442a8e584",
     "/assets/lib/hljs/styles/ascetic.css": "6358377b5c25667886aca0d605cbc497cf02405f",
