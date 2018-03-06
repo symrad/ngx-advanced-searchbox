@@ -1,17 +1,17 @@
 {
-  "index": "../index.html",
+  "index": "/ngx-advanced-searchbox/dist/index.html",
   "assetGroups": [{
     "name": "app",
     "installMode": "prefetch",
     "resources": {
       "files": [
-        "/favicon.ico",
-        "../index.html"
+        "/ngx-advanced-searchbox/dist/favicon.ico",
+        "/ngx-advanced-searchbox/dist/index.html"
       ],
       "versionedFiles": [
-        "/*.bundle.css",
-        "/*.bundle.js",
-        "/*.chunk.js"
+        "/ngx-advanced-searchbox/dist/*.bundle.css",
+        "/ngx-advanced-searchbox/dist/*.bundle.js",
+        "/ngx-advanced-searchbox/dist/*.chunk.js"
       ]
     }
   }, {
@@ -20,7 +20,7 @@
     "updateMode": "prefetch",
     "resources": {
       "files": [
-        "/assets/**"
+        "/ngx-advanced-searchbox/dist/assets/**"
       ]
     }
   }]
