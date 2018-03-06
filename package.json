@@ -17,15 +17,17 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/router": "5.2.6",
+    "@angular/router": "^5.2.7",
+    "@angular/service-worker": "^5.2.7",
     "ngx-advanced-searchbox": "0.1.6",
     "ngx-highlightjs": "^1.4.1",
+    "npm": "^5.7.1",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
     "@angular/cli": "^1.7.1",
-    "@angular/compiler-cli": "^5.2.6",
-    "@angular/language-service": "^5.2.6",
+    "@angular/compiler-cli": "^5.2.7",
+    "@angular/language-service": "^5.2.7",
     "codelyzer": "~3.2.0",
     "typescript": "~2.6.1"
   }

@@ -1,3 +1,5 @@
+import { HttpClient } from '@angular/common/http';
+import { AsConfigService } from 'ngx-advanced-searchbox';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -27,6 +29,22 @@ import { Component, OnInit } from '@angular/core';
         </ngb-tab>
       </ngb-tabset>
     </div>
+    <h4 class="bd-title">
+      With remote data source
+    </h4>
+    <advanced-searchbox [template]="templateAsync" [model]="modelAsync" [openOnLoad]="false">
+    </advanced-searchbox>
+    <br/>
+    <div>
+      <h5>Model</h5>
+      <code>
+        {{modelAsync | json}}
+      </code>
+      <br/>
+      <br/>
+      <h5>Code</h5>
+      <pre><code highlight [code]="codeJsAsync"></code></pre>
+    </div>
     `,
     styles: [
         `
@@ -48,7 +66,12 @@ export class ComponentsCheckboxListComponent {
   public codeHtml;
   public codeJs;
 
-  constructor(){
+  public modelAsync = {};
+  public templateAsync = {};
+  public codeHtmlAsync;
+  public codeJsAsync;
+
+  constructor(_config:AsConfigService, _http:HttpClient){
     this.model = {"city": ['Milan','Paris']};
     this.template = [
       {
@@ -80,5 +103,85 @@ export class ComponentsCheckboxListComponent {
         }
       ];
     `;
+
+
+    this.templateAsync = [
+      {
+        'model': 'youtube',
+        'type' : 'INPUT',
+        'domains': 'https://www.googleapis.com/youtube/v3/search',
+        'multiple' : '4',
+        'label': 'youtube',
+        'bindLabel' : 'label'
+      }
+    ];
+    
+    this.codeHtmlAsync = `
+    <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+    </advanced-searchbox>
+    `;
+
+    this.codeJsAsync = `
+    public model = {};
+    public template = {};
+
+    constructor(_config:AsConfigService, _http:HttpClient){
+      this.template = [
+        {
+          'model': 'youtube',
+          'type' : 'INPUT',
+          'domains': 'https://www.googleapis.com/youtube/v3/search',
+          'multiple' : '4',
+          'bindLabel' : 'label',
+          'label': 'youtube'
+        }
+
+        _config.customDomainsAsyncFn['youtube'] = (observable, viewModel, model) => {
+          return observable
+          .switchMap((term) => {
+              return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
+                  q:term,
+                  key: '{your key}',
+                  type: 'video',
+                  maxResults: '12',
+                  part: 'id,snippet'
+                  }})
+                  .catch(()=>[])
+                  .map((response:any) => {
+                      let newResponse = {response:[], term:''};
+                      newResponse.response = response.items.map((item)=>{
+                          return {label:item.snippet.title};
+                      });
+                      newResponse.term = term;
+                      return newResponse;
+                  })
+              }
+          );
+        }
+      ];
+    `;
+
+    _config.customDomainsAsyncFn['youtube'] = (observable, viewModel, model) => {
+      return observable
+      .switchMap((term) => {
+          return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
+              q:term,
+              key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
+              type: 'video',
+              maxResults: '12',
+              part: 'id,snippet'
+              }})
+              .catch(()=>[])
+              .map((response:any) => {
+                  let newResponse = {response:[], term:''};
+                  newResponse.response = response.items.map((item)=>{
+                      return {label:item.snippet.title};
+                  });
+                  newResponse.term = term;
+                  return newResponse;
+              })
+          }
+      );
+    }
   }
 }

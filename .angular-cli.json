@@ -9,6 +9,7 @@
       "root": "src",
       "outDir": "dist",
       "deployUrl": "ngx-advanced-searchbox/dist",
+      "serviceWorker": true,
       "assets": [
         "assets",
         "favicon.ico"
@@ -35,6 +36,7 @@
       "name":"local",
       "root": "src",
       "outDir": "dist",
+      "serviceWorker": true,
       "assets": [
         "assets",
         "favicon.ico"

@@ -19,10 +19,12 @@ import { Component } from '@angular/core';
         </ul>
         <br/>
         <h6>
-            <a class="nav-link" routerLink="/components/range" routerLinkActive="active">Range</a>
+            <a class="nav-link" routerLink="/components/operators-input" routerLinkActive="active">Operators input</a>
         </h6>
         <ul class="nav nav-pills flex-column">
-            
+            <li class="nav-item" routerLinkActive="active">
+                <a class="nav-link" routerLink="/components/operators-input/range" routerLinkActive="active">Range</a>
+            </li>
         </ul>
     `,
     styles: [

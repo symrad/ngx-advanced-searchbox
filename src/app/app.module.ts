@@ -1,3 +1,5 @@
+import { ComponentsRangeComponent } from './routes/components/operators-input/range.component';
+import { ComponentsOperatorsInputComponent } from './routes/components/operators-input/operators.component';
 import { Component } from '@angular/core';
 import { ComponentsComponent } from './layout/components.page';
 import { environment } from './../environments/environment';
@@ -15,10 +17,10 @@ import { ComponentsSwitchRadioSelectComponent } from './routes/components/simple
 import { HighlightModule } from 'ngx-highlightjs';
 import { ComponentsCheckboxListComponent } from './routes/components/simple-input/checkboxList.component';
 import { ComponentsInputWithSuggestionsComponent } from './routes/components/simple-input/inputWithSuggestions.component';
-import { ComponentsRangeComponent } from './routes/components/range.component';
 import { GettingStartedComponent } from './layout/gettingStarted.page';
 import { GettingStartedMainComponent } from './routes/getting-started/main.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ServiceWorkerModule } from '@angular/service-worker';
  
 var appRoutes = [
   {
@@ -48,7 +50,10 @@ var appRoutes = [
         { path: 'input-with-suggestions', component: ComponentsInputWithSuggestionsComponent, data: { title: 'Input with suggestions' } },
       ]},
       { path: 'general', component: ComponentsSimpleComponent, data: { title: 'General' } },
-      { path: 'range', component: ComponentsRangeComponent, data: { title: 'Range' } }
+      { path: 'operators-input', children:[
+        { path: '', component: ComponentsOperatorsInputComponent, data: { title: 'Operators input' } },
+        { path: 'range', component: ComponentsRangeComponent, data: { title: 'Range' } }
+      ]}
     ]
   }
 ];
@@ -62,10 +67,11 @@ var appRoutes = [
     ComponentsSwitchRadioSelectComponent,
     ComponentsCheckboxListComponent,
     ComponentsInputWithSuggestionsComponent,
-    ComponentsRangeComponent,
     GettingStartedComponent,
     ComponentsComponent,
-    GettingStartedMainComponent
+    GettingStartedMainComponent,
+    ComponentsOperatorsInputComponent,
+    ComponentsRangeComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +84,10 @@ var appRoutes = [
           useHash: true
       }
     ),
-    HighlightModule.forRoot({path: environment.assetsPath+'/lib/hljs'})
+    HighlightModule.forRoot({path: environment.assetsPath+'/lib/hljs'}),
+    ServiceWorkerModule.register('/ngsw-worker.js', {
+      enabled: environment.production
+    })
   ],
   providers: [
     {provide:AsConfigService, useClass:AppConfigService}

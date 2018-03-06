@@ -18,11 +18,22 @@ import { Component, OnInit } from '@angular/core';
       <h5>Code</h5>
       <pre><code highlight [code]="codeJs"></code></pre>
     </div>
-    <h2 class="bd-title">
-      Remote data source
-    </h2>
-    <advanced-searchbox [template]="templateAsync" [model]="modelAsync" [openOnLoad]="true">
+    <h4 class="bd-title">
+      With remote data source
+    </h4>
+    <advanced-searchbox [template]="templateAsync" [model]="modelAsync" [openOnLoad]="false">
     </advanced-searchbox>
+    <br/>
+    <div>
+      <h5>Model</h5>
+      <code>
+        {{modelAsync | json}}
+      </code>
+      <br/>
+      <br/>
+      <h5>Code</h5>
+      <pre><code highlight [code]="codeJsAsync"></code></pre>
+    </div>
 
     `,
     styles: [
@@ -84,10 +95,49 @@ export class ComponentsInputWithSuggestionsComponent {
         'type' : 'INPUT',
         'suggestions': 'https://www.googleapis.com/youtube/v3/search',
         'multiple' : '*',
-        'bindLabel':'label',
         'label': 'Name'
       }
     ];
+
+    this.codeJsAsync = `
+      public model = {};
+      public template = {};
+
+      constructor(_config:AsConfigService){
+        this.template = [
+          {
+            'model': 'nameAsync',
+            'type' : 'INPUT',
+            'suggestions': 'https://www.googleapis.com/youtube/v3/search',
+            'multiple' : '*',
+            'bindLabel':'label',
+            'label': 'Name'
+          }
+        ];
+
+        _config.customSuggestionsAsyncFn['nameAsync'] = (observable, viewModel, model) => {
+          return observable
+          .switchMap((term) => {
+              return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
+                  q:term,
+                  key: '{your key}',
+                  type: 'video',
+                  maxResults: '12',
+                  part: 'id,snippet'
+                  }})
+                  .catch(()=>[])
+                  .map((response:any) => {
+                      let newResponse = {response:[], term:''};
+                      newResponse.response = response.items.map((item)=>{
+                          return item.snippet.title;
+                      });
+                      newResponse.term = term;
+                      return newResponse;
+                  })
+              }
+          );
+        }
+      }`;
 
     _config.customSuggestionsAsyncFn['nameAsync'] = (observable, viewModel, model) => {
       return observable
@@ -103,7 +153,7 @@ export class ComponentsInputWithSuggestionsComponent {
               .map((response:any) => {
                   let newResponse = {response:[], term:''};
                   newResponse.response = response.items.map((item)=>{
-                      return {label:item.snippet.title};
+                      return item.snippet.title;
                   });
                   newResponse.term = term;
                   return newResponse;
