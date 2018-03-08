@@ -78,7 +78,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
                 })
                 .let((obs):Observable<any> => {
                     if(this.filter.viewModel.suggestions){
-                        if(typeof this.filter.viewModel.suggestions === 'string'){
+                        if(typeof this.filter.viewModel.suggestions === 'string' || this.filter.viewModel.suggestions === ''){
                             return obs
                             .let((obs) => this._config.suggestionsAsyncFn(obs, this.filter.viewModel, this.filter.viewModel.suggestions))
                             .do((response) => {
@@ -147,7 +147,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
             .filter((term) => this.filter.viewModel.domains)
             //.debounceTime(1000)
             .let((obs) => {
-                if(typeof this.filter.viewModel.domains === 'string'){
+                if(typeof this.filter.viewModel.domains === 'string' || this.filter.viewModel.domains === ''){
                     return obs
                     .let((obs) => this._config.domainsAsyncFn(obs, this.filter.viewModel, this.advancedSearchBox.model))
                     .do((response) => {
