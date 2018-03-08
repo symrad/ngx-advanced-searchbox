@@ -8,7 +8,10 @@ import { Component } from '@angular/core';
         </h6>
         <ul class="nav nav-pills flex-column">
             <li class="nav-item" routerLinkActive="active">
-                <a class="nav-link" routerLink="/components/simple-input/switch-radio-select" routerLinkActive="active">Switch/Radio/Select</a>
+                <a class="nav-link" routerLink="/components/simple-input/input" routerLinkActive="active">Input</a>
+            </li>
+            <li class="nav-item" routerLinkActive="active">
+                <a class="nav-link" routerLink="/components/simple-input/radio-select-switch" routerLinkActive="active">Radio/Select/Switch</a>
             </li>
             <li class="nav-item" routerLinkActive="active">
                 <a class="nav-link" routerLink="/components/simple-input/checkboxlist" routerLinkActive="active">Checkbox List</a>

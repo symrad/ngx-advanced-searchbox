@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs/Observable';
+import { AppService } from './../../../app.service';
 import { HttpClient } from '@angular/common/http';
 import { AsConfigService } from 'ngx-advanced-searchbox';
 import { Component, OnInit } from '@angular/core';
@@ -43,7 +45,18 @@ import { Component, OnInit } from '@angular/core';
       <br/>
       <br/>
       <h5>Code</h5>
-      <pre><code highlight [code]="codeJsAsync"></code></pre>
+      <ngb-tabset>
+        <ngb-tab title="Ts">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeJsAsync"></code></pre>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Html">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeHtmlAsync"></code></pre>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
     </div>
     `,
     styles: [
@@ -71,7 +84,7 @@ export class ComponentsCheckboxListComponent {
   public codeHtmlAsync;
   public codeJsAsync;
 
-  constructor(_config:AsConfigService, _http:HttpClient){
+  constructor(_config:AsConfigService, _http:HttpClient, public service:AppService){
     this.model = {"city": ['Milan','Paris']};
     this.template = [
       {
@@ -84,103 +97,81 @@ export class ComponentsCheckboxListComponent {
     ];
     
     this.codeHtml = `
-    <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
-    </advanced-searchbox>
+      <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+      </advanced-searchbox>
     `;
 
     this.codeJs = `
-    public model = {};
-    public template = {};
+      public model = {};
+      public template = {};
 
-    constructor(_config:AsConfigService){
-      this.model = {"city": [ 'pippo','pluto','paperino','paperone' ]};
-      this.template = [
-        {
-          'type' : 'INPUT',
-          'domains': ['pippo','pluto','paperino','paperone'],
-          'multiple' : '4',
-          'label': 'City'
-        }
-      ];
+      constructor(_config:AsConfigService){
+        this.model = {"city": ['Milan','Paris']};
+        this.template = [
+          {
+            'model': 'city',
+            'type' : 'INPUT',
+            'domains': ['Milan','Paris','Madrid','London'],
+            'multiple' : '4',
+            'label': 'City'
+          }
+        ];
     `;
-
 
     this.templateAsync = [
       {
-        'model': 'youtube',
+        'model': 'capital',
         'type' : 'INPUT',
-        'domains': 'https://www.googleapis.com/youtube/v3/search',
+        'domains': 'domains',
         'multiple' : '4',
-        'label': 'youtube',
+        'label': 'capital',
         'bindLabel' : 'label'
       }
     ];
     
     this.codeHtmlAsync = `
-    <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
-    </advanced-searchbox>
+      <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+      </advanced-searchbox>
     `;
 
     this.codeJsAsync = `
-    public model = {};
-    public template = {};
+      public model = {};
+      public template = {};
 
-    constructor(_config:AsConfigService, _http:HttpClient){
-      this.template = [
-        {
-          'model': 'youtube',
-          'type' : 'INPUT',
-          'domains': 'https://www.googleapis.com/youtube/v3/search',
-          'multiple' : '4',
-          'bindLabel' : 'label',
-          'label': 'youtube'
-        }
+      constructor(_config:AsConfigService, _http:HttpClient, public service:AppService){
+        this.template = [
+          {
+            'model': 'capital',
+            'type' : 'INPUT',
+            'domains': 'domains',
+            'multiple' : '4',
+            'bindLabel' : 'label',
+            'label': 'capital'
+          }
 
-        _config.customDomainsAsyncFn['youtube'] = (observable, viewModel, model) => {
-          return observable
-          .switchMap((term) => {
-              return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
-                  q:term,
-                  key: '{your key}',
-                  type: 'video',
-                  maxResults: '12',
-                  part: 'id,snippet'
-                  }})
-                  .catch(()=>[])
-                  .map((response:any) => {
-                      let newResponse = {response:[], term:''};
-                      newResponse.response = response.items.map((item)=>{
-                          return {label:item.snippet.title};
-                      });
-                      newResponse.term = term;
-                      return newResponse;
-                  })
+          _config.customDomainsAsyncFn['capital'] = (observable, viewModel, model) => {
+            return observable
+            .switchMap((term) => {
+                return this.service.getMockCapital(term,'capital')
+                .map((response:any) => {
+                  let newResponse = {response:response, term:term};
+                  return newResponse;
+                });
               }
-          );
-        }
-      ];
+            );
+          }
+        ];
     `;
 
-    _config.customDomainsAsyncFn['youtube'] = (observable, viewModel, model) => {
+    _config.customDomainsAsyncFn['capital'] = (observable, viewModel, model) => {
       return observable
-      .switchMap((term) => {
-          return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
-              q:term,
-              key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
-              type: 'video',
-              maxResults: '12',
-              part: 'id,snippet'
-              }})
-              .catch(()=>[])
-              .map((response:any) => {
-                  let newResponse = {response:[], term:''};
-                  newResponse.response = response.items.map((item)=>{
-                      return {label:item.snippet.title};
-                  });
-                  newResponse.term = term;
-                  return newResponse;
-              })
-          }
+      .switchMap((term):Observable<{response:Array<any>,term:string}> => {
+          return this.service.getMockCapital(term)
+          .map((response:any) => {
+            let newResponse = {response:response, term:term};
+            return newResponse;
+          });
+        }
       );
     }
   }

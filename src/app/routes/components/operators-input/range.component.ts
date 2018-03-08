@@ -14,7 +14,18 @@ import { Component, OnInit } from '@angular/core';
       <br/>
       <br/>
       <h5>Code</h5>
-      <pre><code highlight [code]="codeJs"></code></pre>
+      <ngb-tabset>
+        <ngb-tab title="Ts">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeJs"></code></pre>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Html">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeHtml"></code></pre>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
     </div>
     `,
     styles: [
@@ -38,7 +49,7 @@ export class ComponentsRangeComponent {
   public codeJs;
 
   constructor(){
-    this.model = { "isEnabled": [ { "label": "Yes", "value": true } ]};
+    this.model = { "isEnabled": [{"label": "Yes", "value": true }]};
     this.template = [
       {
         'model' : 'birth.from',
@@ -135,5 +146,10 @@ export class ComponentsRangeComponent {
             }
         };
       }`;
+
+    this.codeHtml = `
+      <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+      </advanced-searchbox>
+    `;
   }
 }

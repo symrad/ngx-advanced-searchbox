@@ -16,7 +16,18 @@ import { Component, OnInit } from '@angular/core';
       <br/>
       <br/>
       <h5>Code</h5>
-      <pre><code highlight [code]="codeJs"></code></pre>
+      <ngb-tabset>
+        <ngb-tab title="Ts">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeJs"></code></pre>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Html">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeHtml"></code></pre>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
     </div>
     <h4 class="bd-title">
       With remote data source
@@ -32,7 +43,18 @@ import { Component, OnInit } from '@angular/core';
       <br/>
       <br/>
       <h5>Code</h5>
-      <pre><code highlight [code]="codeJsAsync"></code></pre>
+      <ngb-tabset>
+        <ngb-tab title="Ts">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeJsAsync"></code></pre>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Html">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeHtmlAsync"></code></pre>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
     </div>
 
     `,
@@ -89,6 +111,11 @@ export class ComponentsInputWithSuggestionsComponent {
         ];
       }`;
 
+    this.codeHtml = `
+      <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+      </advanced-searchbox>
+    `;
+
     this.templateAsync = [
       {
         'model': 'nameAsync',
@@ -138,6 +165,11 @@ export class ComponentsInputWithSuggestionsComponent {
           );
         }
       }`;
+
+    this.codeHtmlAsync = `
+      <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+      </advanced-searchbox>
+    `;
 
     _config.customSuggestionsAsyncFn['nameAsync'] = (observable, viewModel, model) => {
       return observable

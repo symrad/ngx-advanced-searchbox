@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'switch-radio-select',
+    selector: 'select-switch-radio',
     template: `
     <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
     </advanced-searchbox>
@@ -14,7 +14,18 @@ import { Component, OnInit } from '@angular/core';
       <br/>
       <br/>
       <h5>Code</h5>
-      <pre><code highlight [code]="codeJs"></code></pre>
+      <ngb-tabset>
+        <ngb-tab title="Ts">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeJs"></code></pre>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab title="Html">
+          <ng-template ngbTabContent>
+            <pre><code highlight [code]="codeHtml"></code></pre>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
     </div>
     `,
     styles: [
@@ -30,7 +41,7 @@ import { Component, OnInit } from '@angular/core';
     ]
 })
 
-export class ComponentsSwitchRadioSelectComponent {
+export class ComponentsRadioSelectSwitchComponent {
   
   public model = {};
   public template = {};
@@ -69,5 +80,10 @@ export class ComponentsSwitchRadioSelectComponent {
           }
         ];
       }`;
+
+    this.codeHtml = `
+    <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
+    </advanced-searchbox>
+    `;
   }
 }

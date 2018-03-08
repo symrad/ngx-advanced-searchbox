@@ -48,9 +48,7 @@ export class ComponentsSimpleComponent {
   public codeJs;
   public codeHtml;
 
-  onEditNext(data) {
-    
-  }
+  onEditNext(data) {}
 
   constructor(){
 

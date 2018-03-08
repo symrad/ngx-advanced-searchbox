@@ -1,3 +1,5 @@
+import { ComponentsInputComponent } from './routes/components/simple-input/input.component';
+import { AppService } from './app.service';
 import { ComponentsRangeComponent } from './routes/components/operators-input/range.component';
 import { ComponentsOperatorsInputComponent } from './routes/components/operators-input/operators.component';
 import { Component } from '@angular/core';
@@ -13,7 +15,7 @@ import { RouterModule } from '@angular/router'
 import { LayoutHeaderComponent } from './layout/header.component';
 import { LayoutSidenavComponent } from './layout/sidenav.component';
 import { ComponentsSimpleComponent } from './routes/components/simple-input/simple.component';
-import { ComponentsSwitchRadioSelectComponent } from './routes/components/simple-input/switchRadio.component';
+import { ComponentsRadioSelectSwitchComponent } from './routes/components/simple-input/radioSelectSwitch.component';
 import { HighlightModule } from 'ngx-highlightjs';
 import { ComponentsCheckboxListComponent } from './routes/components/simple-input/checkboxList.component';
 import { ComponentsInputWithSuggestionsComponent } from './routes/components/simple-input/inputWithSuggestions.component';
@@ -44,8 +46,9 @@ var appRoutes = [
         pathMatch: 'full',
       },
       { path: 'simple-input', children:[
-        { path: '', component: ComponentsSimpleComponent, data: { title: 'Simple input' } },
-        { path: 'switch-radio-select', component: ComponentsSwitchRadioSelectComponent, data: { title: 'Switch - Radio - Select' } },
+        { path: '', component: ComponentsSimpleComponent, data: { title: 'Simple input' }},
+        { path: 'input', component: ComponentsInputComponent, data: { title: 'Input' }},
+        { path: 'radio-select-switch', component: ComponentsRadioSelectSwitchComponent, data: { title: 'Radio - Select - Switch' } },
         { path: 'checkboxlist', component: ComponentsCheckboxListComponent, data: { title: 'Checkbox List' } },
         { path: 'input-with-suggestions', component: ComponentsInputWithSuggestionsComponent, data: { title: 'Input with suggestions' } },
       ]},
@@ -64,7 +67,8 @@ var appRoutes = [
     LayoutHeaderComponent,
     LayoutSidenavComponent,
     ComponentsSimpleComponent,
-    ComponentsSwitchRadioSelectComponent,
+    ComponentsInputComponent,
+    ComponentsRadioSelectSwitchComponent,
     ComponentsCheckboxListComponent,
     ComponentsInputWithSuggestionsComponent,
     GettingStartedComponent,
@@ -90,7 +94,8 @@ var appRoutes = [
     })
   ],
   providers: [
-    {provide:AsConfigService, useClass:AppConfigService}
+    {provide:AsConfigService, useClass:AppConfigService},
+    AppService
   ],
   bootstrap: [AppComponent]
 })
