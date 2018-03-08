@@ -12,6 +12,7 @@ import { NG_VALUE_ACCESSOR } from "@angular/forms";
 @Component({
     selector:'as-simple-input',
     template: `<input type="text"
+            [(ngModel)]="filter.viewModel.value"
             (change)="filter.onChange()"
             (focus)="filter.focusInput$.next()"
             (keydown)="advancedSearchBox.keydown($event, filter.viewModel)" 

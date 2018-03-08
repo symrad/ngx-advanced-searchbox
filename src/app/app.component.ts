@@ -171,6 +171,14 @@ export class AppComponent {
       'bindLabel': 'label',
       'bindValue': 'id'
     },
+    {
+      'model' : 'freeInput',
+      'type' : 'INPUT',
+      'inputType' : 'TEXT',
+      'position' : 3,
+      'label' : 'Free input',
+      'multiple' : false
+  }
     ];
 //    },10000);
 
