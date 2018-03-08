@@ -19,7 +19,7 @@
   "dependencies": {
     "@angular/router": "^5.2.7",
     "@angular/service-worker": "^5.2.7",
-    "ngx-advanced-searchbox": "0.1.6",
+    "ngx-advanced-searchbox": "0.1.7",
     "ngx-highlightjs": "^1.4.1",
     "npm": "^5.7.1",
     "zone.js": "^0.8.19"
