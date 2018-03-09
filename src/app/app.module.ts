@@ -23,6 +23,7 @@ import { GettingStartedComponent } from './layout/gettingStarted.page';
 import { GettingStartedMainComponent } from './routes/getting-started/main.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { ComponentsInputWithMaskComponent } from './routes/components/simple-input/inputWithMask.component';
  
 var appRoutes = [
   {
@@ -48,6 +49,7 @@ var appRoutes = [
       { path: 'simple-input', children:[
         { path: '', component: ComponentsSimpleComponent, data: { title: 'Simple input' }},
         { path: 'input', component: ComponentsInputComponent, data: { title: 'Input' }},
+        { path: 'input-with-mask', component: ComponentsInputWithMaskComponent, data: { title: 'Input with mask' }},
         { path: 'radio-select-switch', component: ComponentsRadioSelectSwitchComponent, data: { title: 'Radio - Select - Switch' } },
         { path: 'checkboxlist', component: ComponentsCheckboxListComponent, data: { title: 'Checkbox List' } },
         { path: 'input-with-suggestions', component: ComponentsInputWithSuggestionsComponent, data: { title: 'Input with suggestions' } },
@@ -75,7 +77,8 @@ var appRoutes = [
     ComponentsComponent,
     GettingStartedMainComponent,
     ComponentsOperatorsInputComponent,
-    ComponentsRangeComponent
+    ComponentsRangeComponent,
+    ComponentsInputWithMaskComponent
   ],
   imports: [
     BrowserModule,

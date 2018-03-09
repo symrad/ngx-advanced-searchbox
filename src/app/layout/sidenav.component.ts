@@ -11,6 +11,9 @@ import { Component } from '@angular/core';
                 <a class="nav-link" routerLink="/components/simple-input/input" routerLinkActive="active">Input</a>
             </li>
             <li class="nav-item" routerLinkActive="active">
+                <a class="nav-link" routerLink="/components/simple-input/input-with-mask" routerLinkActive="active">Input with mask</a>
+            </li>
+            <li class="nav-item" routerLinkActive="active">
                 <a class="nav-link" routerLink="/components/simple-input/radio-select-switch" routerLinkActive="active">Radio/Select/Switch</a>
             </li>
             <li class="nav-item" routerLinkActive="active">

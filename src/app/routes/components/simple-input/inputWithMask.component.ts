@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-    selector: 'free-input',
+    selector: 'mask-input',
     template: `
     <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
     </advanced-searchbox>
@@ -39,7 +39,7 @@ import { Component } from "@angular/core";
         `
     ]
 })
-export class ComponentsInputComponent{
+export class ComponentsInputWithMaskComponent{
 
     public model;
     public codeJs;
@@ -51,10 +51,13 @@ export class ComponentsInputComponent{
         this.model = {};
         this.template = [
             {
-              'model': 'vatNumber',
+              'model': 'dateOfBirth',
               'type' : 'INPUT',
               'multiple' : false,
-              'label': 'VAT number'
+              'label': 'Date of birth',
+              'mask':{
+                mask:'99-99-9999'
+              }
             }
         ];
 
@@ -71,15 +74,17 @@ export class ComponentsInputComponent{
                 this.model = {};
                 this.template = [
                     {
-                    'model': 'vatNumber',
-                    'type' : 'INPUT',
-                    'multiple' : false,
-                    'label': 'VAT number'
+                      'model': 'dateOfBirth',
+                      'type' : 'INPUT',
+                      'multiple' : false,
+                      'label': 'Date of birth',
+                      'mask':{
+                        mask:'99-99-9999'
+                      }
                     }
                 ];
             }
         `;
 
     }
-
 }
