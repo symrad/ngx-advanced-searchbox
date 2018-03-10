@@ -58,9 +58,18 @@ export class ComponentsInputWithMaskComponent{
               'mask':{
                 mask:'99-99-9999'
               }
+            },
+            {
+            'model': 'phone',
+              'type' : 'INPUT',
+              'multiple' : false,
+              'label': 'Phone',
+              'mask':{
+                mask:'(000) 000-000'
+              }
             }
         ];
-
+        
         this.codeHtml = `
             <advanced-searchbox [template]="template" [model]="model" [openOnLoad]="true">
             </advanced-searchbox>
@@ -78,8 +87,19 @@ export class ComponentsInputWithMaskComponent{
                       'type' : 'INPUT',
                       'multiple' : false,
                       'label': 'Date of birth',
+                      'placeholder':'99-99-9999',
                       'mask':{
                         mask:'99-99-9999'
+                      }
+                    },
+                    {
+                      'model': 'phone',
+                      'type' : 'INPUT',
+                      'multiple' : false,
+                      'label': 'Phone',
+                      'placeholder':'(000) 000-000',
+                      'mask':{
+                        mask:'(000) 000-000'
                       }
                     }
                 ];
