@@ -177,7 +177,10 @@ export class AppComponent {
       'inputType' : 'TEXT',
       'position' : 3,
       'label' : 'Free input',
-      'multiple' : false
+      'multiple' : false,
+      'mask':{
+        mask:'99-99-9999'
+      }
   }
     ];
 //    },10000);

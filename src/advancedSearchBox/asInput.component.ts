@@ -69,14 +69,6 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
     ngOnInit() {
         super.ngOnInit();
         
-        if(this.viewModel.mask){
-            this.viewModel.mask.mask = this.viewModel.mask || false;
-            this.viewModel.mask.clearIfNotMatch = this.viewModel.mask.clearIfNotMatch !== undefined ? this.viewModel.mask.clearIfNotMatch : false;
-            this.viewModel.mask.dropSpecialCharacters = this.viewModel.mask.dropSpecialCharacters !== undefined ? this.viewModel.mask.dropSpecialCharacters : false;
-            this.viewModel.mask.patterns = this.viewModel.mask.patterns !== undefined ? this.viewModel.mask.patterns : {};
-            this.viewModel.mask.specialCharacters = this.viewModel.mask.specialCharacters !== undefined ? this.viewModel.mask.specialCharacters : [];
-        }
-
         this.advancedSearchBox.editNext
         .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
         .subscribe((response) => {
