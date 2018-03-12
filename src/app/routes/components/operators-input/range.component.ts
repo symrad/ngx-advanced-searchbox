@@ -55,7 +55,7 @@ export class ComponentsRangeComponent {
         'model' : 'birth.from',
         'type' : 'OPERATORS',
         'label' : 'Birth from',
-        'operators' : [ 'le'],
+        'operators' : [ 'ge','gt','eq'],
         'multiple' : false,
         'mask':{
           mask:'99-99-9999'
@@ -65,7 +65,7 @@ export class ComponentsRangeComponent {
         'model' : 'birth.to',
         'type' : 'OPERATORS',
         'label' : 'Birth to',
-        'operators' : [ 'ne', 'ge'],
+        'operators' : [ 'le', 'lt'],
         'multiple' : false,
         'mask':{
           mask:'99-99-9999'
@@ -82,8 +82,8 @@ export class ComponentsRangeComponent {
           {
             'model' : 'birth.from',
             'type' : 'OPERATORS',
-            'label' : 'Data di nascita da',
-            'operators' : [ 'le'],
+            'label' : 'Birth from',
+            'operators' : [ 'ge','gt','eq'],
             'multiple' : false,
             'mask':{
               mask:'99-99-9999'
@@ -92,8 +92,8 @@ export class ComponentsRangeComponent {
           {
             'model' : 'birth.to',
             'type' : 'OPERATORS',
-            'label' : 'Data di nascita a',
-            'operators' : [ 'ne', 'ge'],
+            'label' : 'Birth to',
+            'operators' : [ 'le', 'lt'],
             'multiple' : false,
             'mask':{
               mask:'99-99-9999'

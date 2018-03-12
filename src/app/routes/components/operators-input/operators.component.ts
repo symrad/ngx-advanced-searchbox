@@ -61,8 +61,8 @@ export class ComponentsOperatorsInputComponent {
         'type' : 'OPERATORS',
         'inputType' : 'TEXT',
         'position' : 4,
-        'label' : 'Data di nascita da',
-        'operators' : [ 'ge'],
+        'label' : 'Birth from',
+        'operators' : [ 'ge','gt','eq'],
         'multiple' : false,
         'mask':{
           mask:'99-99-9999'
@@ -73,25 +73,12 @@ export class ComponentsOperatorsInputComponent {
         'type' : 'OPERATORS',
         'inputType' : 'TEXT',
         'position' : 5,
-        'label' : 'Data di nascita a',
+        'label' : 'Birth to',
         'operators' : [ 'le', 'lt'],
         'multiple' : false,
         'mask':{
           mask:'99-99-9999'
         }
-    },
-    {
-      'model' : 'occupazione',
-      'type' : 'OPERATORS',
-      'inputType' : 'TEXT',
-      'position' : 2147483647,
-      'label' : 'Occupazione',
-      'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
-      'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
-      'required' : false,
-      'multiple' : '1',
-      'bindLabel': 'label',
-      'bindValue': 'label'
     },
     {
       'model' : 'youtube',
@@ -118,8 +105,8 @@ export class ComponentsOperatorsInputComponent {
           'type' : 'OPERATORS',
           'inputType' : 'TEXT',
           'position' : 4,
-          'label' : 'Data di nascita da',
-          'operators' : [ 'ge'],
+          'label' : 'Birth from',
+          'operators' : [ 'ge','gt','eq'],
           'multiple' : false,
           'mask':{
             mask:'99-99-9999'
@@ -130,25 +117,12 @@ export class ComponentsOperatorsInputComponent {
           'type' : 'OPERATORS',
           'inputType' : 'TEXT',
           'position' : 5,
-          'label' : 'Data di nascita a',
+          'label' : 'Birth to',
           'operators' : [ 'le', 'lt'],
           'multiple' : false,
           'mask':{
             mask:'99-99-9999'
           }
-        },
-        {
-          'model' : 'occupazione',
-          'type' : 'OPERATORS',
-          'inputType' : 'TEXT',
-          'position' : 2147483647,
-          'label' : 'Occupazione',
-          'operators' : [ 'startsWith', 'contains', 'eq', 'ne', 'endsWith' ],
-          'domains': [{'label':'disoccupato'}, {'label':'impiegato'}, {'label':'operaio'}],
-          'required' : false,
-          'multiple' : '1',
-          'bindLabel': 'label',
-          'bindValue': 'label'
         },
         {
           'model' : 'youtube',

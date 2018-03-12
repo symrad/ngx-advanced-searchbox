@@ -118,11 +118,11 @@ export class ComponentsInputWithSuggestionsComponent {
 
     this.templateAsync = [
       {
-        'model': 'nameAsync',
+        'model': 'youtube',
         'type' : 'INPUT',
         'suggestions': 'https://www.googleapis.com/youtube/v3/search',
         'multiple' : '*',
-        'label': 'Name'
+        'label': 'Youtube video'
       }
     ];
 
@@ -133,16 +133,16 @@ export class ComponentsInputWithSuggestionsComponent {
       constructor(_config:AsConfigService){
         this.template = [
           {
-            'model': 'nameAsync',
+            'model': 'youtube',
             'type' : 'INPUT',
             'suggestions': 'https://www.googleapis.com/youtube/v3/search',
             'multiple' : '*',
             'bindLabel':'label',
-            'label': 'Name'
+            'label': 'Youtube video'
           }
         ];
 
-        _config.customSuggestionsAsyncFn['nameAsync'] = (observable, viewModel, model) => {
+        _config.customSuggestionsAsyncFn['youtube'] = (observable, viewModel, model) => {
           return observable
           .switchMap((term) => {
               return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
@@ -171,7 +171,7 @@ export class ComponentsInputWithSuggestionsComponent {
       </advanced-searchbox>
     `;
 
-    _config.customSuggestionsAsyncFn['nameAsync'] = (observable, viewModel, model) => {
+    _config.customSuggestionsAsyncFn['youtube'] = (observable, viewModel, model) => {
       return observable
       .switchMap((term) => {
           return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{

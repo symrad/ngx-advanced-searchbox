@@ -26,6 +26,9 @@ import { Component, Input, OnInit } from '@angular/core';
                     <li class="nav-item">
                         <a class="nav-link" routerLink="/components" routerLinkActive="active">Component</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/development" routerLinkActive="active">Development</a>
+                    </li>
                 </ul>
 
                 <form class="form-inline my-2 my-lg-0">
