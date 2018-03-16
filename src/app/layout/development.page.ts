@@ -4,13 +4,9 @@ import { Component } from '@angular/core';
     selector: 'page-getting-started',
     template: `
     <layout-header></layout-header>
-    <div class="container fill">
-        <div class="row">
-            <main class="col-12 py-md-4 pl-md-4">
-                <h2 class="bd-title">
-                </h2>
-                <router-outlet></router-outlet>
-            </main>
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+            <router-outlet></router-outlet>
         </div>
     </div>
     `,
