@@ -36,7 +36,16 @@ import { Component, Input, OnInit } from '@angular/core';
                 </form>
             </div>
         </nav>
-    `
+    `,
+    styles: [
+        `
+        :host{
+            position: sticky;
+            top: 0;
+            z-index: 1071; // over everything in bootstrap  
+        }
+        `
+    ]
 })
 export class LayoutHeaderComponent implements OnInit {
     theme = 'Default theme';

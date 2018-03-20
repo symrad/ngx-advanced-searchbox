@@ -38,6 +38,7 @@ import { Component } from '@angular/core';
            .nav {
               margin-left:15px;
            }
+           
         `
     ]
 })

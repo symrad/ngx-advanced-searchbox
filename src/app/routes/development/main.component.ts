@@ -6,17 +6,17 @@ import { Component } from '@angular/core';
     template: `
     <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
         <nav class="collapse bd-links">
-            <ul class="nav ">
+            <ul class="nav">
                 <li>
-                    <a style="padding: .25rem 1.5rem;" href="#input">@Input</a>
+                    <a href="#input">@Input</a>
                 </li>
                 <li>
-                    <a style="padding: .25rem 1.5rem;" href="#output">@Output</a>
+                    <a href="#output">@Output</a>
                 </li>
             </ul>
         </nav>
     </div>
-    <div class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+    <div class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5">
         <h2 class="bd-title" id="input">@Input</h2>
         <table class="table table-bordered table-striped">
             <thead>
@@ -95,7 +95,17 @@ import { Component } from '@angular/core';
     `,
     styles: [
         `
-           
+         .nav{
+             flex-direction:column;
+         }  
+         .nav li{
+            padding: .25rem 1.5rem;
+         }
+         .bd-sidebar{
+            position: sticky;
+            top: 4rem;
+            height: calc(100vh - 4rem);
+         }
         `
     ]
 })

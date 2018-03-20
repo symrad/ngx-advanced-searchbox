@@ -3,15 +3,15 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-    selector: 'page-components',
+    selector: 'div[page-components]',
     template: `
     <layout-header></layout-header>
-    <div class="container fill">
+    <div id="main-content" class="container fill">
         <div class="row">
             <div class="col-12 col-md-2 col-xl-3 py-md-4 bd-sidebar">
                 <layout-sidenav></layout-sidenav>
             </div>
-            <main class="col-12 col-md-10 col-xl-8 py-md-4 pl-md-4 bd-content">
+            <main class="col-12 col-md-10 col-xl-8 py-md-4 pl-md-4">
                 <h2 class="bd-title">
                     {{title}}
                 </h2>
@@ -24,7 +24,11 @@ import { Title } from '@angular/platform-browser';
     `,
     styles: [
         `
-           
+        .bd-sidebar{
+            position: sticky;
+            top: 4rem;
+            height: calc(100vh - 4rem);
+         }
         `
     ]
 })
