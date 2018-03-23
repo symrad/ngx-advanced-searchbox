@@ -35,6 +35,7 @@ import { Component } from '@angular/core';
                     <td><code>new FormGroup()</code></td>
                     <td>false</td>
                     <td>
+                    if you want to use the events of the form you have to pass a instance of it throught form attribute.
                     </td>
                 </tr>
                 <tr>
@@ -49,7 +50,7 @@ import { Component } from '@angular/core';
                     <td><code>Boolean</code></td>
                     <td><code>false</code></td>
                     <td>false</td>
-                    <td></td>
+                    <td>open dropdown of filters when the component is loaded</td>
                 </tr>
                 <tr>
                     <td>[template]</td>
@@ -60,10 +61,10 @@ import { Component } from '@angular/core';
                 </tr>
                 <tr>
                     <td>[validators]</td>
-                    <td><code>Object</code></td>
+                    <td><code>{[validatorName:string]:Validator}</code></td>
                     <td>none</td>
                     <td>false</td>
-                    <td></td>
+                    <td>no add value of input to model if the form control is invalid</td>
                 </tr>
             </tbody>
         </table>
