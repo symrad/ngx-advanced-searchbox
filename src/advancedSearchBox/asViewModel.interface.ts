@@ -1,29 +1,27 @@
-export interface ViewModelInterface {
-    _templateUuid: string;
+import { OperatorsEnum } from "./asInputWithOperators.component";
+
+export interface ViewModelInterface extends TemplateModelInterface{
+    value: any;
     uuid: string;
+}
+
+export interface TemplateModelInterface {
+    _templateUuid: string;
+    bindLabel:any;
+    bindValue:any;
     model: string;
     type: TypesFilterEnum;
     inputType: string;
     position: number;
     label: string;
-    required: boolean;
     multiple: any;
     date: boolean;
-    domain: Array<Object>;
     suggestions: any;
     domains: any;
-    operators: Object;
-    'operators-from': Object;
-    'operators-to': Object;
-    'labels-from': string;
-    'labels-to': string;
-    value: any;
+    operators: Array<OperatorsEnum>;
     mask: MaskInterface;
     formatModelValue:Function;
     formatModelViewValue:Function;
-    bindLabel:any;
-    bindValue:any;
-
 }
 
 export interface MaskInterface {
