@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'div[page-getting-started]',
+    selector: 'div[page-api]',
     template: `
     <layout-header></layout-header>
     <div id="main-content" class="container-fluid">
@@ -16,6 +16,6 @@ import { Component } from '@angular/core';
         `
     ]
 })
-export class DevelopmentComponent {
+export class ApiComponent {
 }
 

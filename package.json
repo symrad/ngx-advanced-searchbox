@@ -21,7 +21,7 @@
     "@angular/service-worker": "^5.2.8",
     "ngx-advanced-searchbox": "0.1.8",
     "ngx-highlightjs": "^1.4.1",
-    "npm": "^5.7.1",
+    "npm": "^5.8.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {

@@ -24,8 +24,8 @@ import { GettingStartedMainComponent } from './routes/getting-started/main.compo
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ComponentsInputWithMaskComponent } from './routes/components/simple-input/inputWithMask.component';
-import { DevelopmentComponent } from './layout/development.page';
-import { DevelopmentMainComponent } from './routes/development/main.component';
+import { ApiComponent } from './layout/api.page';
+import { ApiMainComponent } from './routes/development/main.component';
  
 var appRoutes = [
   {
@@ -64,10 +64,10 @@ var appRoutes = [
     ]
   },
   {
-    path:'development',
-    component:DevelopmentComponent,
+    path:'api',
+    component:ApiComponent,
     children:[
-      {path:'', component:DevelopmentMainComponent, data:{title: 'Development'}}
+      {path:'', component:ApiMainComponent, data:{title: 'Api'}}
     ]
   }
 ];
@@ -88,8 +88,8 @@ var appRoutes = [
     ComponentsOperatorsInputComponent,
     ComponentsRangeComponent,
     ComponentsInputWithMaskComponent,
-    DevelopmentComponent,
-    DevelopmentMainComponent
+    ApiComponent,
+    ApiMainComponent
   ],
   imports: [
     BrowserModule,

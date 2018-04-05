@@ -27,7 +27,7 @@ import { Component, Input, OnInit } from '@angular/core';
                         <a class="nav-link" routerLink="/components" routerLinkActive="active">Component</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="/development" routerLinkActive="active">Development</a>
+                        <a class="nav-link" routerLink="/api" routerLinkActive="active">Api</a>
                     </li>
                 </ul>
 

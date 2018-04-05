@@ -6,12 +6,12 @@ import { Title } from '@angular/platform-browser';
     selector: 'div[page-components]',
     template: `
     <layout-header></layout-header>
-    <div id="main-content" class="container fill">
+    <div id="main-content">
         <div class="row">
             <div class="col-12 col-md-2 col-xl-3 py-md-4 bd-sidebar">
                 <layout-sidenav></layout-sidenav>
             </div>
-            <main class="col-12 col-md-10 col-xl-8 py-md-4 pl-md-4">
+            <main class="col-12 col-md-10 col-xl-9 py-md-4 pl-md-4">
                 <h2 class="bd-title">
                     {{title}}
                 </h2>
