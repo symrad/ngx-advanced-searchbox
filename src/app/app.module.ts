@@ -1,3 +1,5 @@
+import { DevelopMainComponent } from './routes/develop/main.component';
+import { DevelopComponent } from './layout/develop.page';
 import { ComponentsInputComponent } from './routes/components/simple-input/input.component';
 import { AppService } from './app.service';
 import { ComponentsRangeComponent } from './routes/components/operators-input/range.component';
@@ -25,7 +27,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ComponentsInputWithMaskComponent } from './routes/components/simple-input/inputWithMask.component';
 import { ApiComponent } from './layout/api.page';
-import { ApiMainComponent } from './routes/development/main.component';
+import { ApiMainComponent } from './routes/api/main.component';
  
 var appRoutes = [
   {
@@ -69,6 +71,13 @@ var appRoutes = [
     children:[
       {path:'', component:ApiMainComponent, data:{title: 'Api'}}
     ]
+  },
+  {
+    path:'develop',
+    component:DevelopComponent,
+    children:[
+      {path:'', component:DevelopMainComponent, data:{title: 'Develop'}}
+    ]
   }
 ];
 
@@ -89,7 +98,9 @@ var appRoutes = [
     ComponentsRangeComponent,
     ComponentsInputWithMaskComponent,
     ApiComponent,
-    ApiMainComponent
+    ApiMainComponent,
+    DevelopComponent,
+    DevelopMainComponent
   ],
   imports: [
     BrowserModule,

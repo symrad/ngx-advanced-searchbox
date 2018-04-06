@@ -2,7 +2,7 @@ import { FormGroup } from '@angular/forms';
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'div[class="row flex-xl-nowrap"]',
+    selector: 'div[class="row flex-xl-nowrap"][id="api-main-component"]',
     template: `
     <div class="col-12 col-md-3 col-xl-3 sidebar">
         <nav class="collapse bd-links">
