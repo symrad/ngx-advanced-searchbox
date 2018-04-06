@@ -21,8 +21,11 @@ import { Component } from '@angular/core';
         <div>
         Advanced searchbox (AS) gives the possibility of manage validation, if single filter is not valid its value is not write on AS model.
         To do this we can use an object pass through [validations] attribute, where keys are models of filters and values are arrays of validators.
+        <pre><code highlight [code]="codeHtmlValidators"></code></pre>
         <pre><code highlight [code]="codeJsValidators"></code></pre>
         If you want to intercept the events of Form, used inside AS, is necessary pass a new instance of Form through [form] attribute.
+        <pre><code highlight [code]="codeHtmlForm"></code></pre>
+        <pre><code highlight [code]="codeJsForm"></code></pre>
         </div>
         <h2 class="bd-title" id="format">Format value / label</h2>
     </div>`,
@@ -49,7 +52,51 @@ import { Component } from '@angular/core';
 export class DevelopMainComponent {
 
     public codeJsValidators = `
-    
+    import { FormGroup, FormControl, Validators } from '@angular/forms';
+    ...
+    class component{
+        public validators:{[key:string]:Validators};
+        
+        constructor(){
+            this.validators = {
+                isEnabled:[Validators.required],
+                email:[Validators.email]
+            };
+        }
+    }
     `;
+
+    public codeHtmlValidators = `
+    <advanced-searchbox [template]="template" [model]="model" [validators]="validators"></advanced-searchbox>
+    `
+
+    public codeJsForm = `
+    import { FormGroup, FormControl, Validators } from '@angular/forms';
+    ...
+    class component{
+        public validators:{[key:string]:Validators};
+        public form:FormGroup;
+
+        constructor(){
+            this.validators = {
+                isEnabled:[Validators.required],
+                email:[Validators.email]
+            };
+
+            this.form = new FormGroup({});
+
+            this.form.valueChanges.subscribe((res)=>{
+                console.log(res);
+            });
+            this.form.statusChanges.subscribe((res)=>{
+                console.log(res);
+            });
+        }
+    }
+    `;
+
+    public codeHtmlForm = `
+    <advanced-searchbox [template]="template" [model]="model" [form]="form" [validators]="validators"></advanced-searchbox>
+    `
 }
 
