@@ -18,6 +18,12 @@ import { Component } from '@angular/core';
     </div>
     <div class="col-12 col-md-9 col-xl-9 py-md-4 pl-md-4">
         <h2 class="bd-title" id="validation">Validation</h2>
+        <div>
+        Advanced searchbox (AS) gives the possibility of manage validation, if single filter is not valid its value is not write on AS model.
+        To do this we can use an object pass through [validations] attribute, where keys are models of filters and values are arrays of validators.
+        <pre><code highlight [code]="codeJsValidators"></code></pre>
+        If you want to intercept the events of Form, used inside AS, is necessary pass a new instance of Form through [form] attribute.
+        </div>
         <h2 class="bd-title" id="format">Format value / label</h2>
     </div>`,
     styles: [
@@ -42,6 +48,8 @@ import { Component } from '@angular/core';
 })
 export class DevelopMainComponent {
 
+    public codeJsValidators = `
     
+    `;
 }
 
