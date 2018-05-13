@@ -85,10 +85,10 @@ export class ComponentsCheckboxListComponent {
   public codeJsAsync;
 
   constructor(_config:AsConfigService, _http:HttpClient, public service:AppService){
-    this.model = {"city": ['Milan','Paris']};
+    this.model = {"cities": ['Milan','Paris']};
     this.template = [
       {
-        'model': 'city',
+        'model': 'cities',
         'type' : 'INPUT',
         'domains': ['Milan','Paris','Madrid','London'],
         'multiple' : '4',
@@ -106,10 +106,10 @@ export class ComponentsCheckboxListComponent {
       public template = {};
 
       constructor(_config:AsConfigService){
-        this.model = {"city": ['Milan','Paris']};
+        this.model = {"cities": ['Milan','Paris']};
         this.template = [
           {
-            'model': 'city',
+            'model': 'cities',
             'type' : 'INPUT',
             'domains': ['Milan','Paris','Madrid','London'],
             'multiple' : '4',
