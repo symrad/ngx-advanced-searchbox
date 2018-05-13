@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import "rxjs/add/operator/delay";
+import { Observable, of, pipe } from "rxjs";
+import { delay } from "rxjs/operators";
 
 @Injectable()
 export class AppService{
@@ -9,7 +9,9 @@ export class AppService{
         if (term) {
             items = items.filter(x => x.label.toLocaleLowerCase().indexOf(term.toLocaleLowerCase()) > -1);
         }
-        return Observable.of(items).delay(500);
+        return Observable.create(function(observer) {
+            observer.next(items);   
+        },500);
     }
 }
 

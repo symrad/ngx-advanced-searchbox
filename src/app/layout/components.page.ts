@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { pipe } from "rxjs";
+import { switchMap, map, filter, mergeMap } from "rxjs/operators";
 
 @Component({
     selector: 'div[page-components]',
@@ -42,17 +44,17 @@ export class ComponentsComponent {
       ){
     
         
-        this.router.events
-            .filter((event) => event instanceof NavigationEnd)
-            .map(() => this.activatedRoute)
-            .map((route) => {
+        this.router.events.pipe(
+            filter((event) => event instanceof NavigationEnd),
+            map(() => this.activatedRoute),
+            map((route) => {
                 while (route.firstChild) {
                     route = route.firstChild;
                 }
                 return route;
-            })
-            .filter((route) => route.outlet === 'primary')
-            .mergeMap((route) => route.data)
+            }),
+            filter((route) => route.outlet === 'primary'),
+            mergeMap((route) => route.data))
             .subscribe((event) => {
                 this.title = event['title'];
                 this.titleService.setTitle(this.title);

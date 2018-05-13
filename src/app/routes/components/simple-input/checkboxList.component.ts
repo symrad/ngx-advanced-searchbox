@@ -1,8 +1,10 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AppService } from './../../../app.service';
 import { HttpClient } from '@angular/common/http';
 import { AsConfigService } from 'ngx-advanced-searchbox';
 import { Component, OnInit } from '@angular/core';
+import { pipe } from "rxjs";
+import { switchMap, map } from "rxjs/operators";
 
 @Component({
     selector: 'checkbox-list',
@@ -164,15 +166,15 @@ export class ComponentsCheckboxListComponent {
     `;
 
     _config.customDomainsAsyncFn['capital'] = (observable, viewModel, model) => {
-      return observable
-      .switchMap((term):Observable<{response:Array<any>,term:string}> => {
-          return this.service.getMockCapital(term)
-          .map((response:any) => {
+      return observable.pipe(
+      switchMap((term):Observable<{response:Array<any>,term:string}> => {
+          return this.service.getMockCapital(term).pipe(
+          map((response:any) => {
             let newResponse = {response:response, term:term};
             return newResponse;
-          });
+          }));
         }
-      );
+      ));
     }
   }
 }

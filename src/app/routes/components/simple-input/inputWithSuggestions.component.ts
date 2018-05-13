@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { AsConfigService } from 'ngx-advanced-searchbox';
 import { Component, OnInit } from '@angular/core';
+import { pipe } from "rxjs";
+import { switchMap, map, catchError } from "rxjs/operators";
+
 
 @Component({
     selector: 'input-with-suggestions',
@@ -172,26 +175,26 @@ export class ComponentsInputWithSuggestionsComponent {
     `;
 
     _config.customSuggestionsAsyncFn['youtube'] = (observable, viewModel, model) => {
-      return observable
-      .switchMap((term) => {
+      return observable.pipe(
+      switchMap((term) => {
           return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
               q:term,
               key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
               type: 'video',
               maxResults: '12',
               part: 'id,snippet'
-              }})
-              .catch(()=>[])
-              .map((response:any) => {
+              }}).pipe(
+              catchError(()=>[]),
+              map((response:any) => {
                   let newResponse = {response:[], term:''};
                   newResponse.response = response.items.map((item)=>{
                       return item.snippet.title;
                   });
                   newResponse.term = term;
                   return newResponse;
-              })
+              }))
           }
-      );
+      ));
     }
   }
 }

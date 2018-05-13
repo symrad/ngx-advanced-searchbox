@@ -1,13 +1,13 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { ReplaySubject } from "rxjs/ReplaySubject";
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/catch';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from "rxjs";
+import { ReplaySubject } from "rxjs";
+import { BehaviorSubject } from 'rxjs';
 import { FunctionCall } from '@angular/compiler';
 import { AsConfigService } from 'ngx-advanced-searchbox';
+import { pipe } from "rxjs";
+import { switchMap, map, catchError, take } from "rxjs/operators";
 
 @Injectable()
 export class AppConfigService extends AsConfigService{
@@ -15,26 +15,26 @@ export class AppConfigService extends AsConfigService{
     constructor(_http:HttpClient){
         super(_http);
         this.customDomainsAsyncFn['youtube'] = (observable, viewModel, model) => {
-            return observable
-            .switchMap((term) => {
+            return observable.pipe(
+            switchMap((term) => {
                 return _http.get('https://www.googleapis.com/youtube/v3/search', {params:{
                     q:term,
                     key: 'AIzaSyBafKFrisguQvT3WC20Q972uxS1cZfPvg8',
                     type: 'video',
                     maxResults: '12',
                     part: 'id,snippet'
-                    }})
-                    .catch(()=>[])
-                    .map((response:any) => {
+                    }}).pipe(
+                    catchError(()=>[]),
+                    map((response:any) => {
                         let newResponse = {response:[], term:''};
                         newResponse.response = response.items.map((item)=>{
                             return {label:item.snippet.title};
                         });
                         newResponse.term = term;
                         return newResponse;
-                    })
+                    }))
                 }
-            );
+            ));
         }
 
         this.customSuggestionsAsyncFn['gmap'] = this.customDomainsAsyncFn['youtube'];
