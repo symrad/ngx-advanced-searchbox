@@ -17,7 +17,7 @@ import { AutosizeInputModule } from 'ngx-input-autosize';
 import { HttpClientModule } from '@angular/common/http';
 import { AsConfigService } from './asConfig.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { NgxMaskModule } from 'ngx-mask';
+import { NgxMaskModule, MaskService, NEW_CONFIG, INITIAL_CONFIG, config, _configFactory, initialConfig } from 'ngx-mask';
 import { AsSimpleInputWithOperatorsMaskComponent } from './input/asSimpleInputWithOperatorsMask.component';
 import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component';
 
@@ -40,7 +40,7 @@ import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component'
     imports: [
         NgbDropdownModule.forRoot(),
         NgbTypeaheadModule.forRoot(),
-        NgxMaskModule.forRoot(),
+        NgxMaskModule,
         NgSelectModule,
         CommonModule,
         FormsModule,
@@ -64,7 +64,24 @@ import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component'
         AsDomainsInputWithOperatorsComponent,
         AsSimpleInputWithOperatorsMaskComponent,
         AsSuggestionsInputWithOperatorsComponent
-    ]
+    ],
+    
+    providers: [
+        {
+          provide: NEW_CONFIG,
+          useValue: {}
+        },
+        {
+          provide: INITIAL_CONFIG,
+          useValue: initialConfig
+        },
+        {
+          provide: config,
+          useFactory: _configFactory,
+          deps: [INITIAL_CONFIG, NEW_CONFIG]
+        },
+      ]
+  
 })
 export class AsBoxModule {
     static forRoot(): ModuleWithProviders { 

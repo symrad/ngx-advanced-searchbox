@@ -49,10 +49,6 @@ export class DropdownNavigationDirective {
             this.dropdown.open();
         }
 
-        if (!this.dropdown._toggle) {
-          return true;
-        }
-
         const list: HTMLElement[] = this.dropdown._menu._elementRef.nativeElement.children;
 
         let position: number = this.getActiveElmIndex(list);
@@ -62,19 +58,13 @@ export class DropdownNavigationDirective {
             if (position >= list.length - 1) {
                 if (this.getTypeDrop() === TypeDrop.Down) {
                     position = -1;
-                }else {
-                    this.dropdown._toggle._elementRef.nativeElement.focus();
-                    return false;
                 }
             }
             position++;
             break;
           case Key.ArrowUp:
             if (position <= 0) {
-                if (this.getTypeDrop() === TypeDrop.Down) {
-                    this.dropdown._toggle._elementRef.nativeElement.focus();
-                    return false;
-                }else {
+                if (this.getTypeDrop() !== TypeDrop.Down) {
                     position = list.length;
                 }
             }

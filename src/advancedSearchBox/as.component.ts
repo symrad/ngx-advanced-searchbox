@@ -5,19 +5,12 @@ import { Component, Input, OnInit, Output, EventEmitter, OnChanges,
     SimpleChanges, ContentChild, TemplateRef, ViewChild, ElementRef, Renderer2,
     ViewChildren, QueryList, ContentChildren, AfterViewInit, AfterContentInit, forwardRef, HostListener } from '@angular/core';
 import { Key as KeyBoard} from 'ts-keycode-enum';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/merge';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/first';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import {filter, map, share, startWith, debounceTime, distinctUntilChanged, first, tap, merge} from 'rxjs/operators';
+import {of, pipe} from 'rxjs';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { NgbTypeaheadConfig, NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
-import { fromEvent } from 'rxjs/observable/fromEvent';
+import { fromEvent } from 'rxjs';
 import { NgModel, FormGroup, FormControl, ControlContainer } from '@angular/forms';
 import { UUID } from 'angular2-uuid';
 import { AsConfigService } from './asConfig.service';
@@ -135,12 +128,12 @@ export class AsComponent implements OnInit, OnChanges {
             this.focusIndex = 0;
             this.afterViewInitFilters$ = new Subject();
             this.searchBoxFunc = (text$: Observable<string>) =>
-                text$
-                .merge(this.searchboxInputClick$)
-                .merge(this.focusInput$)
-                .debounceTime(50)
-                .distinctUntilChanged()
-                .map((term: any) => {
+                text$.pipe(
+                merge(this.searchboxInputClick$),
+                merge(this.focusInput$),
+                debounceTime(50),
+                distinctUntilChanged(),
+                map((term: any) => {
                     if (term instanceof MouseEvent || term === undefined) {
                         term = this.searchBox;
                     }
@@ -149,7 +142,7 @@ export class AsComponent implements OnInit, OnChanges {
                         .filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
                         .slice(0, 10);
                         return test;
-            });
+            }));
             this.formatter = (x: {label: string}) => x.label;
     }
 
@@ -179,11 +172,11 @@ export class AsComponent implements OnInit, OnChanges {
         
         this._renderer.setProperty(this.searchboxInput.nativeElement, 'value', '');
 
-        this.searchboxInputClick$ = fromEvent(this.searchboxInput.nativeElement, 'click').map((response: MouseEvent) => {
+        this.searchboxInputClick$ = fromEvent(this.searchboxInput.nativeElement, 'click').pipe(map((response: MouseEvent) => {
             response.preventDefault();
             response.stopPropagation();
             return response;
-        });
+        }));
 
 
         this.searchboxModel.valueChanges.subscribe(response => {});
@@ -193,8 +186,8 @@ export class AsComponent implements OnInit, OnChanges {
         this._config.navigation.next({controller:null, from:null});
         this._config.navigation.next({controller:this, from:'searchbox'});
 
-        this.editPrev
-        .filter((response) => !response.viewModel)
+        this.editPrev.pipe(
+        filter((response) => !response.viewModel))
         .subscribe((response) => {
             if(this.viewModel[this.viewModel.length-1]){
                 if(this.prevFilterControllerFromSearchbox(this.viewModel[this.viewModel.length-1])){
@@ -307,9 +300,9 @@ export class AsComponent implements OnInit, OnChanges {
     addFilter(typeaheadSelected: NgbTypeaheadSelectItemEvent): void {
         typeaheadSelected.preventDefault();
         const viewModel = this.createViewFilter(typeaheadSelected.item);
-        this.afterViewInitFilters$.filter((response) => {
+        this.afterViewInitFilters$.pipe(filter((response) => {
             return response.uuid === viewModel.uuid;
-        }).first().subscribe((response) => {
+        }),first()).subscribe((response) => {
             this.getFilterController(viewModel).onFocus('next');
         });
         

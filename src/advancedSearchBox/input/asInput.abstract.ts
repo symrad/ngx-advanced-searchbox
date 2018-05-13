@@ -1,26 +1,23 @@
 import { AsUtils } from './../asUtils';
 import { ViewModelInterface } from './../asViewModel.interface';
 import { AsInputComponent } from './../asInput.component';
-import { Subject } from 'rxjs/Subject';
+import { Subject, OperatorFunction } from 'rxjs';
 import { ElementRef, OnInit, ViewChild, Input, Output } from '@angular/core';
 import { AsConfigService } from './../asConfig.service';
 import { HttpClient } from '@angular/common/http';
 import { AsComponent } from "../as.component";
-import { Observable } from "rxjs/Observable";
+import { Observable, pipe } from "rxjs";
 import { AsBoxFilterAbstract } from '../asFilter.abstract';
 import { AsInputInterface } from './asInput.interface';
-import { fromEvent } from 'rxjs/observable/fromEvent';
+import { fromEvent } from 'rxjs';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { FilterInterface } from '../asFilter.interface';
 import { AfterViewInit } from '@angular/core';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ReplaySubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { NgModel, ControlValueAccessor, FormGroup } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
-import { map } from 'rxjs/operators/map';
-import { pipe } from 'rxjs/util/pipe';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/operator/let';
+import { map, merge, distinctUntilChanged, tap, filter } from 'rxjs/operators';
 import { AsInputWithOperatorsComponent } from './../asInputWithOperators.component';
 
 enum notDuplicate{
@@ -38,7 +35,7 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
     public domainsFormatter;
     public suggestionsFunc;
     public domainsFunc;
-    public domainTypeahead;
+    public domainTypeahead:Observable<any>;
     public itemsDomain = [];
     public form: FormGroup;
     public abstract filter;
@@ -65,38 +62,39 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
         this.domainTypeahead = new EventEmitter();
         
         this.suggestionsFunc = (text$: Observable<string>) =>
-            text$
-                .merge(this.searchboxInputClick$)
-                .merge(this.focusInput$)
+            text$.pipe(
+                merge(this.searchboxInputClick$),
+                merge(this.focusInput$),
                 //.debounceTime(50)
-                .distinctUntilChanged()
-                .map((term)=>{
+                distinctUntilChanged(),
+                map((term)=>{
                     if (term instanceof MouseEvent || term === undefined) {
                         term = this.inputRef._elementRef.nativeElement.value || '';
                     }
                     return term;
-                })
-                .let((obs):Observable<any> => {
+                }),
+                pipe((obs):Observable<any> => {
                     if(this.filter.viewModel.suggestions){
                         if(typeof this.filter.viewModel.suggestions === 'string' || this.filter.viewModel.suggestions === ''){
                             return obs
-                            .let((obs) => this._config.suggestionsAsyncFn(obs, this.filter.viewModel, this.filter.viewModel.suggestions))
-                            .do((response) => {
+                            .pipe((obs) => this._config.suggestionsAsyncFn(obs, this.filter.viewModel, this.filter.viewModel.suggestions))
+                            .pipe(
+                            tap((response) => {
                                 this.suggestionsResults$.next({viewModel:this.filter.viewModel, response: response});
-                            })
-                            .let(this.filterNotDuplicateSuggestions());
+                            }))
+                            .pipe(this.filterNotDuplicateSuggestions());
                         }else{
                             return obs
-                            .let((obs) => this._config.suggestionsStaticFn(obs, this.filter.viewModel, this.filter.viewModel.suggestions))
-                            .do((response) => {
+                            .pipe((obs) => this._config.suggestionsStaticFn(obs, this.filter.viewModel, this.filter.viewModel.suggestions))
+                            .pipe(tap((response) => {
                                 this.suggestionsResults$.next({viewModel:this.filter.viewModel, response: response});
-                            })
-                            .let(this.filterNotDuplicateSuggestions());
+                            }))
+                            .pipe(this.filterNotDuplicateSuggestions());
                         }
                     }else{
                         return obs;
                     }
-        });
+        }));
         
     }
 
@@ -118,23 +116,22 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
 
     ngOnInit(){
     
-        this.searchboxInputClick$ = fromEvent(this.inputElementRef.nativeElement, 'click').map((response: MouseEvent) => {
+        this.searchboxInputClick$ = fromEvent(this.inputElementRef.nativeElement, 'click').pipe(map((response: MouseEvent) => {
             response.preventDefault();
             response.stopPropagation();
             return response;
-        });        if(this.typeaheadController){
-            
-
+        }));        
+        if(this.typeaheadController){
             this.typeaheadController._userInput = '';
         }
         
         this.filter.focusInput$ = this.focusInput$;        
         if(this.filter.viewModel.domains){
-            this.domainTypeahead
-            .merge(this.searchboxInputClick$)
-            .merge(this.focusInput$)
+            this.domainTypeahead.pipe(
+            merge(this.searchboxInputClick$),
+            merge(this.focusInput$),
             //.distinctUntilChanged()
-            .map((term)=>{
+            map((term)=>{
                 if (term instanceof MouseEvent || !term) {
                     if(this.inputRef._value){
                         term = this.inputRef._value[this.inputRef.bindLabel] || '';
@@ -143,24 +140,24 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
                     }
                 }
                 return term;
-            })
-            .filter((term) => this.filter.viewModel.domains)
+            }),
+            filter((term) => this.filter.viewModel.domains))
             //.debounceTime(1000)
-            .let((obs) => {
+            .pipe((obs:Observable<any>) => {
                 if(typeof this.filter.viewModel.domains === 'string' || this.filter.viewModel.domains === ''){
                     return obs
-                    .let((obs) => this._config.domainsAsyncFn(obs, this.filter.viewModel, this.advancedSearchBox.model))
-                    .do((response) => {
+                    .pipe((obs) => this._config.domainsAsyncFn(obs, this.filter.viewModel, this.advancedSearchBox.model))
+                    .pipe(tap((response:any) => {
                         this.domainsResults$.next({viewModel:this.filter.viewModel, response: response.response});
-                    })
-                    .let(this.filterNotDuplicateDomains());
+                    }))
+                    .pipe(this.filterNotDuplicateDomains());
                 }else{
                     return obs
-                    .let((obs) => this._config.domainsStaticFn(obs, this.filter.viewModel, this.advancedSearchBox.model))
-                    .do((response) => {
+                    .pipe((obs) => this._config.domainsStaticFn(obs, this.filter.viewModel, this.advancedSearchBox.model))
+                    .pipe(tap((response) => {
                         this.domainsResults$.next({viewModel:this.filter.viewModel, response: response});
-                    })
-                    .let(this.filterNotDuplicateDomains());
+                    }))
+                    .pipe(this.filterNotDuplicateDomains());
                 }
             })
             .subscribe(items => {
@@ -171,12 +168,12 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
         }
     }
 
-    private _filterNotDuplicate(type:notDuplicate){
+    private _filterNotDuplicate(type:notDuplicate):OperatorFunction<any,any>{
         return map((response:any) => { 
-            let viewModel = response.response;
-            let term = response.term;
-            let isModel = AsUtils.getterSetterModelTree(this.advancedSearchBox.model, this.filter.viewModel.model.split('.')) || [];
-            let viewModelFiltered = viewModel
+            let viewModel:Array<any> = response.response;
+            let term:string = response.term;
+            let isModel:Array<any> = AsUtils.getterSetterModelTree(this.advancedSearchBox.model, this.filter.viewModel.model.split('.')) || [];
+            let viewModelFiltered:Array<any> = viewModel
             .filter((v) => {
                 return isModel.filter((valModel) => {
                     if(!valModel){
@@ -198,11 +195,11 @@ export abstract class AsInputAbstract implements OnInit, AsInputInterface, Contr
         });
     }
 
-    filterNotDuplicateDomains(){
+    filterNotDuplicateDomains():OperatorFunction<any,any>{
         return this._filterNotDuplicate(notDuplicate.Domains);
     }
 
-    filterNotDuplicateSuggestions(){
+    filterNotDuplicateSuggestions():OperatorFunction<any,any>{
         return this._filterNotDuplicate(notDuplicate.Suggestions);
     }
 }

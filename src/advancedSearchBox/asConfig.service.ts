@@ -1,12 +1,11 @@
 import { ViewModelInterface } from './asViewModel.interface';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { ReplaySubject } from "rxjs/ReplaySubject";
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/catch';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from "rxjs";
+import { ReplaySubject } from "rxjs";
+import { take, catchError, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { FunctionCall } from '@angular/compiler';
 
 @Injectable()
@@ -75,12 +74,12 @@ export class AsConfigService{
         
     }
 
-    suggestionsStaticFn(observable, viewModel, suggestions):Observable<Array<any>>{
+    suggestionsStaticFn(observable:Observable<any>, viewModel, suggestions):Observable<any>{
         if(this.customSuggestionsStaticFn[viewModel.model]){
             return this.customSuggestionsStaticFn[viewModel.model](observable, viewModel, suggestions);
         }
-        return observable
-        .map(term => {
+        return observable.pipe(
+        map(term => {
             let response = {response:suggestions, term:term};
             if(term === ''){
                 return response;
@@ -89,34 +88,34 @@ export class AsConfigService{
                 return v.toString().indexOf(term.toLowerCase()) > -1
             }).slice(0, 10);
             return response;
-        });
+        }));
     }
 
-    suggestionsAsyncFn(observable, viewModel, suggestions):Observable<Array<any>>{
+    suggestionsAsyncFn(observable:Observable<any>, viewModel, suggestions):Observable<any>{
         if(this.customSuggestionsAsyncFn[viewModel.model]){
             return this.customSuggestionsAsyncFn[viewModel.model](observable, viewModel, suggestions);
         }
-        return observable
-        .switchMap((term) => 
-            this._http.get(viewModel.suggestions, {params:{q:term}})
-            .catch(()=>[])
-            .map((response:any) => {
+        return observable.pipe(
+        switchMap((term) => 
+            this._http.get(viewModel.suggestions, {params:{q:term}}).pipe(
+            catchError(()=>[]),
+            map((response:any) => {
                 let newResponse = {response:[], term:''};
                 newResponse.response = response.items.map((item)=>{
                     return {label:item.login};
                 });
                 newResponse.term = term;
                 return newResponse;
-            })
-        );
+            }))
+        ));
     }
 
-    domainsStaticFn(observable, viewModel, model):Observable<Array<any>>{
+    domainsStaticFn(observable:Observable<any>, viewModel, model):Observable<any>{
         if(this.customDomainsStaticFn[viewModel.model]){
             return this.customDomainsStaticFn[viewModel.model](observable, viewModel, model);
         }
-        return observable
-        .map(term => {
+        return observable.pipe(
+        map(term => {
             let response = {response:viewModel.domains, term:term};
             if(term === ''){
                 return response;
@@ -128,29 +127,29 @@ export class AsConfigService{
                 return v.toString().indexOf(term.toLowerCase()) > -1
             }).slice(0, 10);
             return response;
-        });
+        }));
     }
 
-    domainsAsyncFn(observable, viewModel, model):Observable<Array<any>>{
+    domainsAsyncFn(observable:Observable<any>, viewModel, model):Observable<any>{
         if(this.customDomainsAsyncFn[viewModel.model]){
             return this.customDomainsAsyncFn[viewModel.model](observable, viewModel, model);
         }
         
-        return observable
-        .switchMap((term) => this._http.get(viewModel.domains, {params:{q:term}}))
-        .catch(()=>[])
-        .map((response:any) => {
+        return observable.pipe(
+        switchMap((term) => this._http.get(viewModel.domains, {params:{q:term}})),
+        catchError(()=>[]),
+        map((response:any) => {
             return response.items.map((item)=>{
                 return {label:item.login};
             });
-        });
+        }));
     }
 
     set navigation(navigation){
         this._navigation = navigation;
     } 
     get navigation(){
-        this.historyNavigation = this._navigation.take(2);
+        this.historyNavigation = this._navigation.pipe(take(2));
         return this._navigation;
     }
 

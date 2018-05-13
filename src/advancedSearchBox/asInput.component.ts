@@ -3,11 +3,9 @@ import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, ComponentFactoryResolver, ResolvedReflectiveFactory, ViewContainerRef, forwardRef, ChangeDetectionStrategy } from '@angular/core';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
 import { AsBoxFilterAbstract } from './asFilter.abstract';
-import { Observable } from 'rxjs/Observable';
+import { filter, map, mergeMap} from "rxjs/operators";
+import { Observable } from 'rxjs';
 import { NgbTypeaheadConfig, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient } from '@angular/common/http';
 import { AsConfigService } from './asConfig.service';
@@ -69,15 +67,15 @@ export class AsInputComponent extends AsBoxFilterAbstract implements OnInit{
     ngOnInit() {
         super.ngOnInit();
         
-        this.advancedSearchBox.editNext
-        .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
+        this.advancedSearchBox.editNext.pipe(
+        filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid))
         .subscribe((response) => {
             this.advancedSearchBox.nextFilterController(response.viewModel).onFocus('next');
             this.onBlur();
         });
 
-        this.advancedSearchBox.editPrev
-        .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
+        this.advancedSearchBox.editPrev.pipe(
+        filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid))
         .subscribe((response) => {
             this.advancedSearchBox.prevFilterController(response.viewModel).onFocus('prev');
             this.onBlur();

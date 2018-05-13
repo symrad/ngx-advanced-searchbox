@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { AsInputAbstract } from './input/asInput.abstract';
 export interface FilterInterface {
     inputComponent:AsInputAbstract;

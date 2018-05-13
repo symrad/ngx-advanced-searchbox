@@ -5,19 +5,16 @@ import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, HostListener } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { fromEvent } from 'rxjs/observable/fromEvent';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/merge';
-import 'rxjs/add/operator/switchMap';
+import { Subject, fromEvent, merge } from 'rxjs';
+import { filter, switchMap, map} from "rxjs/operators";
 import { FormControl, ControlValueAccessor } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AsConfigService } from './asConfig.service';
 import { NgbTypeahead, NgbTypeaheadSelectItemEvent, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { AsInputInterface } from './input/asInput.interface';
 import { AfterViewInit } from '@angular/core';
-import { Subscriber } from 'rxjs/Subscriber';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscriber } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AsInputAbstract } from './../advancedSearchBox/input/asInput.abstract';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
@@ -65,11 +62,11 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
 
     ngOnInit(): void {
         this.advancedSearchBox.addFilterController(this.viewModel.uuid, this);
-        this.inputClickUnsubscribe$_ = fromEvent(this._el.nativeElement, 'click').map((response: MouseEvent) => {
+        this.inputClickUnsubscribe$_ = fromEvent(this._el.nativeElement, 'click').pipe(map((response: MouseEvent) => {
             response.preventDefault();
             response.stopPropagation();
             return response;
-        }).subscribe(()=>{});
+        })).subscribe(()=>{});
     }
 
     ngOnDestroy(): void {

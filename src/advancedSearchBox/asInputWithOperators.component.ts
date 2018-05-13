@@ -4,11 +4,10 @@ import { FilterInterface } from './asFilter.interface';
 import { UUID } from 'angular2-uuid';
 import { AsComponent } from './as.component';
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy, Input, ViewChild, OnChanges, SimpleChanges, ViewContainerRef, ComponentFactoryResolver, forwardRef } from '@angular/core';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/takeLast';
+import { filter, takeLast} from "rxjs/operators";
 import { AsBoxFilterAbstract } from './asFilter.abstract';
 import { Key as KeyBoard} from 'ts-keycode-enum';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputWithOperatorsComponent } from './input/asSimpleInputWithOperators.component';
 import { AsSuggestionsInputWithOperatorsComponent } from './input/asSuggestionsInputWithOperators.component';
@@ -107,8 +106,8 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             this.viewModel.value = {op:this.operatorsList[0]};
         }
 
-        this.advancedSearchBox.editNext
-        .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
+        this.advancedSearchBox.editNext.pipe(
+        filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid))
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
                 this.operatorsDropDownDir.close();
@@ -120,8 +119,8 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
             }
         });
 
-        this.advancedSearchBox.editPrev
-        .filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid)
+        this.advancedSearchBox.editPrev.pipe(
+        filter((response) => response.viewModel && response.viewModel.uuid === this.viewModel.uuid))
         .subscribe((response) => {
             if (response.options.id && response.options.id === 'buttonDropDown') {
                 this.advancedSearchBox.prevFilterController(response.viewModel).onFocus('prev');

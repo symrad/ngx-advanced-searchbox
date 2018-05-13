@@ -7,7 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { AsConfigService } from "../asConfig.service";
 import { AsInputAbstract } from "./asInput.abstract";
 import { AsBoxFilterAbstract } from "../asFilter.abstract";
-import { Subject } from "rxjs/Subject";
+import { Subject } from "rxjs";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 
 @Component({
