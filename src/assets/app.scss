@@ -49,8 +49,9 @@ advanced-searchbox{
             width:auto!important;
             min-width: 200px;
         }
-        &.ng-single .ng-control{
-            height:100%;
+        .ng-select-container{
+            height:100% !important;
+            min-height:100% !important;
             border-radius:0;
         }
     }
