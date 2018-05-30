@@ -1,13 +1,14 @@
 {
   "configVersion": 1,
-  "index": "/../index.html",
+  "index": "/index.html",
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "urls": [
-        "/favicon.ico"
+        "/favicon.ico",
+        "/index.html"
       ],
       "patterns": []
     },
@@ -190,7 +191,8 @@
     "/assets/lib/hljs/styles/xcode.css": "65d775a7e11e238c91e0d3c7370547348c92d6b3",
     "/assets/lib/hljs/styles/xt256.css": "bbe28ec69177699cb6300d777598adf6323f7861",
     "/assets/lib/hljs/styles/zenburn.css": "933a3b196d01254dea5e6f48105ea15e210ae000",
-    "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01"
+    "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
+    "/index.html": "bf7e45e6d364c18b7c68597e313e2f22beb01d0a"
   },
   "navigationUrls": [
     {
