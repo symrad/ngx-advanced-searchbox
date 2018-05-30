@@ -114,7 +114,7 @@ var appRoutes = [
       }
     ),
     HighlightModule.forRoot({path: environment.assetsPath+'/lib/hljs'}),
-    ServiceWorkerModule.register('./ngx-advanced-searchbox/ngsw-worker.js', {
+    ServiceWorkerModule.register('./ngx-advanced-searchbox/dist/ngsw-worker.js', {
       enabled: environment.production
     })
   ],
