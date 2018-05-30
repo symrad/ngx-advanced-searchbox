@@ -13,7 +13,7 @@
           "options": {
             "outputPath": "dist",
             "deployUrl": "ngx-advanced-searchbox/dist/", //da togliere in prod
-            "index": "src/../index.html",
+            "index": "index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
@@ -162,7 +162,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.ts"
                 }
               ]
             }

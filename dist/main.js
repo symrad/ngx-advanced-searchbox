@@ -1617,7 +1617,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
     production: false,
-    assetsPath: 'ngx-advanced-searchbox/dist/assets'
+    assetsPath: 'assets'
 };
 
 

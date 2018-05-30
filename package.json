@@ -4,8 +4,9 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
+    "serve": "npm run clean:index && ng serve local",
     "start": "ng serve",
-    "build": "npm run clean:index && ng build remote",
+    "build": "npm run clean:index && ng build remote && cp dist/index.html index.html",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -20,7 +21,7 @@
     "@angular/core": "^6.0.1",
     "@angular/router": "^6.0.1",
     "@angular/service-worker": "^6.0.1",
-    "ngx-advanced-searchbox": "0.2.0",
+    "ngx-advanced-searchbox": "0.2.1",
     "ngx-highlightjs": "^2.0.1",
     "npm": "^5.8.0",
     "zone.js": "^0.8.19"
