@@ -27,7 +27,11 @@ import { Component } from '@angular/core';
         <pre><code highlight [code]="codeHtmlForm"></code></pre>
         <pre><code highlight [code]="codeJsForm"></code></pre>
         </div>
-        <h2 class="bd-title" id="format">Format value / label</h2>
+        <h2 class="bd-title" id="format">Format model / model view</h2>
+        <div>
+        It is possible to format viewModel and model, to do this is necessary to extend the objects formatModelViewValue and formatModelValue into AsConfigService class.
+        A use case can be a input date where in input is necessary a Date Object to populate datepicker and in output a timestamp (long) that we pass to server:
+        <pre><code highlight [code]="codeJsFormat"></code></pre>
     </div>`,
     styles: [
         `
@@ -97,6 +101,26 @@ export class DevelopMainComponent {
 
     public codeHtmlForm = `
     <advanced-searchbox [template]="template" [model]="model" [form]="form" [validators]="validators"></advanced-searchbox>
+    `;
+
+    public codeJsFormat = `
+    ...
+    class component{
+        
+        constructor(public config:AsConfigService){
+            this.config.formatModelValue = {
+                'birth':function(date){
+                    return date.getTime();
+                }
+            };
+
+            this.config.formatModelViewValue = {
+                'birth':function(timestamp){
+                    return new Date(timestamp);
+                }
+            };
+        }
+    }
     `
 }
 
