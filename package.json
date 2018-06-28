@@ -6,7 +6,7 @@
     "ng": "ng",
     "serve": "npm run clean:index && ng serve local",
     "start": "ng serve",
-    "build": "npm run clean:index && ng build remote --prod && cp dist/index.html index.html",
+    "build": "npm run clean:index && ng build remote && cp dist/index.html index.html",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
