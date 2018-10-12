@@ -7,6 +7,7 @@
     "serve": "npm run clean:index && ng serve local",
     "start": "ng serve",
     "build": "npm run clean:index && ng build remote --prod && cp dist/index.html index.html",
+    "buildLocal": "npm run clean:index && ng build local --prod && cp dist/index.html index.html",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -19,6 +20,7 @@
   "private": true,
   "dependencies": {
     "@angular/core": "^6.0.7",
+    "@angular/pwa": "^0.8.5",
     "@angular/router": "^6.0.7",
     "@angular/service-worker": "^6.0.7",
     "ngx-advanced-searchbox": "0.2.1",
