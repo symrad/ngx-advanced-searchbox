@@ -6,7 +6,6 @@ import { ComponentsRangeComponent } from './routes/components/operators-input/ra
 import { ComponentsOperatorsInputComponent } from './routes/components/operators-input/operators.component';
 import { Component } from '@angular/core';
 import { ComponentsComponent } from './layout/components.page';
-import { environment } from './../environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -28,6 +27,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { ComponentsInputWithMaskComponent } from './routes/components/simple-input/inputWithMask.component';
 import { ApiComponent } from './layout/api.page';
 import { ApiMainComponent } from './routes/api/main.component';
+import { environment } from '../environments/environment';
  
 var appRoutes = [
   {
