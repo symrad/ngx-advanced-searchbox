@@ -6,9 +6,7 @@
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
-      "urls": [
-        "/index.html"
-      ],
+      "urls": [],
       "patterns": []
     },
     {
@@ -205,8 +203,7 @@
     "/assets/lib/hljs/styles/vs2015.css": "3c7fa677de2a785d90fc6c3f7520ac1b11bfd37a",
     "/assets/lib/hljs/styles/xcode.css": "65d775a7e11e238c91e0d3c7370547348c92d6b3",
     "/assets/lib/hljs/styles/xt256.css": "bbe28ec69177699cb6300d777598adf6323f7861",
-    "/assets/lib/hljs/styles/zenburn.css": "933a3b196d01254dea5e6f48105ea15e210ae000",
-    "/index.html": "133e4724a69ece241a7ca25e9ac17f63eb013c36"
+    "/assets/lib/hljs/styles/zenburn.css": "933a3b196d01254dea5e6f48105ea15e210ae000"
   },
   "navigationUrls": [
     {
