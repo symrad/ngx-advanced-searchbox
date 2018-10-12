@@ -9,10 +9,10 @@
       "urls": [
         "/ngx-advanced-searchbox/favicon.ico",
         "/ngx-advanced-searchbox/index.html",
-        "/ngx-advanced-searchbox/main.7c1896f53652e62a176b.js",
+        "/ngx-advanced-searchbox/main.565fec8031d159ea92bb.js",
         "/ngx-advanced-searchbox/polyfills.055569ca3b8c79e4c39c.js",
         "/ngx-advanced-searchbox/runtime.90050927e0c994a937e4.js",
-        "/ngx-advanced-searchbox/styles.6031c854b50bba4e0be0.css"
+        "/ngx-advanced-searchbox/styles.04c42bf3d65d39252ff7.css"
       ],
       "patterns": []
     },
@@ -212,11 +212,11 @@
     "/ngx-advanced-searchbox/assets/lib/hljs/styles/xt256.css": "bbe28ec69177699cb6300d777598adf6323f7861",
     "/ngx-advanced-searchbox/assets/lib/hljs/styles/zenburn.css": "933a3b196d01254dea5e6f48105ea15e210ae000",
     "/ngx-advanced-searchbox/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/ngx-advanced-searchbox/index.html": "3556e7604c780fdf837266019e84f99ade2c5792",
-    "/ngx-advanced-searchbox/main.7c1896f53652e62a176b.js": "9b4c9002dc59868a2e0f160d0569ff0a99f9969f",
+    "/ngx-advanced-searchbox/index.html": "e7676c04c390154a1ba62b040e78b1529f5eaea7",
+    "/ngx-advanced-searchbox/main.565fec8031d159ea92bb.js": "c6f10842ee30edd753210e4d9c5b112e83fad073",
     "/ngx-advanced-searchbox/polyfills.055569ca3b8c79e4c39c.js": "ec05392b6816beab6df31902c16cdc0a66dc05f2",
     "/ngx-advanced-searchbox/runtime.90050927e0c994a937e4.js": "27b8fe1c6a92adcb04e7b736954519621a14e826",
-    "/ngx-advanced-searchbox/styles.6031c854b50bba4e0be0.css": "9b723aa165fd4b4ce771c0db27bacdf2720bd2b1"
+    "/ngx-advanced-searchbox/styles.04c42bf3d65d39252ff7.css": "b44c2d355257d8edc6ab6a723962d999b9b9cd2b"
   },
   "navigationUrls": [
     {

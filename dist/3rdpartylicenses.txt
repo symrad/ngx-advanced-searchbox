@@ -1,4 +1,4 @@
-ts-keycode-enum@1.0.4
+ts-keycode-enum@1.0.6
 MIT
 MIT License
 
