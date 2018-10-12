@@ -7,7 +7,6 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "urls": [
-        "/favicon.ico",
         "/index.html"
       ],
       "patterns": []
@@ -207,8 +206,7 @@
     "/assets/lib/hljs/styles/xcode.css": "65d775a7e11e238c91e0d3c7370547348c92d6b3",
     "/assets/lib/hljs/styles/xt256.css": "bbe28ec69177699cb6300d777598adf6323f7861",
     "/assets/lib/hljs/styles/zenburn.css": "933a3b196d01254dea5e6f48105ea15e210ae000",
-    "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/index.html": "7fbd30b14fd9527fb33b51fa7f386b9136340a00"
+    "/index.html": "133e4724a69ece241a7ca25e9ac17f63eb013c36"
   },
   "navigationUrls": [
     {
