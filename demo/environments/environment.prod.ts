@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  assetsPath:'dist/assets',
-  outputPath:'dist',
-  serviceWorker:true
+  assetsPath: 'docs/assets',
+  outputPath: 'docs',
+  serviceWorker: true
 };

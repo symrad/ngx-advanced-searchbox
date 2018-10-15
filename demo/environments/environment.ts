@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  assetsPath:'assets',
-  outputPath:'',
-  serviceWorker:true
+  assetsPath: 'assets',
+  outputPath: '',
+  serviceWorker: true
 };
