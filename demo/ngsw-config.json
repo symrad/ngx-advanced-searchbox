@@ -8,7 +8,9 @@
         "/favicon.ico",
         "/index.html",
         "/*.css",
-        "/*.js",
+        "/*.js"
+      ],
+      "urls":[
         "https://angular.io/assets/images/logos/angular/angular.svg"
       ]
     }
