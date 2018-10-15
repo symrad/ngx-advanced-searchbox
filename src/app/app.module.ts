@@ -114,8 +114,8 @@ var appRoutes = [
       }
     ),
     HighlightModule.forRoot({path: environment.assetsPath+'/lib/hljs'}),
-    ServiceWorkerModule.register('./dist/ngsw-worker.js', {
-      enabled: environment.production
+    ServiceWorkerModule.register(environment.outputPath+'/ngsw-worker.js', {
+      enabled: environment.serviceWorker
     })
   ],
   providers: [
