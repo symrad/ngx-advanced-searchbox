@@ -9,9 +9,9 @@
       "urls": [
         "/ngx-advanced-searchbox/favicon.ico",
         "/ngx-advanced-searchbox/index.html",
-        "/ngx-advanced-searchbox/main.5f9d668e31baf5304f4d.js",
+        "/ngx-advanced-searchbox/main.855dff88bf30d23c9b93.js",
         "/ngx-advanced-searchbox/polyfills.3a59dd3d09216aae4fbf.js",
-        "/ngx-advanced-searchbox/runtime.475b77812b85bcd77d61.js",
+        "/ngx-advanced-searchbox/runtime.ec2944dd8b20ec099bf3.js",
         "/ngx-advanced-searchbox/styles.0613c3ff39607cee286d.css"
       ],
       "patterns": []
@@ -212,10 +212,10 @@
     "/ngx-advanced-searchbox/assets/lib/hljs/styles/xt256.css": "bbe28ec69177699cb6300d777598adf6323f7861",
     "/ngx-advanced-searchbox/assets/lib/hljs/styles/zenburn.css": "933a3b196d01254dea5e6f48105ea15e210ae000",
     "/ngx-advanced-searchbox/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/ngx-advanced-searchbox/index.html": "69d3f83ab8a79ff881d7c52776b88140bd59cd11",
-    "/ngx-advanced-searchbox/main.5f9d668e31baf5304f4d.js": "d9f72fcf4c5dce08347ff23a0f59a2dff8913fd5",
+    "/ngx-advanced-searchbox/index.html": "c24f720c33539aaba11f4df636dc307c31eb6393",
+    "/ngx-advanced-searchbox/main.855dff88bf30d23c9b93.js": "b4e1b2b5c5d93a9f29650488a43548de307c98ac",
     "/ngx-advanced-searchbox/polyfills.3a59dd3d09216aae4fbf.js": "72fe963a80e84991fa8b68dd78543e79317f10d3",
-    "/ngx-advanced-searchbox/runtime.475b77812b85bcd77d61.js": "e002beaa2e539f6898fbab44d23c7ae00556e71e",
+    "/ngx-advanced-searchbox/runtime.ec2944dd8b20ec099bf3.js": "85de9363951a1d033a479e1e3b0d2259a9ea2b1f",
     "/ngx-advanced-searchbox/styles.0613c3ff39607cee286d.css": "9fe8f89d2157b9040abc94067f96481988f9075e"
   },
   "navigationUrls": [

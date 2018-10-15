@@ -130,8 +130,7 @@
           "options": {
             "baseHref": "/ngx-advanced-searchbox/",
             "outputPath": "docs",
-            "deployUrl": "docs/",
-            "index": "index.html",
+            "index": "demo/index.html",
             "main": "demo/main.ts",
             "tsConfig": "demo/tsconfig.app.json",
             "polyfills": "demo/polyfills.ts",
