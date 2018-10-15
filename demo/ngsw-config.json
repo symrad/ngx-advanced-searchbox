@@ -8,7 +8,8 @@
         "/favicon.ico",
         "/index.html",
         "/*.css",
-        "/*.js"
+        "/*.js",
+        "https://angular.io/assets/images/logos/angular/angular.svg"
       ]
     }
   }, {
