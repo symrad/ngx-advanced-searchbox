@@ -1,0 +1,54 @@
+// Core variables and mixins
+@import "~bootstrap/scss/bootstrap";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+@import "../app/styles/github-highlight";
+@import "../app/styles/custom";
+@import "../app/styles/sidebar";
+@import "../app/styles/content";
+@import "~ngx-advanced-searchbox/scss/app.scss";
+
+body {
+    position: relative;
+}
+
+html,
+body,
+demo-app {
+    height: 100%;
+}
+
+demo-app,
+layout-header,
+layout-sidenav {
+    display: block;
+}
+
+.fill {
+    height: 100%;
+}
+
+.card {
+    label {
+        margin-bottom: 5px;
+    }
+    p {
+        margin: 10px 0 20px 0;
+    }
+}
+
+.bd-main {
+    order: 1;
+}
+
+ng-select.ng-invalid.ng-touched .ng-control {
+    border-color: #dc3545;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px #fde6e8;
+}
+
+.ng-select-dropdown-outer{
+    width: auto!important;
+}
+
+
+
