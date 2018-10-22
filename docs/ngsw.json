@@ -14,9 +14,7 @@
         "/ngx-advanced-searchbox/runtime.ec2944dd8b20ec099bf3.js",
         "/ngx-advanced-searchbox/styles.387a6ddfd76d813d3aa6.css"
       ],
-      "patterns": [
-        "https:\\/\\/angular\\.io\\/assets\\/images\\/logos\\/angular\\/angular\\.svg"
-      ]
+      "patterns": []
     },
     {
       "name": "assets",

@@ -171,14 +171,17 @@
             "polyfills": "projects/doc/src/polyfills.ts",
             "assets": [
               "projects/doc/src/assets",
-              "projects/doc/src/favicon.ico"
+              "projects/doc/src/favicon.ico",
+              "projects/doc/src/manifest.json"
             ],
             "styles": [
               "projects/doc/src/styles.css",
               "projects/doc/src/assets/app.scss"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["dist"]
+              "includePaths": [
+                "dist"
+              ]
             },
             "scripts": []
           },
@@ -242,7 +245,8 @@
             "scripts": [],
             "assets": [
               "projects/doc/src/favicon.ico",
-              "projects/doc/src/assets"
+              "projects/doc/src/assets",
+              "projects/doc/src/manifest.json"
             ]
           }
         },
