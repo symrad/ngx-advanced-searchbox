@@ -163,7 +163,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "baseHref": "/",
+            "baseHref": "/ngx-advanced-searchbox/",
             "outputPath": "docs",
             "index": "projects/doc/src/index.html",
             "main": "projects/doc/src/main.ts",
@@ -214,7 +214,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "doc:build"
+            "browserTarget": "doc:build",
+            "baseHref": "/"
           },
           "configurations": {
             "production": {
