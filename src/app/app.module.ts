@@ -1,14 +1,10 @@
 import { AppConfigService } from './appConfig.service';
-import { DropdownNavigationModule } from './../dropdown-navigation/dropdownNavigation.module';
-import { AsBoxModule } from './../advancedSearchBox/as.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DropdownNavigationDirective } from '../dropdown-navigation/dropdownNavigation.directive';
-import { NgxMaskModule } from 'ngx-mask';
-import { AsConfigService } from './../advancedSearchBox/asConfig.service';
+import { AsBoxModule, AsConfigService } from 'projects/ngx-advanced-searchbox/src/public_api';
 
 
 @NgModule({
@@ -19,11 +15,10 @@ import { AsConfigService } from './../advancedSearchBox/asConfig.service';
     BrowserModule,
     CommonModule,
     NgbModule.forRoot(),
-    AsBoxModule.forRoot(),
-    DropdownNavigationModule
+    AsBoxModule.forRoot()
   ],
   providers: [
-    {provide:AsConfigService, useClass:AppConfigService}
+    {provide: AsConfigService, useClass: AppConfigService}
   ],
   bootstrap: [AppComponent]
 })

@@ -1,11 +1,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "dist",
-    "baseUrl": ".",
+    "outDir": "./dists/out-tsc",
+    "baseUrl": "./",
     "sourceMap": true,
-    "declaration": true,
+    "declaration": false,
     "skipLibCheck": true,
     "module": "es2015",
     "moduleResolution": "node",
@@ -18,7 +17,15 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ngx-advanced-searchbox": [
+        "dist/ngx-advanced-searchbox"
+      ],
+      "ngx-advanced-searchbox/*": [
+        "dist/ngx-advanced-searchbox/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
