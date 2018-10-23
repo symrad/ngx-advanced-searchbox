@@ -1,6 +1,21 @@
 {
   "name": "ngx-advanced-searchbox",
-  "version": "0.0.1",
+  "version": "0.2.2",
+  "description": "",
+  "keywords": [
+    "angular",
+    "angular 6"
+  ],
+  "author": "Simone Radice",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/symrad/ngx-advanced-searchbox.git"
+  },
+  "homepage": "https://github.com/symrad/ngx-advanced-searchbox",
+  "bugs": {
+    "url": "https://github.com/symrad/ngx-advanced-searchbox/issues"
+  },
   "peerDependencies": {
     "@angular/common": "^6.0.0",
     "@angular/compiler": "^6.0.0",
