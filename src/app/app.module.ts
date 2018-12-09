@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AsBoxModule, AsConfigService } from 'projects/ngx-advanced-searchbox/src/public_api';
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { AsBoxModule, AsConfigService } from 'projects/ngx-advanced-searchbox/sr
     BrowserModule,
     CommonModule,
     NgbModule.forRoot(),
-    AsBoxModule.forRoot()
+    AsBoxModule.forRoot(),
+    NgxMaskModule
   ],
   providers: [
     {provide: AsConfigService, useClass: AppConfigService}

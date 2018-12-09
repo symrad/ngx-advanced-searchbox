@@ -14,6 +14,7 @@ export class AppComponent {
   public validators: {[key: string]: Validators};
   public form: FormGroup;
   public viewModel;
+  public operators;
 
   onEditNext(data) {
     console.log(data);
@@ -117,7 +118,7 @@ export class AppComponent {
         'inputType' : 'TEXT',
         'position' : 5,
         'label' : 'Data di nascita a',
-        'operators' : [ 'le', 'lt'],
+        'operators' : [ 'le', 'lt', 'isNot'],
         'multiple' : false,
         'mask': {
           mask: '99-99-9999'
@@ -199,6 +200,9 @@ export class AppComponent {
     this.form.statusChanges.subscribe((res) => {
       console.log(res);
     });
+    this.operators = {
+      isNot: 'is not',
+    };
   }
 
   onAddFilter(filter) {

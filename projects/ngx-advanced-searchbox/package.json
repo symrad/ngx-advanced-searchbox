@@ -29,7 +29,7 @@
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^4.0.0",
     "ngx-input-autosize": "^1.1.7",
-    "ngx-mask": "^2.7.3",
+    "ngx-mask": "^2.9.5",
     "rxjs": "^6.0.0",
     "ts-keycode-enum": "^1.0.4"
   }

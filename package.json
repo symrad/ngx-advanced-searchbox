@@ -33,7 +33,7 @@
     "core-js": "^2.5.7",
     "ngx-highlightjs": "^2.0.2",
     "ngx-input-autosize": "^1.1.7",
-    "ngx-mask": "2.7.3",
+    "ngx-mask": "2.9.5",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.3",
     "ts-keycode-enum": "^1.0.6",

@@ -1,6 +1,12 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<advanced-searchbox [template]="template" [model]="model" [validators]="validators" 
- (editNext)="onEditNext($event)" [openOnLoad]="true" (onChangeViewModel)="onChangeViewModel($event)">
+<advanced-searchbox 
+  [model]="model"
+  [openOnLoad]="true"
+  [operators]="operators"
+  [template]="template"
+  [validators]="validators"
+  (editNext)="onEditNext($event)"
+  (onChangeViewModel)="onChangeViewModel($event)">
   <ng-container *asTemplate="let filter">
     <ng-container [ngSwitch]="filter.type">
       <!--<app-as-operators *ngSwitchCase="'RANGE'" [viewModel]="filter" class="as-filter"></app-as-operators>-->

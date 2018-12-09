@@ -34,25 +34,35 @@ export class AppConfigService extends AsConfigService {
         this.customSuggestionsAsyncFn['gmap'] = this.customDomainsAsyncFn['youtube'];
 
         this.formatModelValue = {
-            'youtube': function(val){
+            'youtube': function(val) {
                 if (val) {
                     return val.label;
                 }
                 return val;
             },
-            'birth.to': function(val){
+            'birth.to': function(val) {
                 const newVal = Object.assign({}, val);
-                const daySplitted = val.value.split('-');
-                newVal.value = new Date(parseInt(daySplitted[2], 2), parseInt(daySplitted[1], 2) - 1, parseInt(daySplitted[0], 2), 12);
+                if  (val.value) {
+                    const daySplitted = val.value.split('-');
+                    newVal.value = new Date(
+                        parseInt(daySplitted[2], 10),
+                        parseInt(daySplitted[1], 10) - 1,
+                        parseInt(daySplitted[0], 10), 12);
+                }
                 return newVal;
             },
-            'birth.from': function(val){
+            'birth.from': function(val) {
                 const newVal = Object.assign({}, val);
-                const daySplitted = val.value.split('-');
-                newVal.value = new Date(parseInt(daySplitted[2], 2), parseInt(daySplitted[1], 2) - 1, parseInt(daySplitted[0], 2), 12);
+                if  (val.value) {
+                    const daySplitted = val.value.split('-');
+                    newVal.value = new Date(
+                        parseInt(daySplitted[2], 10),
+                        parseInt(daySplitted[1], 10) - 1,
+                        parseInt(daySplitted[0], 10), 12);
+                }
                 return newVal;
             },
-            'city': function(val){
+            'city': function(val) {
                 if (val) {
                   return val.value;
                 }
@@ -61,25 +71,29 @@ export class AppConfigService extends AsConfigService {
         };
 
         this.formatModelViewValue = {
-            'youtube': function(val){
+            'youtube': function(val) {
                 if (typeof val === 'string') {
                     return {label: val};
                 }
                 return val;
             },
-            'birth.to': function(val){
+            'birth.to': function(val) {
                 const newVal = Object.assign({}, val);
-                newVal.value = new Date(val.value);
-                newVal.value = `${newVal.value.getDate()} - ${(newVal.value.getMonth() + 1)} - ${newVal.value.getFullYear()}`;
+                if  (val.value) {
+                    newVal.value = new Date(val.value);
+                    newVal.value = `${newVal.value.getDate()} - ${(newVal.value.getMonth() + 1)} - ${newVal.value.getFullYear()}`;
+                }
                 return newVal;
             },
-            'birth.from': function(val){
+            'birth.from': function(val) {
                 const newVal = Object.assign({}, val);
-                newVal.value = new Date(val.value);
-                newVal.value = `${newVal.value.getDate()} - ${(newVal.value.getMonth() + 1)} - ${newVal.value.getFullYear()}`;
+                if  (val.value) {
+                    newVal.value = new Date(val.value);
+                    newVal.value = `${newVal.value.getDate()} - ${(newVal.value.getMonth() + 1)} - ${newVal.value.getFullYear()}`;
+                }
                 return newVal;
             },
-            'city': function(val, template){
+            'city': function(val, template) {
                 const domainsFiltered = template.domains.filter((par) => {
                   return par.value === val;
                 });
@@ -88,7 +102,7 @@ export class AppConfigService extends AsConfigService {
                 }
                 return val;
             },
-            'test': function(val, template){
+            'test': function(val, template) {
                 const domainsFiltered = template.domains.filter((par) => {
                   return par.label === val.value;
                 });
@@ -103,7 +117,7 @@ export class AppConfigService extends AsConfigService {
         };
 
         this.customDomainsModelFormatter = {
-            'test': function(viewModel, val){
+            'test': function(viewModel, val) {
                 const current = viewModel.domains.filter((item) => {
                     if (typeof val === 'object') {
                         return item.id === val.id;
@@ -118,7 +132,7 @@ export class AppConfigService extends AsConfigService {
         };
 
         this.customDomainsFormatter = {
-            'test': function(viewModel, val){
+            'test': function(viewModel, val) {
                 const current = viewModel.domains.filter((item) => {
                     if (typeof val === 'object') {
                         return item.id === val.value;

@@ -18,6 +18,18 @@ import { AsSimpleInputComponent } from './input/asSimpleInput.component';
 import { HttpClient } from '@angular/common/http';
 import { AsUtils } from './asUtils';
 
+export enum OperatorsEnum {
+    eq = '=',
+    lt = '<',
+    le = '\u2264',
+    ne = '\u2260',
+    gt = '>',
+    ge = '\u2265',
+    startsWith = '[...',
+    endsWith = '...]',
+    contains = '[...]'
+}
+
 @Component({
     selector: 'advanced-searchbox',
     template: `
@@ -53,6 +65,7 @@ export class AsComponent implements OnInit, OnChanges {
     private _form;
     private _template;
     private _validators;
+    private _operators;
 
     @Input()
     set template(template){
@@ -96,6 +109,18 @@ export class AsComponent implements OnInit, OnChanges {
         }
         return this._validators;
     }
+
+    @Input()
+    set operators(operators){
+         this._operators = operators;
+    }
+    get operators(){
+        if (!this._operators) {
+            this._operators = OperatorsEnum;
+        }
+        return Object.assign({},OperatorsEnum,this._operators);
+    }
+
 
     private _model: Object;
     public viewModel: ViewModelInterface[];

@@ -16,18 +16,6 @@ import { AsSimpleInputWithOperatorsMaskComponent } from './input/asSimpleInputWi
 import { FormGroup, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
-export enum OperatorsEnum {
-    eq = '=',
-    lt = '<',
-    le = '\u2264',
-    ne = '\u2260',
-    gt = '>',
-    ge = '\u2265',
-    startsWith = '[...',
-    endsWith = '...]',
-    contains = '[...]'
-}
-
 export enum TypesInputWithOperatorsEnum {
     SIMPLE = 'SIMPLE',
     SIMPLE_MASK = 'SIMPLE_MASK',
@@ -89,7 +77,7 @@ export class AsInputWithOperatorsComponent extends AsBoxFilterAbstract implement
     ) {
         super(advancedSearchBox, renderer, el, _http, _config);
         this.operatorsList = [];
-        this.operatorsEnum = OperatorsEnum;
+        this.operatorsEnum = this.advancedSearchBox.operators;
 
     }
 

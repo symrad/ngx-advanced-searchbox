@@ -1,4 +1,4 @@
-import { OperatorsEnum } from "./asInputWithOperators.component";
+import { OperatorsEnum } from "./as.component";
 
 export interface ViewModelInterface extends TemplateModelInterface{
     value: any;
