@@ -17,6 +17,7 @@ import { AsConfigService } from './asConfig.service';
 import { AsSimpleInputComponent } from './input/asSimpleInput.component';
 import { HttpClient } from '@angular/common/http';
 import { AsUtils } from './asUtils';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 export enum OperatorsEnum {
     eq = '=',
@@ -44,9 +45,13 @@ export enum OperatorsEnum {
                 <ng-container *ngTemplateOutlet="externalTemplate; context: {$implicit: filter}"></ng-container>
             </ng-container>
         </ng-container>
-        <input id="search" class="form-control" type="text" (selectItem)="addFilter($event)" (focus)="focusInput$.next()" 
-        [(ngModel)]="searchBox" [ngModelOptions]="{standalone: true}" (keydown)="keydown($event)" [ngbTypeahead]="searchBoxFunc" 
-        [resultTemplate]="rt" [inputFormatter]="formatter" #searchbox #searchboxModel="ngModel" placeholder="Cerca" autosize/>
+        
+        <input type="text" id="searchBootstrap" class="form-control form-control-sm" #searchbox autosize (keydown)="keydown($event)" (focus)="focusInput$.next()" placeholder="Cerca" aria-label="Number" [formControl]="searchBoxControl" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addFilter($event)" [displayWith]="displayAutocompleteFn" panelWidth="500">
+            <mat-option *ngFor="let option of searchBoxFunc | async" [value]="option">
+                {{option.label}}
+            </mat-option>
+        </mat-autocomplete>
     </div>
     `,
     providers: [NgbTypeaheadConfig]
@@ -61,6 +66,7 @@ export class AsComponent implements OnInit, OnChanges {
     @ViewChild('searchboxModel') searchboxModel: NgModel;
     @ViewChild(NgbTypeahead) typeaheadController;
     @Input('openOnLoad') openOnLoad: boolean;
+    searchBoxControl = new FormControl();
 
     private _form;
     private _template;
@@ -134,6 +140,7 @@ export class AsComponent implements OnInit, OnChanges {
     public searchBoxFunc;
     public formatter;
     public formGroupSameModel: {[key: string]: FormGroup};
+    public filteredOptions: Observable<string[]>;
 
     constructor(
         public element: ElementRef,
@@ -151,22 +158,6 @@ export class AsComponent implements OnInit, OnChanges {
             this.filtersControllers = {};
             this.focusIndex = 0;
             this.afterViewInitFilters$ = new Subject();
-            this.searchBoxFunc = (text$: Observable<string>) =>
-                text$.pipe(
-                merge(this.searchboxInputClick$),
-                merge(this.focusInput$),
-                debounceTime(50),
-                distinctUntilChanged(),
-                map((term: any) => {
-                    if (term instanceof MouseEvent || term === undefined) {
-                        term = this.searchBox;
-                    }
-
-                    const test = this.filterSearchBox()
-                        .filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
-                        .slice(0, 10);
-                        return test;
-            }));
             this.formatter = (x: {label: string}) => x.label;
     }
 
@@ -192,20 +183,39 @@ export class AsComponent implements OnInit, OnChanges {
         return item.uuid;
     }
 
+    displayAutocompleteFn(obj?: any): string | undefined {
+        return obj ? obj.label : undefined;
+    }
+
     ngOnInit() {
-
-        this._renderer.setProperty(this.searchboxInput.nativeElement, 'value', '');
-
-        this.searchboxInputClick$ = fromEvent(this.searchboxInput.nativeElement, 'click').pipe(map((response: MouseEvent) => {
+        
+       this.searchboxInputClick$ = fromEvent(this.searchboxInput.nativeElement, 'click').pipe(map((response: MouseEvent) => {
             response.preventDefault();
             response.stopPropagation();
             return response;
         }));
 
+       this.searchBoxFunc = 
+       this.searchBoxControl.valueChanges
+       .pipe(
+           startWith(''),
+           merge(this.searchboxInputClick$),
+           merge(this.focusInput$),
+           debounceTime(50),
+           distinctUntilChanged(),
+           map((term: any) => {
+               if (term instanceof MouseEvent || term === undefined) {
+                   term = this.searchBox;
+               }
 
-        this.searchboxModel.valueChanges.subscribe(response => {});
+               const test = this.filterSearchBox()
+                   .filter(v => v.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
+                   .slice(0, 10);
+                   return test;
+       }));
 
-        this.typeaheadController._userInput = '';
+        this._renderer.setProperty(this.searchboxInput.nativeElement, 'value', '');
+
         // allo start, per far si che entri nel subscribe dobbiamo fare in modo che abbia almeno sempre 2 elementi nella history
         this._config.navigation.next({controller: null, from: null});
         this._config.navigation.next({controller: this, from: 'searchbox'});
@@ -324,9 +334,11 @@ export class AsComponent implements OnInit, OnChanges {
         }
     }
 
-    addFilter(typeaheadSelected: NgbTypeaheadSelectItemEvent): void {
-        typeaheadSelected.preventDefault();
-        const viewModel = this.createViewFilter(typeaheadSelected.item);
+    addFilter(event: MatAutocompleteSelectedEvent): void {
+        const viewModel= this.createViewFilter(event.option.value);
+        event.option.deselect();
+        this.searchBoxControl.setValue('');
+        
         this.afterViewInitFilters$.pipe(filter((response) => {
             return response.uuid === viewModel.uuid;
         }), first()).subscribe((response) => {
@@ -347,7 +359,7 @@ export class AsComponent implements OnInit, OnChanges {
             }
         }
         this.viewModel.push(viewModel);
-        this.searchBox = '';
+        this.searchBoxControl.setValue('');
 
         if (this.validators[viewModel.model]) {
             this.form.addControl(viewModel.model + '_' + viewModel.uuid,

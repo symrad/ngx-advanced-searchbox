@@ -1,8 +1,13 @@
 // Core variables and mixins
 @import "~bootstrap/scss/bootstrap";
 @import "~@ng-select/ng-select/themes/default.theme.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 advanced-searchbox{
+    #searchMaterial .mat-form-field-infix{
+        width: auto!important;
+        min-width: 200px;
+    }
     width: 100%;
     border: 1px solid #ccc;
     > div{
@@ -38,7 +43,7 @@ advanced-searchbox{
             border-radius:0; 
         }
     }
-    #search{
+    #searchBootstrap, #searchMaterial{
         width: 50px;
         flex-grow: 1;
         margin-bottom: 15px;

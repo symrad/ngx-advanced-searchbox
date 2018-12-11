@@ -160,9 +160,9 @@ export abstract class AsBoxFilterAbstract implements OnInit, OnDestroy, FilterIn
             this.viewModel.value = $event;
         }
 
-        if(isModified){
+        //if(isModified){
             this.advancedSearchBox.nextFilterController(this.viewModel).onFocus('next');
-        }
+        //}
         this.viewToModel();
         this._onChange(this.viewModel.value);
     }

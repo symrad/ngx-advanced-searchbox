@@ -1,10 +1,11 @@
 {
   "name": "ngx-advanced-searchbox",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "",
   "keywords": [
     "angular",
-    "angular 6"
+    "angular 6",
+    "angular 7"
   ],
   "author": "Simone Radice",
   "license": "MIT",
@@ -17,14 +18,16 @@
     "url": "https://github.com/symrad/ngx-advanced-searchbox/issues"
   },
   "peerDependencies": {
-    "@angular/common": "^6.0.0",
-    "@angular/compiler": "^6.0.0",
-    "@angular/core": "^6.0.0",
-    "@angular/forms": "^6.0.0",
-    "@angular/http": "^6.0.0",
-    "@angular/platform-browser": "^6.0.0",
-    "@angular/platform-browser-dynamic": "^6.0.0",
-    "@ng-bootstrap/ng-bootstrap": "^2.0.0",
+    "@angular/common": "^6.0.0 || ^7.0.0",
+    "@angular/compiler": "^6.0.0 || ^7.0.0",
+    "@angular/core": "^6.0.0 || ^7.0.0",
+    "@angular/forms": "^6.0.0 || ^7.0.0",
+    "@angular/http": "^6.0.0 || ^7.0.0",
+    "@angular/material": "^6.0.0 || ^7.0.0",
+    "@angular/cdk": "^6.0.0 || ^7.0.0",
+    "@angular/platform-browser": "^6.0.0 || ^7.0.0",
+    "@angular/platform-browser-dynamic": "^6.0.0 || ^7.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^2.0.0 || ^3.0.0 || ^4.0.0",
     "@ng-select/ng-select": "^2.0.0",
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^4.0.0",

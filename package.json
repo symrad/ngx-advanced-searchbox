@@ -21,6 +21,8 @@
     "@angular/core": "^6.1.10",
     "@angular/forms": "^6.1.10",
     "@angular/http": "^6.1.10",
+    "@angular/material": "^6.0.0",
+    "@angular/cdk": "^6.0.0",
     "@angular/platform-browser": "^6.1.10",
     "@angular/platform-browser-dynamic": "^6.1.10",
     "@angular/pwa": "^0.10.2",

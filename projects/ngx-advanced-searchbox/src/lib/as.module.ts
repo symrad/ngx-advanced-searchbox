@@ -20,6 +20,10 @@ import { NgxMaskModule, MaskService, NEW_CONFIG, INITIAL_CONFIG, config, _config
 import { AsSimpleInputWithOperatorsMaskComponent } from './input/asSimpleInputWithOperatorsMask.component';
 import { AsSimpleInputMaskComponent } from './input/asSimpleInputMask.component';
 import { DropdownNavigationModule } from './dropdown-navigation/dropdownNavigation.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 
 @NgModule({
@@ -47,7 +51,11 @@ import { DropdownNavigationModule } from './dropdown-navigation/dropdownNavigati
         DropdownNavigationModule,
         AutosizeInputModule,
         HttpClientModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        MatAutocompleteModule,
+        MatFormFieldModule,
+        MatInputModule
     ],
     exports: [
         AsComponent,
